@@ -1,15 +1,16 @@
-
-var c = document.getElementById("c");
+//credits: http://thecodeplayer.com/walkthrough/matrix-rain-animation-html5-canvas-javascript
+var c = document.getElementById("mat-text-canvas");
 var ctx = c.getContext("2d");
 
 //making the canvas full screen
 c.height = window.innerHeight;
 c.width = window.innerWidth;
 
-//chinese characters - taken from the unicode charset
-var chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑";
-//converting the string into an array of single characters
-chinese = chinese.split("");
+//katakana characters - taken from the unicode charset
+var chinese = []
+for(var i = 0; i < 96; i++){
+    chinese.push(String.fromCodePoint(0x30a0 + i));
+}
 
 var font_size = 10;
 var columns = c.width/font_size; //number of columns for the rain
@@ -27,7 +28,7 @@ function draw(){
 	ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
 	ctx.fillRect(0, 0, c.width, c.height);
 	
-	ctx.fillStyle = "#0F0"; //green text
+	ctx.fillStyle = "rgba(0, 256, 0, 0.4)"; //green text
 	ctx.font = font_size + "px arial";
 	//looping over drops
 	for(var i = 0; i < drops.length; i++)
@@ -47,7 +48,4 @@ function draw(){
 	}
 }
 
-setInterval(draw, 200);
-
-
-
+setInterval(draw, 150);

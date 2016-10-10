@@ -1,0 +1,23 @@
+/*css*/
+
+body{
+  background-color: black;
+  margin: 0px;
+  overflow: hidden;
+}
+
+.content{
+  background-color: black;
+  position: absolute;
+  top: 50%;
+  /* left: 50%; */
+  width: 33%;
+  text-align: center;
+  opacity: 0.5;
+  color: white;
+  font-size: 38px;
+}
+
+#name{
+  font-size: 38px;
+}
