@@ -2,20 +2,36 @@
 
 body{
   background-color: black;
+  overflow-y: hidden;
   margin: 0px;
   overflow: hidden;
+  width: auto;
+}
+
+#tabs-wrap{
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-x: scroll;
+  height: 100%;
+  width: auto;
+  white-space: nowrap;
 }
 
 .content{
-  background-color: black;
-  position: absolute;
-  top: 50%;
-  /* left: 50%; */
-  width: 33%;
-  text-align: center;
-  opacity: 0.5;
+  display: inline-block;
+  height: 100%;
+  width: 500px;
   color: white;
-  font-size: 38px;
+}
+
+.content > div{
+  width:100%;
+  text-align: center;
+  position: relative;
+  opacity: 0.5;
+  background-color: black;
+  top: 50%;
 }
 
 #name{
