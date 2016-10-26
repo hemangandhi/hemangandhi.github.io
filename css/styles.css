@@ -5,7 +5,7 @@ body{
   overflow-x: scroll;
   overflow-y: hidden;
   margin: 0px;
-  overflow: hidden;
+  /* overflow: hidden; */
   width: auto;
 }
 
@@ -13,7 +13,7 @@ body{
   position: absolute;
   top: 0;
   left: 0;
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
   height: 100%;
   width: auto;
   white-space: nowrap;
@@ -37,4 +37,26 @@ body{
 
 #name{
   font-size: 38px;
+}
+
+#bounce{
+    position: absolute;
+    width: 40px;
+    -webkit-animation: bounce-anim 2s infinite ease-in-out;
+}
+
+@-webkit-keyframes bounce-anim {
+	0%, 20%, 60%, 100%  { -webkit-transform: translateX(0); }
+    40%  { -webkit-transform: translateX(-15px); }
+	80% { -webkit-transform: translateX(-10px); }
+}
+
+a{
+    color: red;
+    text-decoration: none;
+}
+
+#right-link{
+    font-size: 18px;
+    /* text-align: left; */
 }
