@@ -70,3 +70,15 @@ function draw(){
 }
 
 setInterval(draw, 150);
+
+window.onscroll = function(){
+    var left = document.body.scrollLeft;
+    var places = document.getElementsByClassName('place');
+
+    for(var entry of document.getElementsByClassName('atPlace')){
+        entry.className = "";
+        entry.className = "place";
+    }
+
+    places.item(Math.floor(left/c.width * (places.length + 1))).className += ' atPlace';
+};

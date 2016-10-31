@@ -64,3 +64,32 @@ a{
     font-size: 18px;
     /* text-align: left; */
 }
+
+#toc{
+    top: 0;
+    left: 500px;
+    position: fixed;
+    opacity: 0.5;
+    background-color: black;
+    color: white;
+}
+
+#toc > ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* background-color: #333; */
+}
+
+.place {
+    float: left;
+    padding: 8px;
+}
+
+.atPlace {
+    float: left;
+    padding: 8px;
+    background-color: green;
+    /* color: black; */
+}
