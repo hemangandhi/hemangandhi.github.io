@@ -4,7 +4,7 @@ var ctx = c.getContext("2d");
 
 //making the canvas full screen
 c.height = window.outerHeight;
-c.width = 500 * 5;
+c.width = 500 * document.getElementsByClassName("content").length;
 
 //katakana characters - taken from the unicode charset
 var meaningfuls = ["\u79c1\u306f\u30d8\u30de\u30f3\u30ac\u30f3\u30b8 ", //watashi wa heman ganji

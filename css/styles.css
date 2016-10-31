@@ -24,18 +24,21 @@ body{
   height: 100%;
   width: 500px;
   color: white;
+  white-space: normal;
 }
 
 .content > div{
   width:100%;
   text-align: center;
   position: relative;
+  word-wrap: break-word;
   opacity: 0.5;
   background-color: black;
   top: 50%;
+  transform: translate(0, -50%);
 }
 
-#name{
+.name{
   font-size: 38px;
 }
 
