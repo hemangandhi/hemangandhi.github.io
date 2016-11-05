@@ -43,7 +43,7 @@ body{
   font-size: 38px;
 }
 
-#bounce{
+.bounce{
     position: absolute;
     width: 40px;
     -webkit-animation: bounce-anim 2s infinite ease-in-out;
