@@ -9,12 +9,12 @@
     <canvas id="mat-text-canvas"></canvas>
     <div id="toc">
         <ul>
-            <li class="place">Title</li>
-            <li class="place"><span class="bounce">&gt;</span></li>
-            <li class="place">Who am I</li>
-            <li class="place">Contact</li>
-            <li class="place">Experience</li>
-            <li class="place">Projects / Proficiencies</li>
+            <li class="place"><a onclick="slowlyScrollTo(0)">Title</a></li>
+            <li class="place"><a onclick="slowlyScrollTo(1000)"><span class="bounce">&gt;</span></a></li>
+            <li class="place"><a onclick="slowlyScrollTo(2000)">Who am I</a></li>
+            <li class="place"><a onclick="slowlyScrollTo(3000)">Contact</a></li>
+            <li class="place"><a onclick="slowlyScrollTo(4000)">Experience</a></li>
+            <li class="place"><a onclick="slowlyScrollTo(5000)">Projects / Proficiencies</a></li>
         </ul>
     </div>
     <div id="tabs-wrap">
@@ -23,7 +23,7 @@
       </div>
       <div class="content"><br/></div>
       <div class="content">
-          <div><a id="right-link" href="#far-right">But wait, there's more! <span class="bounce">&gt;</span></a></div>
+          <div><a id="right-link" onclick="slowlyScrollTo(2000)">But wait, there's more! <span class="bounce">&gt;</span></a></div>
       </div>
       <div class="content"><br/></div>
       <div class="content">

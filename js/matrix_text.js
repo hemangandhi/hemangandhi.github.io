@@ -1,3 +1,17 @@
+var DURATION = 500;
+var TIMEOUT = 10;
+
+slowlyScrollTo = function(scr){
+    console.log(scr);
+    var dx = scr - document.body.scrollLeft;
+    var perTick = dx / DURATION * TIMEOUT;
+
+    setTimeout(function(){
+        window.scrollTo(document.body.scrollLeft + dx, 0);
+        if(document.body.scrollLeft === scr) return;
+        slowlyScrollTo(scr);
+    }, TIMEOUT);
+};
 //credits: http://thecodeplayer.com/walkthrough/matrix-rain-animation-html5-canvas-javascript
 var c = document.getElementById("mat-text-canvas");
 var ctx = c.getContext("2d");
@@ -82,3 +96,4 @@ window.onscroll = function(){
 
     places.item(Math.floor(left/c.width * (places.length + 1))).className += ' atPlace';
 };
+
