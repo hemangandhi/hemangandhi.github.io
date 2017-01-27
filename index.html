@@ -10,12 +10,12 @@
     <canvas id="mat-text-canvas"></canvas>
     <div id="toc">
         <ul>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(0)">Title</a></li>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(1000)"><span class="bounce">&gt;</span></a></li>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(2000)">Who am I</a></li>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(3000)">Contact</a></li>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(4000)">Experience</a></li>
-            <li class="place"><a href="#" onClick="slowlyScrollTo(5000)">Projects / Proficiencies</a></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(0);"><a>Title</a></div></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(1000);"><a><span class="bounce">&gt;</span></a></div></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(2000);"><a>Who am I</a></div></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(3000);"><a>Contact</a></div></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(4000);"><a>Experience</a></div></li>
+            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(5000);"><a>Projects / Proficiencies</a></div></li>
         </ul>
     </div>
     <div id="tabs-wrap">
@@ -24,7 +24,7 @@
       </div>
       <div class="content"><br/></div>
       <div class="content">
-          <div><a id="right-link" onClick="slowlyScrollTo(2000)">But wait, there's more! <span class="bounce">&gt;</span></a></div>
+          <div onClick="slowlyScrollTo(2000);"><a id="right-link">But wait, there's more! <span class="bounce">&gt;</span></a></div>
       </div>
       <div class="content"><br/></div>
       <div class="content">
@@ -38,7 +38,7 @@
       <div class="content"><br/></div>
       <div class="content">
         <div>Find me in all the places:
-            <ul>
+            <ul style="list-style-type:none">
                 <li><a href="https://www.linkedin.com/in/hemangandhi">LinkedIn</a></li>
                 <li><a href="https://github.com/hemangandhi">GitHub</a></li>
                 <li><a href="mailto:hemangandhi@gmail.com">Email</a></li>
@@ -74,6 +74,12 @@ recognize audio input to simulate a keyboard and produce sound
 output for keyboard input, helping blind people to interact with the
 keyboard.
           </div><br/>
+        <div><strong>Gifs Against Humanity</strong> | <em>HackPrinceton, Fall 2016</em><br/>
+Learned Node.JS and Socket.io to implement a parody of cards
+against humanity where cards are replaced by GIFS. Socket.io
+multi-cast messages were used to allow for chatting in addition to
+game-play.
+        </div><br/>
         <div><strong>Project Evermore</strong> | <em>Top 10, Philly Codefest spring 2016</em><br/>
             Built a web page to help disabled people report inaccessible
 buildings or paths. Used PHP backend with jQuery and the Google
@@ -84,17 +90,18 @@ Maps API.
             website which allows users to communicate to trade assets between
             multiple people.
           </div><br/>
-          <div><strong>Bene-fish</strong><br/>
+          <!--<div><strong>Bene-fish</strong><br/>
             Used the Python standard library, jQuery, and JSON to create a
             free-cycling web site with blog-like features and OAuth from
             Google APIs.
-          </div><br/>
+          </div><br/>-->
           </div></div>
       <div class="content"><br/></div>
       <div class="content">
         <div>
             <div class="name">Skills / Proficiencies</div><br/>
-
+            <div><strong>Languages:</strong> Clojure, Python, C, Java, JavaScript</div>
+            <div><strong>Tools et al:</strong> Git, Bash, Neo4j, jQuery, Google APIs</div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 
-var DURATION = 500;
+var DURATION = 500000;
 var TIMEOUT = 10;
 
 var slowlyScrollTo = function(scr){
