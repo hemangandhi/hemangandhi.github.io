@@ -67,11 +67,12 @@ a{
 
 #toc{
     top: 0;
-    left: 500px;
+    left: 50%;
     position: fixed;
     opacity: 0.5;
     background-color: black;
     color: white;
+    transform: translateX(-50%);
 }
 
 #toc > ul{
