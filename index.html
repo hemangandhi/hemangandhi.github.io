@@ -1,120 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Heman Gandhi</title>
-    <link rel="stylesheet" href="css/styles.css"/>
-    <script src="js/scroll.js"></script>
-  </head>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Heman Gandhi</title>
+        <link rel="stylesheet" href="css/styles.css"/>
+    </head>
 
-  <body>
-    <canvas id="mat-text-canvas"></canvas>
-    <div id="toc">
-        <ul>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(0);"><a>Title</a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(1000);"><a><span class="bounce">&gt;</span></a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(2000);"><a>Who am I</a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(3000);"><a>Contact</a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(4000);"><a>Experience</a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(5000);"><a>Coursework</a></div></li>
-            <li class="place"><div class="pdiv" onClick="slowlyScrollTo(6000);"><a>Projects / Proficiencies</a></div></li>
-        </ul>
-    </div>
-    <div id="tabs-wrap">
-      <div class="content">
-        <div class="name">Heman Gandhi</div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-          <div onClick="slowlyScrollTo(2000);"><a id="right-link">But wait, there's more! <span class="bounce">&gt;</span></a></div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-        <div>
-          <p>Hi! I'm Heman Gandhi, a sophomore computer science and mathematics major at Rutgers.<br/>
-             Age: 19<br/>
-             Location: Princeton, NJ
-          </p>
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">Hi, I'm Heman!</div>
+            <div class="right-bit">
+                <a class="this-page" href="index.html">/home</a>
+                <a href="experience.html">/experience</a>
+                <a href="projects.html">/projects</a>
+                <a href="skills.html">/skills</a>
+                <a href="heman.cv.pdf">/cv</a>
+            </div>
         </div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-        <div>Find me in all the places:
-            <ul style="list-style-type:none">
-                <li><a href="https://www.linkedin.com/in/hemangandhi">LinkedIn</a></li>
-                <li><a href="https://github.com/hemangandhi">GitHub</a></li>
-                <li><a href="mailto:hemangandhi@gmail.com">Email</a></li>
-                <li><a href="heman.cv.pdf">My Resume!</a></li>
-            </ul>
+
+        <div class="content centered-div">
+            <div class="padded-text">Hello, world! I'm Heman Gandhi.</div>
+            <div class="padded-text">I'm a junior pursuing his math and CS degrees.</div>
+            <div class="padded-text">I love being a nerd, mostly for Web Dev (backend),
+                systems programming, and any sort of algebra.</div>
+            <div class="padded-text">Reach out to me at <a href="mailto:hemang@ndhi.ninja">hemang@ndhi.ninja</a>!</div>
         </div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-        <div>
-          <div class="name">Work Experience:</div><br/>
-          <div><strong>Optum Inc, Summer of 2016</strong><br/>
-            Using C#, implemented various finite-state machines and a
-tokenizer to parse COBOL code to extract variable meta-data.
-Improved the extraction program to read the 120,000+ files from
-the mainframe and load data onto a database within 2 hours, down
-from 2 days for a handful of the files.
-          </div><br/><br/>
-          <div><strong>Mphasis Inc, Summer of 2015</strong><br/>
-Using the WAMP protocol through AutobahnJS and Crossbar.io,
-helped design and implement a multi-screen interactive application
-with a ProcessingJS, jQuery, and Bootstrap front-end.
-          </div>
+
+        <div class="centered-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
         </div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-        <div>
-            <div class="name">Coursework</div><br/>
-            <div><strong>CS:</strong>Data Structures, Data 101, Computer Architecture, Systems Programming</div>
-            <div><strong>Math:</strong>Real analysis, Linear Algebra, Abstract Algebra</div>
-        </div>
-      </div>
-      <div class="content"><br/></div>
-      <div class="content">
-          <div>
-          <div class="name" id="far-right">Projects:</div>
-          <div><strong>Keyboard Keyboard</strong> | <em>Best Hardware Hack, HackNY fall 2016</em><br/>
-              In a team of two, created a python tool with pyaudio and scipy to
-recognize audio input to simulate a keyboard and produce sound
-output for keyboard input, helping blind people to interact with the
-keyboard.
-          </div><br/>
-        <div><strong>Gifs Against Humanity</strong> | <em>HackPrinceton, Fall 2016</em><br/>
-Learned Node.JS and Socket.io to implement a parody of cards
-against humanity where cards are replaced by GIFS. Socket.io
-multi-cast messages were used to allow for chatting in addition to
-game-play.
-        </div><br/>
-        <div><strong>Project Evermore</strong> | <em>Top 10, Philly Codefest spring 2016</em><br/>
-            Built a web page to help disabled people report inaccessible
-buildings or paths. Used PHP backend with jQuery and the Google
-Maps API.
-        </div><br/>
-          <div><strong>Waitlist Exchange</strong> | <em>Best Overall, Codeday 2016</em><br/>
-            In a team of two, created a wait-list exchange python and jQuery
-            website which allows users to communicate to trade assets between
-            multiple people.
-          </div><br/>
-          <!--<div><strong>Bene-fish</strong><br/>
-            Used the Python standard library, jQuery, and JSON to create a
-            free-cycling web site with blog-like features and OAuth from
-            Google APIs.
-          </div><br/>-->
-          </div></div>
-      <div class="content"><br/></div>
-      <div class="content">
-        <div>
-            <div class="name">Skills / Proficiencies</div><br/>
-            <div><strong>Languages:</strong> Clojure, Python, C, Java, JavaScript</div>
-            <div><strong>Tools et al:</strong> Git, Bash, Neo4j, jQuery, Google APIs</div>
-        </div>
-      </div>
-    </div>
-    <script src="js/matrix_text.js"></script>
-  </body>
+    </body>
 
 </html>
