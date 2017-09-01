@@ -3,7 +3,7 @@
 body {
     background-color: black;
     margin: 0px;
-    color: green;
+    color: #04ca04;
     width: auto;
     font-size: 24px;
     font-weight: bold;
@@ -21,6 +21,10 @@ a:hover {
 
 div {
     margin: auto;
+}
+
+ul {
+    text-align: left;
 }
 
 .this-page {
@@ -66,6 +70,7 @@ div {
 }
 
 .place-location {
+    clear: both;
     text-align: left;
     float: left;
     font-style: italic;
@@ -87,4 +92,19 @@ div {
 .bottom-div {
     border-top: solid red 4px;
     padding-top: 20px;
+}
+
+.with-sublists {
+    color: white;
+    font-style: italic;
+}
+
+.with-sublists ul {
+    font-style: normal;
+    color: #04ca04;
+}
+
+.with-sublists ol {
+    font-style: normal;
+    color: #04ca04;
 }
