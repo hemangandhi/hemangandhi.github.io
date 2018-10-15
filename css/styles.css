@@ -44,6 +44,32 @@ ul {
     text-align: right;
 }
 
+.cv-link {
+    color: red;
+    display: inline;
+    margin: 0;
+    position: relative;
+}
+
+.cv-link:hover {
+    border-bottom: solid green 4px;
+}
+
+.cv-link:hover ul{
+    display: block;
+    z-index: 999;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 250px;
+}
+
+
+.cv-link ul{
+    display: none;
+    list-style: none;
+}
+
 .content {
     clear: both;
     text-align: center;
