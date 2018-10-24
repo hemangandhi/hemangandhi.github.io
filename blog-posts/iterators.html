@@ -61,7 +61,8 @@
                 <li>Python</li>
                 <li>C#</li>
                 <li>Javascript</li>
-                <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a> There will be an explanation.</li>
+                <li>Rust</li>
+                <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a></li>
             </ul>
 
             The syntax of each won’t be discussed in great depth. Furthermore, implementations will be as canonical as possible - the code will be workable and aim to show the use of iterators in every language, not the implementation. Interesting points will be explained and that is that.</div>
@@ -486,6 +487,52 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 };
         </pre>
 
+        <div class="big-title">Rust</div>
+
+        <div class="padded-text">Saving a good one for the last. I love how much like Python this looks, but with like everything fixed.</div>
+
+        <pre>
+<span class="keyword">struct</span> Subsets&lt;A&gt;{
+    counter: <span class="built-in">usize</span>,
+    data: <span class="built-in">Vec</span>&lt;A&gt;
+}
+
+<span class="keyword">impl</span>&lt;A&gt; Subsets&lt;A&gt;{
+    <span class="keyword">fn</span> new(data: <span class="built-in">Vec</span>&lt;A&gt;) -&gt; Subsets&lt;A&gt; {
+        Subsets{
+            counter: 0,
+            data: data
+        }
+    }
+}
+
+<span class="keyword">impl</span>&lt;A&gt; <span class="built-in">Iterator</span> <span class="keyword">for</span> Subsets&lt;A&gt;
+<span class="keyword">where</span> A: <span class="built-in">Clone</span>{
+    <span class="keyword">type</span> Item = <span class="built-in"><span class="built-in">Vec</span></span>&lt;A&gt;;
+    <span class="keyword">fn</span> next(&<span class="keyword">mut</span> self) -&gt; <span class="built-in">Option</span>&lt;<span class="built-in"><span class="built-in">Vec</span></span>&lt;A&gt;&gt;{
+        <span class="keyword">if</span> self.counter &gt;= 2_usize.pow(self.data.len() <span class="keyword">as</span> <span class="built-in">u32</span>) {
+            <span class="built-in">Option</span>::None
+        }<span class="keyword">else</span>{
+            <span class="keyword">let</span> <span class="keyword">mut</span> i = self.counter;
+            <span class="keyword">let</span> <span class="keyword">mut</span> rv = <span class="built-in"><span class="built-in">Vec</span></span>::new();
+            <span class="keyword">let</span> <span class="keyword">mut</span> j = 0;
+            <span class="keyword">while</span> i &gt; 0 {
+                <span class="keyword">if</span> i % 2 == 1 {
+                    rv.push(self.data[j].clone());
+                }
+                i = i / 2;
+                j += 1;
+            }
+            self.counter += 1;
+            <span class="built-in">Option</span>::Some(rv)
+        }
+    }
+}
+        </pre>
+
+        <div class="padded-text">You can also use a <code><span class="built-in">Vec</span>&lt;<span class="built-in">Box</span>&lt;A&gt;&gt;</code> to avoid cloning, if you like your references.</div>
+
+        <div class="padded-text">I can't convince rustc that I know what I'm doing with the Scheme or OCaML streams, so I'll add that later on. (The compiler might not be inferring a closure type properly, so I don't even know if I'm using lifetimes incorrectly (which is very likely), but the error is a type mismatch and I can't even type-hint. <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">It's on GitHub if you wanna investigate.</a>)</div>
 
         </div>
         <div class="centered-div bottom-div">
