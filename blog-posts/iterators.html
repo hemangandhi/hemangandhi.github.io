@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Iterators, Iterators Everywhere</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <link rel="stylesheet" href="../css/code.css"/>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">Various iterator implementations.</div>
+            <div class="right-bit">
+                <a href="index.html">/home</a>
+                <a href="experience.html">/experience</a>
+                <a href="projects.html">/projects</a>
+                <a href="skills.html">/skills</a>
+                <a href="etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-blog centered-div">
+            <div class="big-title">What?</div>
+            <div class="padded-text">An iterator encapsulates a simple idea of sequences. The problem is that most sequences are not finite. In fact, mathematically, a sequence is a function from the natural numbers to any other set (usually the reals). That is computationally difficult to emulate.</div>
+
+            <div class="padded-text">The solution is fairly simple: instead of making lists, we could make the function. But this leaves an open question: what if the function is hard to compute, as is the case with the primes or the Fibonacci sequence?</div>
+
+            <div class="padded-text">The answer is to store the way the listing of the sequence would be built so that the sequence builder remembers where it was and can step through the list. Alternatively, you can think of it as a linked list, but the pointer to the next node is replaced by a function that returns the next node.</div>
+
+            <div class="padded-text">This, of course, is not limited to infinite lists - it can also be used for finite ones. This can boost performance as memory is not used as much and can even make code easier to understand.</div>
+
+            <div class="padded-text">There are many implementations of this. Here are a few of the names and where they arise:
+            <ul>
+                <li>Streams (SICP's chapter 3, Java 8)</li>
+                <li>Lazy Lists (or Lazy Seqs) (Clojure)</li>
+                <li>Iterators (Java and C++)</li>
+                <li>Enumerables (or IEnumerable<T>, in C#)</li>
+                <li>Generator (Python, more for functions)</li>
+                <li>Iterable (Python, more for objects)</li>
+                <li>Can also be addressed as "Sequences" or "Infinite Sequences"</li>
+            </ul>
+            All follow the same pattern and use-case. If a language does not include these, they are not too difficult to implement. Unfortunately, having experience a gamut of languages and customs, I will use the above terms interchangeably (though subtle differences do exist).</div>
+
+            <div class="big-title">All the Implementations</div>
+            <div class="padded-text">Here are some implementations of iterators in various languages. In general, each will show how to make an iterator through the set of subsets of a list. The following languages will be used (in this pretty much random order):
+            <ul>
+                <li>Scheme</li>
+                <li>Clojure</li>
+                <li>Haskell</li>
+                <li>OCaml</li>
+                <li>Python</li>
+                <li>C#</li>
+                <li>Javascript</li>
+                <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a> There will be an explanation.</li>
+            </ul>
+
+            The syntax of each won’t be discussed in great depth. Furthermore, implementations will be as canonical as possible - the code will be workable and aim to show the use of iterators in every language, not the implementation. Interesting points will be explained and that is that.</div>
+
+            <div class="padded-text">All implementations will implement the following pseudo-code:</div>
+
+            <pre>
+<span class="keyword">Procedure</span> Subsets(list):
+    End_val = 2 ^ <span class="keyword">length of</span> list
+    <span class="keyword">For</span> i <span class="keyword">from</span> 0 <span class="keyword">to</span> End_val <span class="keyword">(inclusive)</span>:
+        Current_subset = <span class="keyword">the empty list</span>
+        <span class="keyword">For each bit</span> b <span class="keyword">in</span> i <span class="keyword">indexed by</span> j:
+            <span class="keyword">If</span> b <span class="keyword">is</span> 1:
+                <span class="keyword">Add the</span> jth element of list <span class="keyword">into</span> Current_subset.
+        <span class="keyword">Pause execution, providing</span> Current_subset
+            </pre>
+
+            <div class="padded-text">Note that the "pause execution" makes this an iterator: at that point, a value is given, but there are values left to give out.</div>
+
+            <div class="padded-text">Furthermore, a few of the languages will include the following if recursion is elegant, canonical, or can be done in an iterator:</div>
+
+            <pre>
+<span class="keyword">Procedure</span> powerset(list):
+    <span class="keyword">If</span> list <span class="keyword">is</span> empty: <span class="keyword">Pause execution, providing the empty list</span>
+    <span class="keyword">Otherwise</span>:
+        <span class="keyword">Let</span> v = the first value in the list
+        <span class="keyword">And</span> s = <span class="keyword">the iterator from</span> powerset(rest of the list)
+        <span class="keyword">For each value</span> ss <span class="keyword">in</span> s:
+            <span class="keyword">Pause execution, providing</span> v appended to ss.
+            <span class="keyword">Pause execution, providing</span> ss.
+            </pre>
+
+            <div class="padded-text">Note that in most cases, the second loop will actually be divided into two separate loops.</div>
+
+            <div class="big-title">Scheme</div>
+
+            <div class="padded-text">Scheme is a nice starting point as it explains the true implementation of iterators. This is introduced in the end of chapter 3 in SICP, explaining streams.</div>
+
+            <div class="padded-text">Here is the basic idea: by storing values in functions, we can delay the evaluation of things that would otherwise be infinite.</div>
+
+            <div class="padded-text">Here is the (heavily commented - semi-colon comments the line) code:</div>
+
+            <pre>
+<span class="comment">; When a value is delayed, it is stored in a function.</span>
+(<span class="keyword">define-syntax</span> delay (<span class="keyword">syntax-rules</span> ()
+  ((delay val) (<span class="keyword">lambda</span> () val))))
+
+<span class="comment">; Forcing it is a function call...</span>
+(<span class="keyword">define-syntax</span> force (<span class="keyword">syntax-rules</span> ()
+  ((force val) (val))))
+
+<span class="comment">; Constructing a list is as above.</span>
+(<span class="keyword">define-syntax</span> lazy-cons (<span class="keyword">syntax-rules</span> ()
+  ((lazy-cons x y) (<span class="built-in">cons</span> x (<span class="keyword">lambda</span> () y)))))
+
+(<span class="keyword">define</span> (lazy-car seq) (<span class="built-in">car</span> seq)) <span class="comment">; Get the value</span>
+(<span class="keyword">define</span> (lazy-cdr seq) (force (<span class="built-in">cdr</span> seq))) <span class="comment">; Get the rest of the list</span>
+<span class="comment">; The rest of the list is forced so that the current value is</span>
+<span class="comment">; always computed and accessible immediately.</span>
+
+<span class="comment">; Nerdy note: CAR and CDR are IBM Assembly directives that handle a</span>
+<span class="comment">; cons cell. A cons has a Content Address Register and a</span>
+<span class="comment">; Content Dereference Register. These are nicknames for a pointer to</span>
+<span class="comment">; the current (<span class="built-in">car</span>) and the rest of the list (<span class="built-in">cdr</span>). You can find</span>
+<span class="comment">; these in NASA's (ie. Margaret Hamilton's) 1960s assembly code.</span>
+
+<span class="comment">; return whether anything satisfied a predicate</span>
+(<span class="keyword">define</span> (any pred ls)
+  (<span class="keyword">if</span> (<span class="built-in">null?</span> ls) <span class="keyword">#f</span>
+    (<span class="built-in">or</span> (pred (<span class="built-in">car</span> ls)) (any pred (<span class="built-in">cdr</span> ls)))))
+
+<span class="comment">; This applies a function over each aligned value of iterators.</span>
+<span class="comment">; If I1 and I2 are iterators of integers, (lazy-map + I1 I2) is an</span>
+<span class="comment">; iterator through the component-wise sum.</span>
+(<span class="keyword">define</span> (lazy-map fn . seqs) ; seqs is a list of iterators.
+  (<span class="keyword">if</span> (any null? seqs) '()   ; on the first empty iterator, stop.
+      (lazy-cons (<span class="keyword">apply</span> fn (map lazy-car seqs))
+                 (<span class="keyword">apply</span> lazy-map (<span class="built-in">cons</span> fn (map lazy-cdr seqs))))))
+
+(<span class="keyword">define</span> (list-of-stream st)
+  (<span class="keyword">if</span> (<span class="built-in">null?</span> st) '()
+    (<span class="built-in">cons</span> (lazy-car st) (list-of-stream (lazy-cdr st)))))
+
+<span class="comment">; An iterator that takes values from an iterator while a condition is</span>
+<span class="comment">; true. Pred is a function that provided a sequence value, returns</span>
+<span class="comment">; a boolean.</span>
+(<span class="keyword">define</span> (take-while pred seq)
+  (<span class="keyword">if</span> (pred (lazy-car seq))
+    (lazy-cons (lazy-car seq) (take-while pred (lazy-cdr seq)))
+    '()))
+
+<span class="comment">;A few cool examples</span>
+<span class="comment">;An infinite sequence of 1's</span>
+(<span class="keyword">define</span> ones (lazy-cons 1 ones))
+
+<span class="comment">;The natural numbers</span>
+(<span class="keyword">define</span> numbers (lazy-cons 1 (lazy-map + ones numbers)))
+
+<span class="comment">;Fibonacci</span>
+(<span class="keyword">define</span> fibonacci (lazy-cons 0 (lazy-cons 1
+                    (lazy-map + fibonacci
+                                (lazy-cdr fibonacci)))))
+
+<span class="comment">; HERE IS THE SUBSETS IMPLEMENTATION</span>
+<span class="comment">; Get all the values of a list based on an integer.</span>
+<span class="comment">; If the i-th bit is 1, the i-th value is included.</span>
+(<span class="keyword">define</span> (subsets-by-int lis int)
+  (<span class="keyword">define</span> (loop acc ind l)
+    (<span class="keyword">if</span> (= 0 ind) acc
+      (loop (<span class="keyword">if</span> (= 1 (remainder ind 2))
+              (<span class="built-in">cons</span> (<span class="built-in">car</span> l) acc)
+              acc)
+            (floor (/ ind 2)) (<span class="built-in">cdr</span> l))))
+  (<span class="keyword">if</span> (<span class="built-in">number?</span> int) (loop '() int lis) '()))
+
+<span class="comment">; Generates all the subsets of a list “lis”.</span>
+<span class="comment">; The empty subset is last, included as the empty-list flag</span>
+<span class="comment">; that terminates the iterator.</span>
+(<span class="keyword">define</span> (subsets lis)
+  (<span class="keyword">let</span> ((ln (expt 2 (length lis))))
+    (lazy-map (<span class="keyword">lambda</span> (i) (subsets-by-int lis i))
+              (take-while (<span class="keyword">lambda</span> (x) (&lt; x ln)) numbers))))
+
+<span class="comment">; Recursion is more canonical. Below is an alternate approach.</span>
+
+<span class="comment">; Concatenate a list of lazy sequences (in order).</span>
+(<span class="keyword">define</span> (concat-streams . seqs)
+  (<span class="keyword">cond</span> ((<span class="built-in">null?</span> seqs) '())
+        ((<span class="built-in">null?</span> (<span class="built-in">cdr</span> seqs)) (<span class="built-in">car</span> seqs))
+        ((<span class="built-in">null?</span> (<span class="built-in">car</span> seqs)) (<span class="keyword">apply</span> concat-streams (<span class="built-in">cdr</span> seqs)))
+        (<span class="keyword">else</span> (lazy-cons (lazy-car (<span class="built-in">car</span> seqs))
+                (<span class="keyword">apply</span> concat-streams
+                       (<span class="built-in">cons</span> (lazy-cdr (<span class="built-in">car</span> seqs))
+                             (<span class="built-in">cdr</span> seqs)))))))
+
+<span class="comment">; More canonical lazy powerset.</span>
+(<span class="keyword">define</span> (powerset ls)
+  (<span class="keyword">if</span> (<span class="built-in">null?</span> ls) (lazy-cons '() '())
+    (<span class="keyword">let</span> ((h (<span class="built-in">car</span> ls)) (ss (powerset (<span class="built-in">cdr</span> ls))))
+      (concat-streams (lazy-map (<span class="keyword">lambda</span> (s) (<span class="built-in">cons</span> h s)) ss) ss))))
+            </pre>
+
+            <div class="big-title">Clojure</div>
+            <div class="padded-text">Clojure has more built-in... with semi-colons as comments too. The strings after the square brackets are a built-in documentation feature. Due to builtins, not everything had had to be implemented.</div>
+
+            <pre>
+(<span class="keyword">ns</span> subset.core)
+
+(<span class="keyword">defn</span> subset-by-int [lis i]
+  <span class="comment">"Returns the subset where the i-th element is returned if
+   the i-th bit is 1."</span>
+  (<span class="keyword">loop</span> [acc '() v i l lis] <span class="comment">; this is the same as the Scheme thing.</span>
+    (<span class="keyword">if</span> (= v 0) acc
+      (<span class="keyword">recur</span> (<span class="keyword">if</span> (= 1 (<span class="built-in">mod</span> v 2)) (<span class="built-in">conj</span> acc (<span class="built-in">first</span> l)) acc)
+             (<span class="built-in">int</span> (/ v 2))
+             (<span class="built-in">rest</span> l)))))
+
+(<span class="keyword">defn</span> subsets [s]
+  <span class="comment">"Returns all the subsets of s."</span>
+  (<span class="built-in">map</span> #(subset-by-int s %) (<span class="built-in">->></span> s count (Math/pow 2) range)))
+
+(<span class="keyword">defn</span> powerset [s]
+  <span class="comment">"More canonical powerset."</span>
+  (<span class="keyword">if</span> (empty? s) '(())
+  (<span class="keyword">let</span> [ss (-> s rest powerset)]
+    (<span class="built-in">concat</span> (<span class="built-in">map</span> #(<span class="built-in">conj</span> % (<span class="built-in">first</span> s)) ss) ss))))
+            </pre>
+
+            <div class="padded-text">This works since map is inherently lazy. Furthermore, concat will maintain the laziness.</div>
+
+            <div class="big-title">Haskell</div>
+            <div class="padded-text">Haskell is naturally lazy. It evaluates expressions only when forced to. This means that every form of iteration is an iterator. Here is a power-set maker:</div>
+
+            <pre>
+subset_of_int :: [a] -> Integer -> [a]
+subset_of_int v 0 = []
+subset_of_int (x:xs) i
+              | i <span class="built-in">`mod`</span> 2 == 0 = subset_of_int xs (i <span class="built-in">`quot`</span> 2)
+              | <span class="keyword">otherwise</span>      = x : (subset_of_int xs (i <span class="built-in">`quot`</span> 2))
+
+subsets :: [a] -> [[a]]
+subsets xs = <span class="built-in">map</span> (subset_of_int xs) [0.. (2^(<span class="built-in">length</span> xs)) - 1]
+
+<span class="comment">-- This is the alternative algorithm, but Haskell doesn't mind...</span>
+<span class="comment">-- This will be lazy too!</span>
+powerset :: [a] -> [[a]]
+powerset [] = [[]]
+powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
+<span class="keyword">where</span> ps = powerset xs
+            </pre>
+
+            <div class="big-title">OCaml</div>
+            <div class="padded-text">OCaml is, unfortunately, normal. It does not evaluate lazily. Nor does it include as many built-ins. We differ to a scheme-like implementation.</div>
+
+            <pre>
+<span class="keyword">open</span> List;;
+
+<span class="comment">(*Ocaml is strongly typed. This is a generic lazy list.*)</span>
+<span class="keyword">type</span> 'a stream = Nil <span class="keyword"><span class="keyword">|</span></span> LazyList <span class="keyword">of</span> 'a * (<span class="keyword">unit</span> <span class="keyword">-&gt;</span> 'a stream)
+
+<span class="keyword"><span class="keyword">let</span> <span class="keyword">rec</span></span> range st en = <span class="keyword">if</span> st == en <span class="keyword">then</span> Nil
+                      <span class="keyword">else</span>  LazyList (st, <span class="keyword"><span class="keyword">fun</span></span> () <span class="keyword">-&gt;</span>
+                                             range (st + 1) en);;
+
+<span class="comment">(*Unfortunately, variable number of arguments are poorly supported.*)</span>
+<span class="keyword"><span class="keyword">let</span> <span class="keyword">rec</span></span> map_str fn seq =
+    <span class="keyword"><span class="keyword">match</span></span> seq <span class="keyword"><span class="keyword">with</span></span>
+    <span class="keyword">|</span> Nil <span class="keyword">-&gt;</span> Nil
+    <span class="keyword">|</span> LazyList (hd, tl) <span class="keyword">-&gt;</span> LazyList ((fn hd), <span class="keyword">fun</span> () <span class="keyword">-&gt;</span>
+                                                   map_str fn (tl ()))
+;;
+
+<span class="comment">(*Converts a stream to a list (for finite ones).*)</span>
+<span class="keyword">let</span> <span class="keyword">rec</span> list_of_stream s =
+    <span class="keyword">match</span> s <span class="keyword">with</span>
+    <span class="keyword">|</span> Nil <span class="keyword">-&gt;</span> []
+    <span class="keyword">|</span> LazyList (hd, tl) <span class="keyword">-&gt;</span> (hd :: list_of_stream (tl ()))
+;;
+
+<span class="comment">(* This is the normal way to get subsets by the bit technique.*)</span>
+<span class="keyword">let</span> <span class="keyword">rec</span> subsets_of_int arr i =
+    <span class="keyword">match</span> i <span class="keyword">with</span>
+    <span class="keyword">|</span> 0 <span class="keyword">-&gt;</span> []
+    <span class="keyword">|</span> x <span class="keyword">when</span> x <span class="built-in">mod</span> 2 == 0 <span class="keyword">-&gt;</span> subsets_of_int (tl arr) (x / 2)
+    <span class="keyword">|</span> y <span class="keyword">-&gt;</span> (hd arr) :: (subsets_of_int (tl arr) (y / 2))
+;;
+
+<span class="comment">(* Gets all the subsets.*)</span>
+<span class="keyword">let</span> subsets arr =
+    <span class="keyword">let</span> en = (truncate ((float (length arr)) ** 2. -. 1.)) <span class="keyword">in</span>
+        map_str (subsets_of_int arr) (range 0 en)
+;;
+
+<span class="comment">(*Concatenates two streams into a lazy stream.*)</span>
+<span class="keyword">let</span> <span class="keyword">rec</span> concat_str st1 st2 =
+    <span class="keyword">match</span> st1 <span class="keyword">with</span>
+    <span class="keyword">|</span> Nil <span class="keyword">-&gt;</span> st2
+    <span class="keyword">|</span> LazyList (h, t) <span class="keyword">-&gt;</span> LazyList (h, <span class="keyword">fun</span> () <span class="keyword">-&gt;</span> concat_str (t ()) st2)
+;;
+
+<span class="comment">(*The more naturally recursive powerset builder.*)</span>
+<span class="keyword">let</span> <span class="keyword">rec</span> powerset arr =
+    <span class="keyword">match</span> arr <span class="keyword">with</span>
+    <span class="keyword">|</span> [] <span class="keyword">-&gt;</span> LazyList ([], <span class="keyword">fun</span> () <span class="keyword">-&gt;</span> Nil)
+    <span class="keyword">|</span> (h :: t) <span class="keyword">-&gt;</span> <span class="keyword">let</span> sm = powerset t <span class="keyword">in</span>
+                         concat_str (map_str (<span class="keyword">fun</span> (s) <span class="keyword">-&gt;</span> h::s) sm) sm
+;;
+
+            </pre>
+            <div class="padded-text">That's all for the functional languages, unfortunately.</div>
+
+            <div class="big-title">Python</div>
+            <div class="padded-text">This will be in Python 3 with notes on how to translate it to Python 2. There are two syntaxes for the same design in python. I’ll show the bit-based algorithm using the object-oriented syntax and the recursive builder using the generator feature.</div>
+
+            <pre>
+<span class="comment">#This object is an iterator. It can be stepped through using a</span>
+<span class="comment">#for-loop.</span>
+<span class="keyword">class</span> SubsetIter:
+    <span class="keyword">def</span> __init__(self, data):
+        self.data = data
+        self.it = 0
+        self.mx = 2 ** <span class="built-in">len</span>(data)
+    <span class="keyword">def</span> __iter__(self):
+        <span class="keyword">return</span> self
+    <span class="keyword">def</span> __next__(self): <span class="comment">#called "next" in py2</span>
+        <span class="keyword">if</span> self.mx == self.it:
+            <span class="keyword">raise</span> <span class="built-in">StopIteration</span>()
+        <span class="keyword">else</span>:
+            i = self.it
+            j = 0
+            acc = []
+            <span class="keyword">while</span> i > 0:
+                <span class="keyword">if</span> i % 2 == 1:
+                    acc.append(self.data[j])
+                i //= 2 <span class="comment">#py2 equivalent: i = int(i / 2)</span>
+                j += 1
+        self.it += 1
+        <span class="keyword">return</span> acc
+
+<span class="comment">#This is not the most canonical. But it works.</span>
+<span class="keyword">def</span> powerset(s):
+    <span class="keyword">if</span> <span class="built-in">len</span>(s) == 0:
+        <span class="keyword">yield</span> []
+    <span class="keyword">else</span>:
+        h, *t = s <span class="comment">#use "h, t = s[0], s[1:]" in py2</span>
+        <span class="keyword">for</span> i <span class="keyword">in</span> powerset(t):
+            <span class="keyword">yield</span> i
+            <span class="keyword">yield</span> i + [h]
+        </pre>
+        <div class="big-title">C#</div>
+        <div class="padded-text">C# is cool too. Perhaps the best C-based language after Rust. And it has a weird liking for uppercase.</div>
+
+        <pre>
+<span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Collections.Generic;
+<span class="keyword">using</span> System.Linq;
+
+<span class="keyword">class</span> MainClass {
+    <span class="keyword">public static</span> <span class="built-in">IEnumerable</span>&lt;<span class="built-in">List</span>&lt;T&gt;&gt; Subsets&lt;T&gt;(<span class="built-in">IList</span>&lt;T&gt; vals){
+        <span class="keyword">var</span> acc = <span class="keyword">new</span> <span class="built-in">List</span><T>();
+        <span class="keyword">foreach</span>(<span class="keyword">int</span> i <span class="keyword">in</span> Enumerable.Range(0, (<span class="keyword">int</span>) Math.Pow(2, vals.Count()) - 1)){
+            <span class="keyword">for</span>(<span class="keyword">int</span> j = i, k = 0; j > 0; j /= 2, k++){
+                <span class="keyword">if</span>(j % 2 == 1)
+                    acc.Add(vals[k]);
+            }
+            <span class="keyword">yield return</span> acc;
+            acc = <span class="keyword">new</span> <span class="built-in">List</span><T>();
+        }
+    }
+
+    <span class="comment">//Recursion is not canonical... but cool. This is slow too.</span>
+    <span class="keyword">public static</span> <span class="built-in">IEnumerable</span>&lt;<span class="built-in">List</span>&lt;T&gt;&gt; Powerset&lt;T&gt;(<span class="built-in">IEnumerable</span>&lt;T&gt; vals){
+        <span class="keyword">if</span>(!vals.Any())
+            <span class="keyword">yield return</span> <span class="keyword">new</span> <span class="built-in">List</span><T>();
+        <span class="keyword">else</span>{
+            T tmp = vals.ElementAt(0);
+            <span class="keyword">foreach</span>(<span class="keyword">var</span> t <span class="keyword">in</span> powerset(vals.Skip(1))){
+                <span class="keyword">yield return</span> t;
+                <span class="keyword">var</span> l = t.ToList();
+                l.Add(tmp);
+                <span class="keyword">yield return</span> l;
+            }
+        }
+    }
+}
+        </pre>
+
+        <div class="big-title">JavaScript</div>
+        <div class="padded-text">JavaScript has difficulty with iterators. And objects. ES6 would be a different story, but here it is in good old JavaScript (5). This is very much like the OCamL version, minus a nice syntax. Or type system.</div>
+
+        <pre>
+<span class="comment">//The lack of type information is a little sad.</span>
+<span class="keyword">var</span> LazyList = <span class="keyword">function</span>(head, rest){
+    this.head = head;
+    this.rest = rest;
+};
+
+<span class="comment">//Infinite ones as in Scheme.</span>
+<span class="keyword">var</span> ones = <span class="keyword">new</span> LazyList(1, <span class="keyword">function</span>(){<span class="keyword">return</span> ones;});
+
+<span class="keyword">var</span> map = <span class="keyword">function</span>(fn, lists){
+    <span class="keyword">if</span>(lists.some(<span class="keyword">function</span>(l){<span class="keyword">return</span> l === <span class="built-in">null</span>}))
+        <span class="keyword">return</span> <span class="built-in">null</span>;
+
+    <span class="keyword">var</span> hd = <span class="keyword">function</span>(l){<span class="keyword">return</span> l.head;};
+    <span class="keyword">var</span> recurse = <span class="keyword">function</span>(){
+        <span class="keyword">return</span> map(fn, lists.map(<span class="keyword">function</span>(v){
+            <span class="keyword">return</span> v.rest();
+        }));
+    };
+    <span class="keyword">return</span> <span class="keyword">new</span> LazyList(fn.apply(<span class="built-in">null</span>, lists.map(hd)), recurse);
+};
+
+<span class="keyword">var</span> toArray = <span class="keyword">function</span>(lis){
+    <span class="keyword">var</span> acc = [];
+    <span class="keyword">while</span>(lis !== <span class="built-in">null</span> && lis !== <span class="built-in">undefined</span>){
+        acc.push(lis.head);
+        lis = lis.rest();
+    }
+    <span class="keyword">return</span> acc;
+}
+
+<span class="keyword">var</span> ints = <span class="keyword">new</span> LazyList(1, <span class="keyword">function</span>(){
+    <span class="keyword">return</span> map(<span class="keyword">function</span>(r, l){
+        <span class="keyword">return</span> r + l;
+    }, [ones, ints]);
+});
+
+<span class="keyword">var</span> takeN = <span class="keyword">function</span>(lis, n){
+    <span class="keyword">if</span>(n === 0) <span class="keyword">return</span> <span class="built-in">null</span>;
+    <span class="keyword">return</span> <span class="keyword">new</span> LazyList(lis.head, <span class="keyword">function</span>(){
+        <span class="keyword">return</span> takeN(lis.rest(), n - 1);
+    });
+};
+
+<span class="keyword">var</span> getSubset = <span class="keyword">function</span>(val, lis){
+    <span class="keyword">var</span> j = 0;
+    <span class="keyword">var</span> acc = [];
+    <span class="keyword">for</span>(<span class="keyword">var</span> i = val; i > 0; i = Math.floor(i / 2)){
+        <span class="keyword">if</span>(i % 2 === 1) acc.push(lis[j]);
+        j++;
+    }
+    <span class="keyword">return</span> acc;
+};
+
+<span class="comment">//Normal subsets impl</span>
+<span class="keyword">var</span> subsets = <span class="keyword">function</span>(l){
+    <span class="keyword">return</span> map(<span class="keyword">function</span>(v){
+        <span class="keyword">return</span> getSubset(v, l);
+    }, [takeN(ints, Math.pow(2, l.length))]);
+};
+
+<span class="keyword">var</span> concat = <span class="keyword">function</span>(lists){
+    <span class="keyword">if</span>(lists.length === 0)
+        <span class="keyword">return</span> <span class="built-in">null</span>;
+    <span class="keyword">else</span> <span class="keyword">if</span>(lists.length === 1)
+        <span class="keyword">return</span> lists[0];
+    <span class="keyword">else</span> <span class="keyword">if</span>(lists[0] === <span class="built-in">null</span> || lists[0] === <span class="built-in">undefined</span>)
+        <span class="keyword">return</span> concat(lists.slice(1));
+    <span class="keyword">else</span>{
+        <span class="keyword">var</span> t = lists[0].head;
+        lists[0] = lists[0].rest();
+        <span class="keyword">return</span> <span class="keyword">new</span> LazyList(t, <span class="keyword">function</span>(){
+            <span class="keyword">return</span> concat(lists);
+        });
+    }
+};
+
+<span class="comment">//Recursion!</span>
+<span class="keyword">var</span> powerset = <span class="keyword">function</span>(l){
+    <span class="keyword">if</span>(l.length === 0){
+        <span class="keyword">return</span> <span class="keyword">new</span> LazyList([], <span class="keyword">function</span>(){
+            <span class="keyword">return</span> <span class="built-in">null</span>;
+        });
+    }<span class="keyword">else</span>{
+        <span class="keyword">var</span> v = l[0];
+        <span class="keyword">var</span> r = powerset(l.slice(1));
+        <span class="keyword">return</span> concat([r, map(<span class="keyword">function</span>(vv){
+            <span class="keyword">return</span> vv.concat([v]);
+        }, [r])]);
+    }
+};
+        </pre>
+
+
+        </div>
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi" alt="sadly, none of this is there... :/">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+    </body>
+</html>
