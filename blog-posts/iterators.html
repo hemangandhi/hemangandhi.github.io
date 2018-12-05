@@ -15,11 +15,11 @@
         <div class="centered-div">
             <div class="left-bit">Various iterator implementations.</div>
             <div class="right-bit">
-                <a href="index.html">/home</a>
-                <a href="experience.html">/experience</a>
-                <a href="projects.html">/projects</a>
-                <a href="skills.html">/skills</a>
-                <a href="etc.html">/etc</a>
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
                 <div class="cv-link">/cv
                     <ul>
                         <li><a href="heman.cv.pdf">/software engineering cv</a></li>
@@ -65,7 +65,7 @@
                 <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a></li>
             </ul>
 
-            The syntax of each won’t be discussed in great depth. Furthermore, implementations will be as canonical as possible - the code will be workable and aim to show the use of iterators in every language, not the implementation. Interesting points will be explained and that is that.</div>
+            The syntax of each won't be discussed in great depth. Furthermore, implementations will be as canonical as possible - the code will be workable and aim to show the use of iterators in every language, not the implementation. Interesting points will be explained and that is that.</div>
 
             <div class="padded-text">All implementations will implement the following pseudo-code:</div>
 
@@ -315,7 +315,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
             <div class="padded-text">That's all for the functional languages, unfortunately.</div>
 
             <div class="big-title">Python</div>
-            <div class="padded-text">This will be in Python 3 with notes on how to translate it to Python 2. There are two syntaxes for the same design in python. I’ll show the bit-based algorithm using the object-oriented syntax and the recursive builder using the generator feature.</div>
+            <div class="padded-text">This will be in Python 3 with notes on how to translate it to Python 2. There are two syntaxes for the same design in python. I'll show the bit-based algorithm using the object-oriented syntax and the recursive builder using the generator feature.</div>
 
             <pre>
 <span class="comment">#This object is an iterator. It can be stepped through using a</span>
@@ -533,6 +533,10 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
         <div class="padded-text">You can also use a <code><span class="built-in">Vec</span>&lt;<span class="built-in">Box</span>&lt;A&gt;&gt;</code> to avoid cloning, if you like your references.</div>
 
         <div class="padded-text">I can't convince rustc that I know what I'm doing with the Scheme or OCaML streams, so I'll add that later on. (The compiler might not be inferring a closure type properly, so I don't even know if I'm using lifetimes incorrectly (which is very likely), but the error is a type mismatch and I can't even type-hint. <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">It's on GitHub if you wanna investigate.</a>)</div>
+
+        <div class="padded-text">That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code><span class="built-in">std</span>::random_access_iterator_tag</code>. The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
+        C was definately worse since lambdas are an extension, so closures are painful. The lack of deterministic destruction
+        makes it worse: iterating down such a list multiple times needs deletion and that needs some notion of a root. I have a few ideas on better memory semantics, so I'll keep y'all posted... It's just that there's no real good user interface for it, TBH.</div>
 
         </div>
         <div class="centered-div bottom-div">
