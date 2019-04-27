@@ -44,9 +44,8 @@
             <div class="padded-text">I was nerding out on commutative algebra and couldn't remember all the rings I've heard about.</div>
             <div class="padded-text">Also, after finishing undergrad math, I thought I knew types of rings. I was so very wrong.</div>
             <div class="padded-text">This is a reference, so don't expect to learn any ring theory for the first time from this page. The sources mentioned are much better for that sort of thing.</div>
-
             <div id="the-rings"></div>
-
+            <div class="padded-text">The complete green arrows are inclusions - "is-a" relations (read: "<i>source</i> is a <i>destination</i>"). Dashed green arrows are localizations and dashed red arrows are dimension restrictions (read: "<i>source</i> is a <i>destination</i> when <i>condition you read on hovering</i>"). I did not bother with transitive closures of any sort for clarity -- I try to give the strongest arrow.</div>
         </div>
 
         <div class="centered-div bottom-div">
@@ -70,7 +69,12 @@
     {id: 'Valuation Ring', label: 'Valuation Ring', title: 'A subring of a field where element or inverse is in the subring'},
     {id: 'Macaulay', label: 'Macaulay', title: 'Grade (longest regular sequence) is the same as rank'},
     {id: 'Prufer', label: 'Prufer', title: 'Nonzero finitely generated ideals are invertible'},
-    {id: 'Catenary', label: 'Catenary', title: 'Maximal increasing chains between primes share length'}
+    {id: 'Catenary', label: 'Catenary', title: 'Maximal increasing chains between primes share length'},
+    {id: 'UFD', label: 'UFD', title: 'Unique factorization domain'},
+    {id: 'GCD', label: 'GCD', title: 'GCD domain: the Euclid algorithm works'},
+    {id: 'PID', label: 'PID', title: 'All ideals a principle (one generator)'},
+    {id: 'Integrally Closed', label: 'Integrally Closed', title: 'All monic polynomials over it have a root in the ring'},
+    {id: 'Integral Domain', label: 'Integral Domain', title: 'No nonzero zero divisors'}
   ]);
 
   // create an array with edges
@@ -89,6 +93,12 @@
     {from: 'Regular Local', to: 'Local'},
     {from: 'Regular Local', to: 'Catenary'},
     {from: 'Dedekind', to: 'Catenary'},
+    {from: 'UFD', to: 'GCD'},
+    {from: 'PID', to: 'UFD'},
+    {from: 'PID', to: 'Noetherian'},
+    {from: 'Discrete Valuation Ring', to: 'PID'},
+    {from: 'GCD', to: 'Integrally Closed'},
+    {from: 'Integrally Closed', to: 'Integral Domain'},
     {from: 'Dedekind', to: 'Discrete Valuation Ring', dashes: true, title: 'Localize at maximal'},
     {from: 'Prufer', to: 'Valuation Ring', dashes: true, title: 'Localize'},
     {from: 'Regular', to: 'Regular Local', dashes: true, title: 'Localize'}
