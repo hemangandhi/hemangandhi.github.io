@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Many, Many Rings</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+
+<style>
+    #the-rings {
+        width: 100%;
+        height: 800px;
+        border: 1px dotted red;
+    }
+</style>
+
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">Many types of rings.</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-blog centered-div">
+            <div class="big-title">What?</div>
+            <div class="padded-text">I was nerding out on commutative algebra and couldn't remember all the rings I've heard about.</div>
+            <div class="padded-text">Also, after finishing undergrad math, I thought I knew types of rings. I was so very wrong.</div>
+            <div class="padded-text">This is a reference, so don't expect to learn any ring theory for the first time from this page. The sources mentioned are much better for that sort of thing.</div>
+
+            <div id="the-rings"></div>
+
+        </div>
+
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi" alt="sadly, none of this is there... :/">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+    </body>
+
+    <!-- NGL, where's the best place for inline JS? I'm fortunately not experienced enough to know. -->
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    {id: 1, label: 'Node 1'},
+    {id: 2, label: 'Node 2'},
+    {id: 3, label: 'Node 3'},
+    {id: 4, label: 'Node 4'},
+    {id: 5, label: 'Node 5'}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    {from: 1, to: 3},
+    {from: 1, to: 2},
+    {from: 2, to: 4},
+    {from: 2, to: 5},
+    {from: 3, to: 3}
+  ]);
+
+  // create a network
+  var container = document.getElementById('the-rings');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {
+    nodes: {
+      color: {
+        border: "green",
+        background: "black",
+        focus: {
+          background: "red"
+        },
+        highlight: {
+          border: "red",
+          background: "red"
+        }
+      },
+      font: {
+        color: "green"
+      }
+    }
+  };
+  var network = new vis.Network(container, data, options);
+</script>
+</html>
