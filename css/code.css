@@ -1,0 +1,18 @@
+pre {
+    text-align: left;
+    border: 1px dotted red;
+    overflow-x: scroll;
+}
+
+.comment {
+    font-style: italic;
+    color: gray;
+}
+
+.keyword {
+    color: cyan;
+}
+
+.built-in {
+    color: pink;
+}

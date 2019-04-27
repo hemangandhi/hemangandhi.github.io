@@ -76,6 +76,12 @@ ul {
     padding-top: 80px;
 }
 
+.content-blog {
+    clear: both;
+    text-align: left;
+    padding-top: 80px;
+}
+
 .padded-text {
     padding-bottom: 20px;
 }
