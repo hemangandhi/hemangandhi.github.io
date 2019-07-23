@@ -44,6 +44,10 @@ ul {
     text-align: right;
 }
 
+img {
+    max-width: 100%;
+}
+
 .cv-link {
     color: red;
     display: inline;
