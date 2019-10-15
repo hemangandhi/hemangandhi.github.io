@@ -10,7 +10,7 @@ function episode_to_id(series, ep_num){
 }
 
 function populate_season(name, num_eps){
-    var list_item = '<li class="cv-link">' + name + ': <ul>';
+    var list_item = '<li class="ep-series">' + name + ': <ul>';
     for(var i = 1; i <= num_eps; i++){
         list_item += '<li id="' + episode_to_id(name, i) +
             '" class="ep-checkbox">Episode ' + i + '</li>';
@@ -23,7 +23,7 @@ function click_id_to_season(id){
 }
 
 function make_all_the_episodes(ep_parent_id){
-    var html = "<ul>";
+    var html = '<ul class="ep-series-series">';
     html += populate_season('Owarimonogatari', 26);
     html += populate_season('Tsukimonogatari', 4);
     html += populate_season('Bakemonogatari', 15);

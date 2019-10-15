@@ -89,3 +89,37 @@
 .neko-2,
 .neko-3,
 .neko-4 { display: none; }
+
+.ep-series-series {
+    list-style: none;
+}
+
+.ep-series {
+    color: red;
+    margin: 0;
+    position: relative;
+}
+
+.ep-series:hover {
+    border: solid green 4px;
+}
+
+.ep-series:hover ul{
+    display: block;
+    z-index: 999;
+    width: 250px;
+}
+
+.ep-series ul{
+    display: none;
+    list-style: none;
+}
+
+.episode-checked {
+    background-color: red;
+    color: green;
+}
+
+table, th, td{
+    border: solid red 4px;
+}
