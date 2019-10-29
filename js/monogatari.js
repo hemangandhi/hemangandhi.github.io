@@ -28,7 +28,7 @@ function make_all_the_episodes(ep_parent_id){
     html += populate_season('Tsukimonogatari', 4);
     html += populate_season('Bakemonogatari', 15);
     html += populate_season('Hanamonogatari', 5);
-    html += populate_season('Second Monogatari Season', 5);
+    html += populate_season('Second Monogatari Season', 26);
     html += populate_season('Nisemonogatari', 11);
     html += populate_season('Nekomonogatari', 4);
     html += '</ul>';
@@ -47,7 +47,7 @@ function make_all_the_episodes(ep_parent_id){
             Array.from(document.querySelectorAll(click_id_to_season(elt.id))).forEach(function (alter_disp) {
                 console.log(alter_disp);
                 if (!to_hide) {
-                    alter_disp.style.display = 'block';
+                    alter_disp.style.display = 'inline';
                 } else if (Array.from(alter_disp.classList).every(function(cls) {
                     return !document.getElementById(cls + '-clicked') ||
                         !document.getElementById(cls + '-clicked').classList.contains('episode-checked');
