@@ -47,7 +47,7 @@ function make_all_the_episodes(ep_parent_id){
             Array.from(document.querySelectorAll(click_id_to_season(elt.id))).forEach(function (alter_disp) {
                 console.log(alter_disp);
                 if (!to_hide) {
-                    alter_disp.style.display = 'inline';
+                    alter_disp.style.display = (alter_disp.tagName == 'SPAN')?'inline':'block';
                 } else if (Array.from(alter_disp.classList).every(function(cls) {
                     return !document.getElementById(cls + '-clicked') ||
                         !document.getElementById(cls + '-clicked').classList.contains('episode-checked');
