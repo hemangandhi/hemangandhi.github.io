@@ -1,7 +1,7 @@
 function strip_monogatari(name) {
     //エロい名前で勘違いないで下さい
     //...don't think of this is a... dirty way.
-    var idx_monogatari = name.indexOf('monogatari');
+    var idx_monogatari = name.toLowerCase().indexOf('monogatari');
     return name.substring(0, idx_monogatari).replace(' ', '').toLowerCase();
 }
 
@@ -45,7 +45,6 @@ function make_all_the_episodes(ep_parent_id){
 
             // Show/hide spoilers
             Array.from(document.querySelectorAll(click_id_to_season(elt.id))).forEach(function (alter_disp) {
-                console.log(alter_disp);
                 if (!to_hide) {
                     alter_disp.style.display = (alter_disp.tagName == 'SPAN')?'inline':'block';
                 } else if (Array.from(alter_disp.classList).every(function(cls) {
