@@ -28,7 +28,7 @@ function make_all_the_episodes(ep_parent_id){
     html += populate_season('Tsukimonogatari', 4);
     html += populate_season('Bakemonogatari', 15);
     html += populate_season('Hanamonogatari', 5);
-    html += populate_season('Second Monogatari Season', 26);
+    html += populate_season('Second Monogatari Season', 23);
     html += populate_season('Nisemonogatari', 11);
     html += populate_season('Nekomonogatari', 4);
     html += '</ul>';
