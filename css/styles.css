@@ -94,6 +94,7 @@ ul {
     font-size: 48px;
     color: white;
     padding-bottom: 20px;
+    clear: both;
 }
 
 .place-title {
