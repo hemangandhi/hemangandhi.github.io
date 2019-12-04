@@ -24,13 +24,17 @@ function click_id_to_season(id){
 
 function make_all_the_episodes(ep_parent_id){
     var html = '<ul class="ep-series-series">';
-    html += populate_season('Owarimonogatari', 26);
-    html += populate_season('Tsukimonogatari', 4);
     html += populate_season('Bakemonogatari', 15);
-    html += populate_season('Hanamonogatari', 5);
-    html += populate_season('Second Monogatari Season', 23);
     html += populate_season('Nisemonogatari', 11);
     html += populate_season('Nekomonogatari', 4);
+    html += populate_season('Second Monogatari Season', 23);
+    html += populate_season('Hanamonogatari', 5);
+    html += populate_season('Tsukimonogatari', 4);
+    html += populate_season('Owarimonogatari', 26);
+    html += populate_season('Kizumonogatari', 3);
+    html += populate_season('Koyomimonogatari', 12);
+    html += populate_season('Second Owarimonogatari Season', 7);
+    html += populate_season('Zokuowarimonogatari', 6);
     html += '</ul>';
     document.getElementById(ep_parent_id).innerHTML = html;
 
