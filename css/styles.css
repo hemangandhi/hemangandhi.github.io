@@ -3,7 +3,7 @@
 body {
     background-color: black;
     margin: 0px;
-    color: #04ca04;
+    color: #fde541;
     width: auto;
     font-size: 24px;
     font-weight: bold;
@@ -133,10 +133,10 @@ ul {
 
 .with-sublists ul {
     font-style: normal;
-    color: #04ca04;
+    color: #fde541;
 }
 
 .with-sublists ol {
     font-style: normal;
-    color: #04ca04;
+    color: #fde541;
 }
