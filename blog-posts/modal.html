@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Mathematical Logic FTW</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <link rel="stylesheet" href="../css/code.css"/>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">Der Monaden sind kienen Burritos</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-blog centered-div">
+            <div class="big-title">What is this Rant?</div>
+            <div class="padded-text">
+	      This is a rant I've been meaning to write for a while about something a little esoteric
+	      and perhaps somewhat touchy, especially to math nerds like myself. It's fundamentally that
+	      I'm unimpressed by what math courses required in computer science cover, but unlike other
+	      arguments I hear, it isn't about how calculus is unnecessary, but about other parts of math.
+            </div>
+            <div class="padded-text">
+	      Before I get into the technical details of what I'd like to see, why, and some ideas on when,
+	      I think I should establish how I came to be writing this rant. First and foremost, I'm a math
+	      nerd who likes functional programming and the design of programming languages only a little
+	      more than I like algebra and category theory. As I got deeper in my math studies, I reached
+	      a personal goal: I started to learn category theory in math classes. Category theory was something
+	      I heard about in various functional programming blogs, so I had a vague understanding. But reaching
+	      the mathematical definition was something else entirely. Now I could properly enjoy knowing that I
+	      really know what I thought I did from the blog posts. Then, as I looked deeper, I realized that the
+	      blogs are imperfect. It's not that they should be more rigorous, but they don't focus on the correct
+	      things, in my opinion. After learning category theory a bit, I came to the shores of mathematical
+	      logic. This is what I think is missing from computer science.
+	    </div>
+	    <div class="padded-text">
+	      What follows is basically the two things I wish I learned in computer science and then
+	      <a href="#teaching">some suggestions on when.</a> In particular, I wish I learned:
+	      <ul>
+		<li><a href="#modal">Monads and how Modal logic might explain them.</a></li>
+		<li><a href="#model">How programming languages tie to model theory.</a></li>
+		<li><a href="#linear">Linear types and their use to model memory.</a></li>
+		<li><a href="#types">Why type theory is useful for computation proofs and how it relates to programming.</a></li>
+	      </ul>
+	    </div>
+            <div class="big-title" id="modal">Monads and Modal Logic</div>
+	    <div class="padded-text">
+	      There are two extremes on what Monads are. I don't think either explanation is factually
+	      incorrect -- I think that both are didactically suboptimal. Of course, I have a proposal too.
+	    </div>
+	    <div class="padded-text">
+	      The first extreme is to use another object, for instance saying "a monad is a burrito." As a metaphor,
+	      it's not wrong -- it's a container that can go through various processing steps. I think it just doesn't
+	      tie to state changes too well. Is wrapping the burrito a pure function? It's a little tricky
+	      and I think it involves too much to get the point across. There's some value in not partially model
+	    </div>
+    	    <div class="padded-text">
+	      The second extreme is actually bad, being truly elitist while still obscuring the way a Monad encapsulates state.
+	      This is the explanation that stops at "a Monad is just a monoid in the category of endofunctors." This is not a
+	      good explanation even to a pure mathematician since a lot of the rules are vague. This does not teach somebody what
+	      a Monad is, but might act as a refresher for somebody who's seen the category theoretic explanation of the monad.
+	      Furthermore, from this "monoid," one still has to complete a proof to establish an equivalence with what Haskell
+	      thinks of as a monad. This makes it even less clear what an endofunctor has to do with state changes.
+	    </div>
+    	    <div class="padded-text">
+	      I propose a compromise, but also an opening for a different sort of logic. The compromise is to abstract the burrito.
+	      Really, I think the most clear way to think about a Monad is that it's a container for some tag type and a world state.
+	      This is a pair <code>(world, T)</code> where <code>T</code> is user-determined. The <code>return</code> function just tags the
+	      current world state with the user provided tags. Bind, or <code>&gt;&gt;=</code>, is about taking a tag and making world-changing
+	      decisions based on it.
+	    </div>
+    	    <div class="padded-text">
+	      My proposed compromise is really adding <a href="https://en.wikipedia.org/wiki/Modal_logic">Modal Logic</a>, which is logic with a world state.
+	      But I'll have to learn that properly to be able to suggest it.
+	    </div>
+            <div class="big-title" id="model">The Logic of Building Programming Languages</div>
+    	    <div class="padded-text">
+	      Building programming languages seems to be an art and a science. I say this interpreting history, not my own experiences.
+	      The art is a lot of socialogy, anthropology, and probably psychology of some sort: they are generally a response to trends
+	      in programming and those aren't just about the raw hardware-based or math-related "science." This "science" is the fact that
+	      programming languages are understood by some algorithms at the end, so end up having a rigourous definition. And there is a
+	      method to that madness. This method is tied to some mathematical logic I hope to learn.
+	    </div>
+    	    <div class="padded-text">
+	      Programming languages are built up, nowadays, from strings. For example, they start with an alphabet of tokens you can use,
+	      and you build "labels" that segment the strings into parts with meaning -- this is tokenization. Then these labelled strings
+	      are converted into a tree structure by a parser. This gives rise to an AST, which is a way of structuring the language so you
+	      can reason about how the data works and what the expressions mean. ASTs have some of the rules in them: these can be used to
+	      express the order of operations and some of how certain strings are interpreted, but in simpler cases (like basically only
+	      lisps nowadays -- since they really are just ASTs) don't.
+	    </div>
+    	    <div class="padded-text">
+	      In order to interpret the ASTs, you need a system of semantics. This tells you how the parsed language is either compiled or
+	      interpreted. This can be done in a purely rule-based system with proofs that look at a context of bound variables and re-write
+	      the terms in the AST based on them and the rules. Eventually, you'd have the value the program would evaluate to. This rule-based
+	      system called semantics.
+	    </div>
+    	    <div class="padded-text">
+	      These three layers in a programming language can be summarized by
+	      <a href="https://en.wikipedia.org/wiki/Model_theory" alt="The Stanford philosophy article was a bit too indirect">model theory</a> in some ways:
+	      <ol>
+		<li>Tokenization is the Language</li>
+		<li>Parsing is the Structure</li>
+		<li>Semantics are the Theories</li>
+	      </ol>
+	      There are other mappings too, especially if one wants to think about different compilers representing different "theories" of the base
+	      programming language's structure. That is perhaps related to the type of programming language too since Haskell currently only has one
+	      "theory" but C++ has various ones and at granular enough levels of precision, they may be noticably different.
+	    </div>
+    	    <div class="padded-text">
+	      There are some really interesting cases of this. The <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">Curry-Howard isomorhpism</a>
+	      formalises this: it really shows how different programming languages (in particular type systems, but those to form most of the semantics) could invoke different
+	      types of logic. What follows is another case study (since Monads as modal logic could probably be formalized as the first case).
+	    </div>
+            <div class="big-title" id="linear">What Memory Is</div>
+    	    <div class="padded-text">
+	      Before I delve into the mathematical logic that could be used here, I want to call-out some good stuff. In particular,
+	      <a href="https://youtu.be/86xWVb4XIyE?t=2397">this part of a talk</a> by Bjarne Stoustrup says my favorite stuff about moving. On to the mathematical babbling.
+	    </div>
+    	    <div class="padded-text">
+	      <span title="Surjective">On to</span> the math. The key point is to note that propositional logic, the basic reasoning we're familiar with, doesn't encode anything
+	      about the storage of the values it deals with. However, there are ways to start pondering this notion: of logical facts that are aware of their storage. The most
+	      classic is a linear type. In C++, this is a <code>std::unique_ptr&lt;T&gt</code>. In Rust, this is any type that's not a <code>Copy</code>. Other languages don't
+	      clearly expose this notion. It's a value you can pretty much only have one of floating around and once it's "used up," it goes away. Rust adds some details to the
+	      semantics through "borrowing," which C++ also provides through the less safe <code>operator*</code> overload (among other exits from the linear type).
+	    </div>
+    	    <div class="padded-text">
+	      This is sort of a fundamental departure from the reasoning I was used to. The fact that something like <code>And(x, x)</code> is invalid since <code>x</code> is used
+	      up, so <code>And(x.copy(), x)</code> is needed strikes me as awesome. This should be a way programmers should be able to reason: after all, it's what the computers
+	      need to know about.
+	    </div>
+            <div class="big-title" id="types">Proof-relevant Mathematics</div>
+    	    <div class="padded-text">
+	      This is type theory, this article's final frontier. And, honestly, it is perhaps the most compelling and broadly helpful of the four ideas I'm going to talk about.
+	    </div>
+    	    <div class="padded-text">
+	      Type theory might feel familliar to functional programmers or <span title="Cue the 'they're the same picture meme'">Rust programmers</span>. The essence is that types
+	      are predicates and inhabitants are proofs. This is really cool since the proofs are carried along with the statements. This helps with reasoning since it makes a lot
+	      of things more constructive and easier to compute.
+	    </div>
+    	    <div class="padded-text">
+	      EASIER TO COMPUTE (yes we're talking about math!)
+	    </div>
+    	    <div class="padded-text">
+	      I mean it: it's the essence of most proof assistants and there is a good reason for it. It makes math easier to automatically reason about. Gone are the non-constructive
+	      negation-based proofs and the uses of <a href="https://en.wikipedia.org/wiki/Law_of_excluded_middle">excluded middles</a> that, in some cases, are best not excluded.
+	    </div>
+    	    <div class="padded-text">
+	      In addition to the basic facts about types noted above, it's worth mentioning <a href="https://en.wikipedia.org/wiki/Homotopy_type_theory">homotopy type theory</a> which
+	      also adds equality and topological intuition on top of the awesomeness that is type theory. The most interesting part, to me, and perhaps to any budding category theoreticians,
+	      is the higher-groupoid structure. This allows us to understand equality, but as a type. For any <code>a, b: T</code> (that is, <code>a</code> and <code>b</code> of type
+	      <code>T</code>), we have <code>Id a b</code> as the type of identifications of <code>a</code> and <code>b</code>. This allows the reasoning to discuss more useful things
+	      about mathematics and extends our capability to reason.
+	    </div>
+            <div class="big-title" id="teaching">When to Teach This?</div>
+    	    <div class="padded-text">
+	      This is unbridled opinion, based on my Rutgers CS major experience. But the upshot is that we shouldn't bumble about in our proofs course as much and just learn some type
+	      theory. The best example I have is the amount of time we waste getting through relations. This isn't to say relations are unimportant, but that parts are over-emphasized.
+	      I distinctly remember learning that relations can be drawn as graphs and how to deal with all the vacuity in the conditions for equivalence relations. These points
+	      should be mentioned, but they do (at least in my memory) seem over-emphasized. My idea would be to drop a lecture or two about how a relation that's just reflexive
+	      is also symmetric and transitive vacuously, and talk about type theory. In fact, the ideas about equivalences might be bolstered by viewing them as a higher
+	      inductive structure. The model theory and modal logic stuff could be mentioned rather constructively too, I think, particularly in a compilers course.
+	      The linear types part could be essential, especially if students go on to use C++ (which, unfortunately, they didn't when I passed through Rutgers).
+	    </div>
+    	    <div class="padded-text">
+	      I really hope this would inspire people to look at the world of types and have a broader view of code as a model of mathematics and, when lucky, the real world.
+	    </div>
+	</div>
+	
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+    </body>
+</html>
