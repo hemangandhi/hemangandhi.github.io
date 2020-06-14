@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>How not to Learn Agda</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <link rel="stylesheet" href="../css/code.css"/>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">My-knowledge-of-adga \equiv \b0</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="content-blog centered-div">
+            <div class="big-title">Who am I?</div>
+            <div class="padded-text">
+	      I think it's important by lower the expectations. You know that small space where there's no
+	      higher homotopies? Smaller means we're just propositions? Yeah? Smaller: that empty type.
+	      Now that I've truncated your expectations, know that if you have any expectations, through
+	      induction on the empty type, I will construct some random nonsense.
+            </div>
+            <div class="padded-text">
+	      Here are the constructors of this nonsense (other than the bad HoTT metaphors -- those are some paths I threw in to make this post a HIT).
+	      <ol>
+		<li>How the Symbols Work</li>
+		<li>How not to Look for Docs</li>
+		<li>How not to Install it on Arch Linux</li>
+	      </ol>
+            </div>
+            <div class="big-title">How Symbols Work in Agda</div>
+            <div class="padded-text">
+	      Agda has features that make writing it weird, especially if you're used to Haskell.
+	    </div>
+            <div class="padded-text">
+	      Firstly, in Haskell, it is common to format code like so "<code>A: </code>" but this doesn't
+	      parse as you'd expect in Agda: you need "<code>A : </code>". I have no idea why, but I think
+	      the upshot is that <code>A:</code> is a valid name in Agda and isn't <code>A</code>.
+            </div>
+            <div class="padded-text">
+	      The second issue I hit was that underscores are different. Agda tries to be nice and Lispy,
+	      letting the coder define functions as "mixfix operators" where underscores are blanks.
+	      So <code>if_then_else_ : Bool -&gt; A -&gt; A</code> (I'll not make it compile, sorry),
+	      is a sort of "ternary operator" as you'd expect conditionals to work in other languages.
+	      I dislike this: it makes programmers able to mess up the order of operations. Also,
+	      I_like_underscores_in_variables more-than-dashes when there are infix operators (since infix <code>-</code>)
+	      gets confusing otherwise. May be Agda doesn't face this since it doesn't actually come with
+	      integers or any internal representations of numbers (ie. <code>2</code> isn't a special token
+	      to the compiler). But it's weird and I think it'd limit the usability of Agda if it wants to
+	      reach beyond the playground for type theorists it currently is.
+            </div>
+            <div class="padded-text">
+	      The third thing about symbols actually infuriated me. And, ostensibly, it looks like a feature.
+	      Unicode. It's pretty. It's got blackboard-bold N, and real arrows. I mean, we can even bold our
+	      1 to mean that one type and use bold 0 to mean my understanding of HoTT. What's not to love?
+            </div>
+            <div class="padded-text">
+	      There's actually two answers to that. Firstly, did you know that there's a glyph for
+	      <code>::</code> that's one character? Guess what, the standard library calls it cons.
+	      Secondly, it's unicode: it's hard to input on a normal keyboard (hi APL, I see you).
+	      It seems to need a special extension for any editor you use (and I switched to emacs for this).
+	      As much as I like the emacs extension, this is a barrier to entry that I think isn't worth it
+	      if the language ever cares about an audience that's not just type theorists. Honestly, it
+	      also ruined my night with the <code>::</code> glyph.
+            </div>
+            <div class="big-title">How not to Look for Documentation</div>
+            <div class="padded-text">
+	      I'm not 100% sure this is my fault. But this is a fault, so it's in my rant about Agda.
+	      In particular, it's a terrible experience to look for documentation and as somebody barely
+	      learning how to SWE properly, it just rubs salt in the wound. I'm going to pretend to be
+	      organized a provide a list of grievances:
+	      <ol>
+		<li>Library docs can be research papers. And those papers can be hard to follow.</li>
+		<li>The docs won't be consistent about wording. And your textbook will use a third lexicon.</li>
+		<li>There are no simple examples for later concepts. (Like how to use the <code>Extensionality</code> in the stdlib? Seriously: why is the level not a hidden parameter?)</li>
+		<li>The code is honestly hard to read without knowing what's going on. The use of unicode and mixfix worsens it by making it too short to understand.</li>
+	      </ol>
+	      I think it's fair to say it's just hard to understand. So at least it ought to be documented well.
+	      And for God's sake: why does everybody have to have their own HoTT library, it's the same stuff.
+	      (But that's also a gripe with theorem provers I generally have: why does the field insist on splintering its minute audience?)
+            </div>
+            <div class="padded-text">
+	      Related: the compiler errors don't ever make sense. May be the expectation is to use the interactive
+	      development mode, but I'm too used to just writing stuff out (that is what programmers do
+	      most of the time afterall), and my habits lead to a lot of errors from the compiler.
+	      In and of itself, this is OK. Compilers are supposed to beat me into submission with walls
+	      of errors. I mean, I code in C++ for God's sake. But, even the template instantiation cesspool
+	      leads me to an action that gets rid of the error. The Agda parse error has never been helpful,
+	      and the compile errors seem to be talking to people who actually know how Agda works.
+	      That is terrible design. I might try to fix this some day. Another feature request: can the compiler
+	      have a table of look-alike glyphs so that it can suggest them when it can't find a symbol?
+	      It would really help since the Unicode is otherwise impenetrable. I guess that's a personal action-item.
+	      Rustc's error messages should be an aspiration for all compiler writers, I swear.
+            </div>
+            <div class="big-title">How not to Install Agda on Arch Linux</div>
+            <div class="padded-text">
+	      Haskell on Arch is a sad story. And Agda is a Haskell library. The whole cabal and stack way
+	      of doing it might be better than hoping pacman doesn't need a full -Syu to get the next version
+	      of Agda. That said, the pacman way is a bit messy with 2.6 since 2.6 tries to produce temporary
+	      files in the directories it builds files in and there are dependencies inside /usr/share.
+	      This means I currently have to <code>sudo agda</code> and then, if I want to, re-build it without sudo for
+	      the emacs plugin to understand it. This is totally my fault. Just don't be me. Symlink the
+	      stdlib in your own home directory or something.
+            </div>
+            <div class="padded-text">
+	      That's it. That's my rant. So far. &#8718;
+            </div>
+	</div>
+		
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+    </body>
+</html>
