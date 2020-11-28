@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content="I'm Heman Gandhi, a SWE pursuing his enjoyment." name="description">
+        <meta content="Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Dr. Stroustroup</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <link rel="stylesheet" href="../css/readable.css"/>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">How I learned to Stop Worrying and Love C++</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a class="this-page" href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="../heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="../heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-blog centered-div">
+          <div class="big-title">What?</div>
+          <div class="padded-text">This is a story about taste, really. It's not about C++ until the ending. This is introspection about how I developed an opinion on programming languages. It's motivated by a realization: I enjoy watching CPPCon talks but used to think I hated C++.</div>
+	  <div class="padded-text">I'll probably include some tips on learning C++ at the end -- in a way that avoids the pitfalls that led me to think I hated it. If you just want that part of this, which is probably the better part anyway, <a href="#cpp-start">skip to it here</a>.</div>
+
+          <div class="big-title">The Origin Story</div>
+          <div class="padded-text">I was lucky with coding: since my parents work in IT, when I expressed an interest in MS LOGO and flowcharts as a fifth grader, they were quick to get me to learn Scratch, and even today, understand a lot about what I do.</div>
+          <div class="padded-text">I moved to the US in high school and coming from England meant that I had no clue how grades worked. In England, you can just track yourself along national curricular levels and I was content with my standing. American grades, with percentage breakdowns and the GPA made no sense. This motivated me to try to make an app (that I haven't made still). So I learned Java, because I had an Android.</div>
+          <div class="padded-text"> Then my dad found <a href="https://www.codecademy.com/">codecademy.com</a> and that opened Pandora's box. I learned JS, then PHP, then Python, then Ruby. I didn't really build too much in these languages yet, but I loved absorbing new syntax and learning random tricks and tools.</div>
+	  <div class="padded-text">After this, in talking to my dad's colleague about the differences between computer science, computer engineering, and software engineering, I realized that I liked computer science the most. He also gave me a book on Prolog which I hungrily absorbed. But Prolog was the start of something different: since it wasn't like the other languages that led me to just want to build stuff. It led me to wonder what was and wasn't programming. There was another side-effect: my dad's colleague told me that he thought the Prolog book would be better than the Lisp book. This led me to learn Lisp once I got bored of Prolog (mostly since my <a href="https://github.com/hemangandhi/derpspace/blob/master/prologs/family.pro" alt="Re-reading this, it's clear that I didn't think through the edges on the tree well enough and didn't ponder all the traversals I desired. I should re-try this since I think I'm 'smarter' now.">family tree encoding</a> wouldn't work since I think I had some circular definition of nieces and nephews -- I was (am) a bad coder). Lisp, however, was probably my first real love in programming languages. It let me add syntax as I pleased, which was something I missed in other languages. I loved that my abstractions weren't second to that language's.</div>
+	  <div class="padded-text">After this, I pretty much did Java and Python coding with occassional clojure projects. My AP CS teacher's use of Git led me to make <a href="https://github.com/hemangandhi/derpspace">my derpspace</a> as a set of eclipse projects. I wandered into Linux around this time and got super distracted trying to understand Gtk and compiz's C++ code (not that I understood anything).</div>
+
+          <div class="big-title">Into Undergrad</div>
+	  <div class="padded-text">In undergrad, since I learned about linked-lists as cons-cells in Lisp, and a friend taught me what a BST is in high school, I found the first half of data structures really easy. I used my spare time to build <a href="https://github.com/Bene-fish/Main-site">Bene-fish</a>. So I knew some web-dev. I was also a <a href="https://en.wikipedia.org/wiki/Rich_Hickey">Rich Hickey</a> fan and so tried to build a <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/LinearDataStructures/DataStructures/PersistentStack.h" alt="Another project I should retry now that I am wiser">persistent stack in C++</a>. I knew nothing about what I was trying to do and how to allocate memory.</div>
+	  <div class="padded-text">There's a ton of other projects I could mention, but it's about time I get to talking about C++ instead of dawdling on about Haskell, Rust, and other random stuff I learned. Really, the type theory points are covered in <a href="modal.html">my rant about that not being taught</a>.</div>
+	  
+          <div class="big-title" id="cpp-start">About C++</div>
+	  <div class="padded-text">Once I understood memory, confident in my C coding, I thought I understood how painful memory management should be. Little did I know that C over does it. That manually calling free (<code>delete</code>) is a thing of 10 years ago in C++ and has never been a thing in Rust. Not even with a garbage collector.</div>
+	  <div class="padded-text">C++ scared me when I thought memory management was only garbage collection or C-style <code>malloc</code> and <code>free</code>. Object-orientation looks very complicated when you think you have to allocate and deallocate by hand. It's an unfortunate thing to learn. I tried to learn Rust's memory system based on C++, reasoning that I could at least read much of C++, so it'd make understanding Rust better.</div>
+	</div>
+    </body>
+</html>
+
