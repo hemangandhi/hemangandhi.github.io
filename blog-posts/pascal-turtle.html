@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Pascal's Turtle</title>
+	<style>
+	  #easel {
+	      width: 100%;
+	      height: 100%;
+	  }
+
+	  #form-wrapper {
+	      display: none;
+	  }
+	</style>  
+    </head>
+    <body>
+      <canvas id="easel"></canvas>
+      <div id="form-wrapper">
+	<form>
+	  <label for="foreground-in">Foreground:</label><input name="foreground" id="foreground-in" type="color" value="#ff4500">
+	  <label for="background-in">Background:</label><input name="background" id="background-in" type="color" value="#000000">
+	  <label for="depth-in">Depth:</label><input name="depth" id="depth-in" type="number" step="1" min="0" value="7">
+	  <label for="scale-in">Scale:</label><input name="scale" id="scale-in" type="number" step="0.01" value="50">
+	  <label for="linewidth-in">Linewidth:</label><input name="linewidth" id="linewidth-in" type="number" step="0.01" value="15">
+	  <input type="submit" value="Draw a turtle">
+	</form>
+      </div>
+
+      <!-- Don't @ me -->
+      <script>
+	const default_options = {
+	    'foreground': 'black',
+	    'background': 'white',
+	    'depth': 32,
+	    'scale': 1/16,
+	    'linewidth': 15
+	};
+
+	function drawLines(ctx, endpoints) {
+	    ctx.beginPath();
+	    for(let i = 0; i < endpoints.length; i++) {
+		if (i == 0) ctx.moveTo(endpoints[i][0], endpoints[i][1]);
+		else ctx.lineTo(endpoints[i][0], endpoints[i][1]);
+	    }
+	    ctx.stroke();
+	}
+
+	function euclidean2d(p1, p2) {
+	    let d_x = p1[0] - p2[0];
+	    let d_y = p1[1] - p2[1];
+	    return Math.sqrt(d_x * d_x + d_y * d_y);
+	}
+
+	function triangleOfLine(p1, p2) {
+	    let mid_pt = [(p1[0] + p2[0])/2, (p1[1] + p2[1])/2];
+	    let outward_dist = euclidean2d(p1, mid_pt);
+	    if (p2[1] === p1[1])
+		return  [mid_pt[0], mid_pt[1] + ((p2[0] > p1[0])? -1 : 1) * outward_dist];
+	    else if (p2[0] === p1[0])
+		return [mid_pt[0] + ((p2[1] > p1[1]) ? 1 : -1) * outward_dist, mid_pt[1]];
+	    else if (Math.abs((p2[0] - p1[0]) - (p2[1] - p1[1])) < 1e-7)
+		return [p2[0], p1[1]];
+	    else
+		return [p1[0], p2[1]];
+	}
+
+	function getNextEndpoints(endpoints) {
+	    let acc = [endpoints[0]];
+	    for(let i = 1; i < endpoints.length; i++) {
+		acc.push(triangleOfLine(endpoints[i - 1], endpoints[i]));
+	    }
+	    acc.push(endpoints[endpoints.length - 1]);
+	    return acc;
+	}
+
+	function yeetCanvas(options) {
+	    // make and append the canvas
+	    let canvas = document.getElementById("easel");
+	    canvas.width = window.innerWidth;
+	    canvas.height = window.innerHeight;
+	    let ctx = canvas.getContext('2d');
+
+	    // draw -- make the background and set up the foreground
+	    ctx.fillStyle = options.background;
+	    ctx.strokeStyle = options.background;
+	    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	    ctx.strokeStyle = options.foreground;
+	    ctx.fillStyle = options.foreground;
+	    ctx.lineWidth = options.lineWidth;
+
+	    let center = [canvas.width/2, canvas.height/2];
+	    let line_len = options.scale;
+	    for(let endpoints = [[center[0] - line_len/2, center[1]], [center[0] + line_len/2, center[1]]];
+		endpoints.length - 2 <= options.depth; // consider that we're drawing a line at least once
+		endpoints = getNextEndpoints(endpoints)) drawLines(ctx, endpoints);
+	}
+
+	function onLoad() {
+	    let params = new URLSearchParams(window.location.search);
+	    let depth = params.get('depth');
+	    if (depth == null) {
+		document.getElementById('easel').style.display = "none";
+		document.getElementById('form-wrapper').style.display = "block";
+	    } else {
+		let options = { ...default_options };
+		options.depth = depth;
+		console.log(options);
+		for (key in options) {
+		    let url_param = params.get(key);
+		    if (url_param != '') {
+			options[key] = url_param;
+			if (!key.endsWith('ground')) {
+			    console.log(key);
+			    console.log(url_param);
+			    options[key] = parseFloat(options[key]);
+			}
+		    }
+		}
+		yeetCanvas(options);
+	    }
+	}
+
+	// Plan:
+	// - Read URL params for size, depth, and coloring.
+	// - If not, render a form that does it.
+	document.addEventListener("DOMContentLoaded", onLoad);
+      </script>
+    </body>
+ </html>
