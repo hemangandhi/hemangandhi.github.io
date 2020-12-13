@@ -21,14 +21,15 @@
     <body>
       <canvas id="easel"></canvas>
       <div id="form-wrapper">
+	<div>This implements the shape at the ending of <a href="https://youtu.be/IUC-8P0zXe8">this video</a>. The clipping changes the way coordinates are displayed, scaling them to fit within a rectangle. This doesn't scale the canvas since there is a scale factor for that if you need it.</div>
 	<form>
 	  <label for="foreground-in">Foreground:</label><input name="foreground" id="foreground-in" type="color" value="#ff4500">
 	  <label for="background-in">Background:</label><input name="background" id="background-in" type="color" value="#000000">
 	  <label for="depth-in">Depth:</label><input name="depth" id="depth-in" type="number" step="1" min="0" value="7">
 	  <label for="scale-in">Scale:</label><input name="scale" id="scale-in" type="number" step="0.01" value="50">
 	  <label for="linewidth-in">Linewidth:</label><input name="linewidth" id="linewidth-in" type="number" step="0.01" value="15">
-	  <label for="clipwidth-in">Clip width:</label><input name="clipwidth" id="clipwidth-in" type="number" step="0.01" value="500">
-	  <label for="clipheight-in">Clip height:</label><input name="clipheight" id="clipheight-in" type="number" step="0.01" value="500">
+	  <label for="clipwidth-in">Clip width:</label><input name="clipwidth" id="clipwidth-in" type="number" step="0.01" value="0">
+	  <label for="clipheight-in">Clip height:</label><input name="clipheight" id="clipheight-in" type="number" step="0.01" value="0">
 	  <input type="submit" value="Draw a turtle">
 	</form>
       </div>
@@ -121,6 +122,9 @@
 	    let shape_lim = Math.max(shape_width, shape_height);
 	    let clip = Math.min(options.clipwidth, options.clipheight);
 	    let clip_scale = Math.min(clip / shape_lim, 1);
+
+	    // if there's no clipping, don't bother with coordinates.
+	    if (clip === 0) return;
 
 	    canvas.addEventListener('mousemove', e => {
 		let mouse = [e.clientX, e.clientY];
