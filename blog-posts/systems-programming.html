@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Systems Programming I wish I Learned</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+        <link rel="stylesheet" href="../css/code.css"/>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit">Learning to Listen to Cpp Con Talks</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-blog centered-div center-text">
+	  <label for="slide-nr">Choose a slide:</label>
+	  <select id="slide-nr">
+	  </select>
+        </div>
+
+        <div class="content-blog centered-div center-text">
+	  <div id="slide-0">
+            <div class="big-title">What is this?</div>
+            <div class="padded-text">
+	      A blog that's a slideshow so that I can present my thoughts in this form.
+            </div>
+            <div class="padded-text">
+	      Click the buttons below to see the slides. Or use the drop-down above.
+            </div>
+            <div class="padded-text">
+	      I can't be bothered to CSS well enough to keep those button in the same spot.
+            </div>
+            <div class="padded-text">
+	      Also, some parts have no reason to be one slide, except that I was lazy. This might be better thought of as a collection of mini-posts around a sort of trend I'm seeing.
+            </div>
+	  </div>
+
+	  <div id="slide-1">
+            <div class="big-title">Alternate Titles</div>
+            <div class="padded-text">
+	      Things to Think About When Watching CppCon
+            </div>
+            <div class="padded-text">
+	      What I Wish I Knew About Low Level Langauges
+            </div>
+            <div class="padded-text">
+	      How to Stop Worrying And Love Systems Programming
+            </div>
+            <div class="padded-text">
+	      Trends in Programming Languages and Talks I Like
+            </div>
+	  </div>
+
+	  <div id="slide-2">
+            <div class="big-title">Actual Topics</div>
+            <div class="padded-text place-title">
+	      This is what I mean to include:
+	      <ol>
+		<li>The End of Moore's Law</li>
+		<li>SIMD</li>
+		<li>Async</li>
+		<li>Atomics</li>
+		<li>Instruction Execution</li>
+		<li>Better Hash Map Implementations</li>
+		<li>Benchmarking</li>
+		<li>Static Checking and Correctness</li>
+		<li>Superior C Syntax</li>
+		<li>Modules</li>
+		<li>RAII</li>
+		<li>Linear Types</li>
+		<li>Error Handling</li>
+		<li>Dispatch</li>
+		<li>Type Erasure</li>
+		<li>Things I Wish I Could Talk About</li>
+	      </ol>
+            </div>
+	  </div>
+
+	  <div id="slide-3">
+            <div class="big-title">The End of Moore's Law</div>
+            <div class="padded-text place-title">
+	      Moore's law was a rule of thumb that declared that CPUs would have double the number of transistors every year.
+            </div>
+            <div class="padded-text place-title">
+	      This reached a physical limit. In particular, CPUs don't double in density any more. We've reached the peak clock rate for the time being.
+            </div>
+            <div class="padded-text place-title">
+	      There are a few countermeasures: parallelism and alternate hardware. This is opening up the world of low-level programming where we can question how we're designing the interactions between the hardware and the programming language. We can look back again and ask: what are we doing? Are we doing the best we can? This leads to the next two big movements I'd like to talk about: SIMD and Async programming. It's worth noting that instruction execution is another important factor.
+            </div>
+            <div class="padded-text place-title">
+	      There are two other noteworthy innovations are parts of SIMD:
+	      <ul>
+		<li>GPUs: great for SIMD, but really hard to use well for some tasks.</li>
+		<li>TPUs: GPUs specialized even further for ML. I do not know enough about these to discuss them.</li>
+	      </ul>
+            </div>
+	  </div>
+
+	  <div id="slide-4">
+            <div class="big-title">SIMD</div>
+            <div class="padded-text place-title">
+	      This is a parallelism paradigm that executes a single instruction on multiple datapoints in parallel.
+            </div>
+            <div class="padded-text place-title">
+	      This is what GPUs do and they're really good at it, but the more interesting movement is the fact that CPUs also execute SIMD instructions and many compilers will output them.
+            </div>
+            <div class="padded-text place-title">
+	      CPU SIMD is a strange sort of thing since it can only do some arithmetic operations on up to 128-bit values. Yet this can be faster for large enough lists.
+            </div>
+	  </div>
+
+	  <div id="slide-5">
+            <div class="big-title">SIMD Algorithms</div>
+            <div class="padded-text place-title">
+	      This is more applicable to GPUs but brings up a lot of interesting points in SIMD programming.
+            </div>
+            <div class="padded-text place-title">
+	      Fundamentally, there is an interesting quirk, best expressed in PTX (the GPU assembly language).
+            </div>
+	    <pre>
+<span class="keyword">.reg .pred</span> p; <span class="comment">// declare p a predicate register.</span>
+<span class="keyword">setp.lt.s32</span> p, i, n; <span class="comment">// p = (i < n)</span>
+@p <span class="keyword">add.s32</span> i, i, 1; <span class="comment">// i++</span>
+	    </pre>
+            <div class="padded-text place-title">
+	      Suppose <code>p</code> was not set, that <code>i >= n</code>. In this case, if all the GPU cores were running the same instruction in lock-step, what would happen?
+            </div>
+            <div class="padded-text place-title">
+              Therein lies the catch: SIMD does not to branch very well. In GPUs, this branch would lead to some threads running a no-op. If there was an else case:
+            </div>
+	    <pre>
+<span class="keyword">.reg .pred</span> p; <span class="comment">// declare p a predicate register.</span>
+<span class="keyword">setp.lt.s32</span> p, i, n; <span class="comment">// p = (i < n)</span>
+@p <span class="keyword">add.s32</span> i, i, 1; <span class="comment">// if (p) i++</span>
+@!p <span class="keyword">add.s32</span> n, n, 1; <span class="comment">// if (!p) n++</span>
+	    </pre>
+            <div class="padded-text place-title">
+	      Now, some threads will no-op in the first branch, and the rest will no-op in the second. This can be slow. It really depends.
+            </div>
+            <div class="padded-text place-title">
+	      This changes the way some algorithms can be approached. There are a lot of good algorithms for SIMD, particularly at the level of parallelization that a GPU can offer. Parallel reductions (summing) and Bitonic sort are classics, but radix sort also exists.  Graph algorithms on GPUs are even more challenging as questions about the memory layout are esssential.
+            </div>
+	  </div>
+
+	  <div id="slide-6">
+            <div class="big-title">Async</div>
+            <div class="padded-text place-title">
+	      Another, simpler, more CPU-bound way to handle the fact that speed no longer doubles for free is the use of multi-threading. And one really interesting abstraction for it is asynchronous execution. Technically, the two are actually completely unrelated: we <i>could</i> run code in any wacky order (I see you Haskell) without running multiple threads, and we <i>could</i> make the execution order seem "synchronous" (or sort of linear) even if it crosses through multiple threads. However, marrying the two concepts justifies asyncronous execution while simplifying multithreading.
+            </div>
+            <div class="padded-text place-title">
+	      <!-- &rsquo to not mess up emacs' syntax highlighting ((T_T) emawcs chan y) -->
+	      This is also the culmination of a long movement that actually may have started in JavaScript. JavaScript used asynchrony for web development (which is how a lot of low-level usage is done too). In JavaScript, you&rsquo;d use async to load external resources so that the page could load and then wait for external requests. This was a slow and steady escalation (of which I&rsquo;ve only used the first half, and half-heartedly heard and read on the second): there was AJAX, then jQuery and promises, then Axios and Fetch, which finally reached compatibility with a native async/await syntax. This too may be best first seen in code:
+            </div>
+	    <pre>
+<span class="keyword">async function</span> loadStuff() {
+    <span class="keyword">let</span> someFirstThing = <span class="keyword">await</span> loadThatFirstThing();
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      If you&rsquo;re familiar with promises, you&rsquo;d expect that they may fail. In this case there are two possible resolutions, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await">detailed here</a>.
+            </div>
+            <div class="padded-text place-title">
+	      In either case, the notable thing is that this fits really well with &quot;left-leaning&quot; code. This is means that code does not end up in some nested callback mess. You can see this with the use of the <code>await</code> statement since it keeps the callback on the left instead of inside a scope and (hopefully) indentation level. However, there is an interesting complication that I do not know how JS addresses:
+            </div>
+	    <pre>
+<span class="keyword">async fn</span> loadStuff() {
+    <span class="keyword">let</span> someFirstThing = <span class="keyword">await</span> loadThatFirstThing();
+    <span class="keyword">let</span> someOtherThing = <span class="keyword">await</span> loadThatOtherThing();
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      Here, in Rust (note my cheeky <code>s/function/fn/g</code>), the <code>await</code>s will execute one after another. There are ways to <a href="https://docs.rs/futures/0.3.5/futures/macro.join.html">join</a> them so they will execute concurrently.
+            </div>
+            <div class="padded-text place-title">
+	      This paradigm has some interesting implications that are related to ideas in RAII and with closures.
+            </div>
+	  </div>
+
+	  <div id="slide-7">
+            <div class="big-title">Atomics</div>
+            <div class="padded-text">
+	      <i>Somehow I cannot help but think of Dune when I say Atomics.</i>
+            </div>
+            <div class="padded-text place-title">
+	      In a way the Dune reference might be relevant: you could want to nuke your code with atomics. Use these as carefully as most people would use Dune atomics. Or, like most people in Dune, don&rsquo;t.
+            </div>
+            <div class="padded-text place-title">
+	      Atomics are instructions that cannot be divided. This is useful for one big reason: multithreading.
+            </div>
+	    <pre>
+<span class="keyword">#include <span class="built-in">&lt;atomic&gt;</span></span>
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;
+<span class="keyword">class</span> Locked{
+<span class="keyword">public</span>:
+    Locked(T t): locked_(t), mutex_(<span class="keyword">false</span>) {}
+    T& ExclusivelyAccess() {
+        <span class="keyword">while</span>(!mutex_.compare_exchange_strong(<span class="keyword">false</span>, <span class="keyword">true</span>));
+        <span class="keyword">return</span> locked_;
+    }
+    <span class="keyword">void</span> EndExclusiveAccess() {
+        mutex_ = <span class="keyword">false</span>;	
+    }
+    <span class="keyword">bool</span> IsHeld() { <span class="keyword">return</span> !mutex_; }
+<span class="keyword">private</span>:
+    <span class="built-in">std::atomic</span>&lt;<span class="keyword">bool</span>&gt; mutex_;
+    T locked_;
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      This a way to implement a lock. In theory. I have yet to test this (and I doubt I ever really will -- testing multithreading is really hard). A <code><span class="built-in">std::atomic</span>&lt;<span class="keyword">bool</span>&gt;</code> handles the locking, ensuring that between the check for whether the <code><span class="keyword">bool</span></code> was <code><span class="keyword">false</span></code> and when it was set to <code><span class="keyword">true</span></code>. This makes the locking safe. <a href="https://en.cppreference.com/w/cpp/atomic/atomic">Documentation on <code><span class="built-in">std::atomic</span></code>.</a> Be very careful with this: the built-in is great for small types that fit in hardware-based instructions. Otherwise you will see that the class will use locks and, honestly, it should.
+            </div>
+            <div class="padded-text place-title">
+	      These are important basic building blocks. I will (theoretically) implement an improvement on this in my discussion on RAII.
+            </div>
+	  </div>
+
+	  <div id="slide-8">
+            <div class="big-title">Execution Order</div>
+            <div class="padded-text place-title">
+	      (I only know how Intel does it (sorta) but the point here is that there can be a lot more abstraction than you&rsquo;re expecting.)
+            </div>
+            <div class="padded-text place-title">
+	      This has to do with pipelining which is an essential point in modern computing. Memory is slow. This is really worth its own slide. Or emphasis.
+            </div>
+            <div class="big-title">Memory is Slow</div>
+            <div class="padded-text place-title">
+	      The CPU is about 100x faster so there are two key solutions:
+	      <ul>
+		<li>Caching</li>
+		<li>Pipelining</li>
+	      </ul>
+	      I&rsquo;ll rant about caching later on. So this bit is about pipelining.
+            </div>
+            <div class="padded-text place-title">
+	      Pipelining is where the CPU loads the next instruction while executing the current one. This has a lot of interesting issues, particularly with branching where there&rsquo;s a whole branch prediction system as I will discuss a bit later. But first: out of order execution. This is the fact that CPUs are really smart. Not just in as much as they compute, but also that they make sure they&rsquo;re getting fed instructions at all times. They pipeline, but they do one more thing: out of order execution.
+            </div>
+            <div class="padded-text place-title">
+	      But let me get to the main point as I discuss these things.
+            </div>
+            <div class="place-title big-title">Meltdown: Attacking Out of Order Execution</div>
+            <div class="padded-text place-title">
+	      This is much better covered in the <a href="https://meltdownattack.com/meltdown.pdf" alt="so the sumary below is for my ego">paper about this attack</a>.
+            </div>
+            <div class="padded-text place-title">
+	      So first, let me describe instructions. x86, a comon commodity assembler, is a CISC assembly. This means that instructions can decompose into multiple different ones sometimes. Consider something like <code><span class="keyword">char</span> aznable = white_base[amuro][ray]</code> (suppose that <code>amuro</code> and <code>ray</code> were <code><span class="keyword">int</span></code>s and <code>white_base</code> is a <code><span class="keyword">char</span>[][]</code>).
+            </div>
+            <pre>
+<span class="comment">;suppose %rdi is the address of white_base[0][0], %rbx = amuro, and %rcx = ray</span>
+<span class="keyword">movq</span> %rdx, (%rdi, %rbx, 8)
+<span class="keyword">mov</span> %al, (%rdx, %rcx)
+<span class="comment">;now aznable is in %al</span>
+            </pre>
+            <div class="padded-text place-title">
+	      Technically that assembly is more for illustrative purposes than it is for real technical stuff. This pair of instructions would expand into a few RISC instructions (RISC being the simpler assemblers whose instructions really are one instruction):
+            </div>
+            <pre>
+<span class="comment">;suppose %rdi is the address of white_base[0][0], %rbx = amuro, and %rcx = ray</span>
+<span class="keyword">mult</span> %rbx, %rbx, 8
+<span class="keyword">add</span> %rdi, %rdi, %rbx
+<span class="keyword">load</span> %rdx, %rdi
+<span class="keyword">add</span> %rdx, %rcx
+<span class="keyword">load</span> %al, %rdx
+<span class="comment">;now aznable is in %al</span>
+            </pre>
+            <div class="padded-text place-title">
+	      The <code><span class="keyword">mult</span></code> and <code><span class="keyword">add</span></code>s are in the x86 too, just hidden in the <a href="https://paul.bone.id.au/blog/2018/09/05/x86-addressing/">addressing modes</a>. The upshot (other than an assembly crash course that went faster than the red comet) is that CISC has to get turned into RISC (sort of -- it is probably more complicated and with different restrictions since the CPU does it).
+            </div>
+            <div class="padded-text place-title">
+	      Since the CPU does it, it can also be smarter about its own state, and reorder instructions. In particular, consider the following C:
+            </div>
+            <pre>
+<span class="keyword">#define</span> CACHE_LINE_SIZE 1024
+<span class="keyword">char</span> probe[CACHE_LINE_SIZE * 256];	      
+<span class="keyword">char</span> should_not_be_accessed = *pointer_into_kernel_memory;
+<span class="keyword">char</span>* for_cache = &probe[should_not_be_accessed * CACHE_LINE_SIZE];
+            </pre>
+            <div class="padded-text place-title">
+	      Here, the CPU actually will probably schedule the multiplication and read that happens <i>after</i> the pointer read to run <i>at the same time</i>. This is sort of magical since it really speeds up the the rate at which the CPU can execute instructions: it will hardly wait for the memory since it is perparing the subsequent operations.
+            </div>
+            <div class="padded-text place-title">
+	      However, the example above is more interesting. If <code>pointer_into_kernel_memory</code> is actually a pointer to an address the running process cannot read, this will signal an error (<code>SIGSEGV</code> for instance). If the program can recover from that, however, the Meltdown vulnerability found that the <code>for_cache</code> pointer may have already been loaded and then unloaded once the exeception occured. This is not really an issue except that the cache will have changed (yes I will talk about caching). By reading what part of memory was loaded into the cache, the attacker can deduce the value of <code>should_not_be_accessed</code>.
+            </div>
+	</div>
+	</div>
+
+        <div class="content-blog centered-div">
+	  <div id="prev-slide" class="left-bit cv-link">Prev slide</div>
+	  <div id="next-slide" class="right-bit cv-link">Next slide</div>
+	  <div id="slide-ct" class="center-text centered-div"></div>
+        </div>
+
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+    </body>
+    <script>
+      let ls = document.getElementById('slide-0');
+      let slide_nav = document.getElementById('slide-nr');
+      let i = 0;
+      for(;(ls = document.getElementById('slide-' + i)) != null; i++) {
+	  ls.style.display = "none";
+	  let option = document.createElement('option');
+	  option.value = "slide-" + i;
+	  let title = ls.querySelector('.big-title');
+	  if (title === null) {
+	      title = ls.querySelector('div');
+	  }
+	  option.innerText = title.innerText;
+	  slide_nav.appendChild(option);
+      }
+
+      let curr_slide = i - 1; // TODO: make 0
+      function updateSlide() {
+	  document.getElementById('slide-' + curr_slide).style.display = 'block';
+	  document.getElementById('slide-ct').innerText = (curr_slide + 1) + '/' + i;
+	  slide_nav.value = 'slide-' + curr_slide;
+      }
+      // Initialize the counter
+      updateSlide();
+      
+      document.getElementById('next-slide').addEventListener('click', function (e) {
+	  if(curr_slide == i - 1) return;
+	  document.getElementById('slide-' + curr_slide).style.display = "none";
+	  curr_slide++;
+	  updateSlide();
+      });
+      document.getElementById('prev-slide').addEventListener('click', function (e) {
+	  if(curr_slide == 0) return;
+	  document.getElementById('slide-' + curr_slide).style.display = "none";
+	  curr_slide--;
+	  updateSlide();
+      });
+
+      slide_nav.addEventListener('change', function(e) {
+	  document.getElementById('slide-' + curr_slide).style.display = "none";
+	  curr_slide = parseInt(slide_nav.value.replace('slide-', ''));
+	  updateSlide();
+      });
+    </script>
+</html>

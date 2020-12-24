@@ -2,6 +2,7 @@ pre {
     text-align: left;
     border: 1px dotted red;
     overflow-x: scroll;
+    clear: both;
 }
 
 .comment {
