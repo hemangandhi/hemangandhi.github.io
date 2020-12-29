@@ -83,6 +83,7 @@
 		<li>Static Checking and Correctness</li>
 		<li>Superior C Syntax</li>
 		<li>Modules</li>
+		<li>Compile-Time Programming</li>
 		<li>RAII</li>
 		<li>Linear Types</li>
 		<li>Error Handling</li>
@@ -90,6 +91,9 @@
 		<li>Type Erasure</li>
 		<li>Things I Wish I Could Talk About</li>
 	      </ol>
+            </div>
+            <div class="padded-text">
+	      I should mention: I sort of prattle on about topics in whatever depth I feel like. If you can read (x86) assembler, know somethings about object-oriented programming, and have messed around with C, I think you should be able to follow most of what I ramble on about. If you are ever confused, please note that it's more likely my lack of coherence, patience, clarity, or editing, than it is any fault on your part.
             </div>
 	  </div>
 
@@ -257,7 +261,7 @@
             </div>
             <div class="place-title big-title">Meltdown: Attacking Out of Order Execution</div>
             <div class="padded-text place-title">
-	      This is much better covered in the <a href="https://meltdownattack.com/meltdown.pdf" alt="so the sumary below is for my ego">paper about this attack</a>.
+	      This is much better covered in the <a href="https://meltdownattack.com/meltdown.pdf" title="so the sumary below is for my ego">paper about this attack</a>.
             </div>
             <div class="padded-text place-title">
 	      So first, let me describe instructions. x86, a comon commodity assembler, is a CISC assembly. This means that instructions can decompose into multiple different ones sometimes. Consider something like <code><span class="keyword">char</span> aznable = white_base[amuro][ray]</code> (suppose that <code>amuro</code> and <code>ray</code> were <code><span class="keyword">int</span></code>s and <code>white_base</code> is a <code><span class="keyword">char</span>[][]</code>).
@@ -298,8 +302,315 @@
             <div class="padded-text place-title">
 	      However, the example above is more interesting. If <code>pointer_into_kernel_memory</code> is actually a pointer to an address the running process cannot read, this will signal an error (<code>SIGSEGV</code> for instance). If the program can recover from that, however, the Meltdown vulnerability found that the <code>for_cache</code> pointer may have already been loaded and then unloaded once the exeception occured. This is not really an issue except that the cache will have changed (yes I will talk about caching). By reading what part of memory was loaded into the cache, the attacker can deduce the value of <code>should_not_be_accessed</code>.
             </div>
+            <div class="place-title big-title">Spectre: Attacking Branch Prediction</div>
+            <div class="padded-text place-title">
+	      This too is better explained in <a href="https://spectreattack.com/spectre.pdf">the paper</a>.
+            </div>
+            <div class="padded-text place-title">
+	      This is another example of speculative execution. Earlier, I mentioned pipelining as an optimization on running programs, and just vaguely mentioned that branching is difficult. Here I will have to elaborate.
+            </div>
+            <div class="padded-text place-title">
+	      When the code branches, the CPU guesses what path the code will take a prefetches along that path. However, if the CPU guesses incorrectly, it would have to rewind and run along the correct path. This can be slow, so, surprisingly, the CPU has been tuned to be right nearly 95% of the time. Initially, I thought that this was obvious since the majority of branches would be jumping to the top of a loop. However, it is more interesting to consider that the branch predictor may have to reason about returns. But still: it might be right more than 95% of the time. And here I was thinking that 50% was good.
+            </div>
+            <div class="padded-text place-title">
+	      However, when the CPU is wrong, it may not reset the cache when it goes back to execute the branch. This can be interesting if the instructions set up the cache so that:
+	      <ol>
+		<li>Some secret data is in the cache</li>
+		<li>Data related to the branching is not in the cache</li>
+		<li>The CPU has been mistrained to think that the branch will go one way</li>
+	      </ol>
+	      Then, the cache might incorrectly have some data the reveals a secret.
+            </div>
+            <div class="place-title big-title">The Upshot</div>
+            <div class="padded-text place-title">
+	      The point of including this, particularly in a menagerie of rants about various things "relating to systems programming" is to point out that despite being able to understand assembly, you likely do not know what the computer is really doing. That how the CPU works is really, really hard to reason about. Simply, the point is: keep questioning it -- you don&rsquo;t understand it.
+            </div>
 	</div>
+
+	  <div id="slide-9">
+            <div class="big-title">Better Hash Maps</div>
+            <div class="padded-text place-title">
+	      This is really a rant about my education, but brings up some useful points. I hope to whine about Hyrum&rsquo;s law and benchmarking enough to make this more than just complaining that I did not understand a hash map implementation from back when I was in data structures.
+            </div>
+            <div class="padded-text place-title">
+	      If you read the last slide (woah you&rsquo;re still reading?! OK, sorry for the Gundam references.) you might be waiting for me to talk about caching. Well, this is that bit.
+            </div>
+            <div class="big-title place-title">
+	      Hashmap Crash Course
+            </div>
+            <div class="padded-text place-title">
+	      Hashmaps are the bread and butter of fast storage and retrieval. The only places that shirk them have other constraints that force them to do so. If you can use a hashmap, it&rsquo;s likely that you should. It gives you this API:
+	      <table border="1">
+		<tr>
+		  <th>Function</th>
+		  <th>Functionality</th>
+		  <th>Average big-O</th>
+		</tr>
+		<tr>
+		  <td>Insert</td>
+		  <td>Puts something in the hashmap. This "something" is usually a "key" and the "value" it maps to.</td>
+		  <td>O(1)</td>
+		</tr>
+		<tr>
+		  <td>Update</td>
+		  <td>Updates something in the hashmap. This "something" is usually a "key" and the new "value" it maps to.</td>
+		  <td>O(1)</td>
+		</tr>
+		<tr>
+		  <td>Get</td>
+		  <td>Retrives the value attached to the key.</td>
+		  <td>O(1)</td>
+		</tr>
+		<tr>
+		  <td>Delete</td>
+		  <td>Removes the key and value that were in the hashmap. Usually this returns the value and sometimes also the key.</td>
+		  <td>O(1)</td>
+		</tr>
+	      </table>
+	      If you do not understand this, I should appologise and admit I am not too great at explaining how to use these wonderful data structures since I kind of got used to them before properly understanding how they worked. I think these are difficult to motivate if you are particularly inexperienced in coding. If you have coded much, you might have found yourself needing to related pairs of things and may be this sentence helped something click. I can only hope.
+            </div>
+            <div class="big-title place-title">
+	      Implementing Hash Maps
+            </div>
+            <div class="padded-text place-title">
+	      The rightmost column in the table above should look somewhat magical: <code>O(1)</code> for everything does sound like a scam. The catch is that this is the average case: the worst case for all of those operations is <code>O(n)</code>. The secret sauce is called hashing. You project values into 64-bit integers (nowadays) and use those integers to look in an array.
+            </div>
+            <div class="padded-text place-title">
+	      Hashing is not quite that simple, though, since there is one problem that is common with all implementations of hashmaps: not all values of every type can fit into 64 bits. (Consider strings, particularly those with more than 8 characters, for example.) This leads to a problem with the hashing: every hash function cannot be injective (there will be two keys k1 and k2 where hash(k1) = hash(k2) despite k1 not being the same as k2). Keys that hash to the same thing while being different are called collisions. This would lead to them being placed in the same spot in the array in a hashmap. Implementations tend to differ on how to handle this. In particular:
+	      <ul>
+		<li>Chaining: placing keys and values into a linked list in the relavant array slot</li>
+		<li>Linear probing: placing collisions into the next spot on the array</li>
+	      </ul>
+            </div>
+            <div class="big-title place-title">
+	      A First Glance: Is Chaining Better?
+            </div>
+            <div class="padded-text place-title">
+	      Initially, it seems that the chaining approach would be better: since every collision is in an independent linked-list, one collision does not affect any others, and deletions do not make look up too difficult. Consider this sequence:
+	      <ol>
+		<li><code>insert(k1)</code></li>
+		<li><code>insert(k2)</code> (where <code>k2</code> collides with <code>k1</code>)</li>
+		<li><code>insert(k3)</code> (where <code>k3</code> hashes "next to" <code>k1</code> and <code>k2</code>)</li>
+		<li><code>delete(k2)</code></li>
+	      </ol>
+	      Naive implementations of linear probing could be stuck: once <code>k2</code> is removed, for correct behavior with <code>k3</code> you&rsquo;d either have to move <code>k3</code> down to where it "belongs" or look through the entire list. This, however, can be alliviated with a simple fix: have a "tombstone" state to mark the ghosts of collisions past. This way, only a few lookups would have to perform a (partial) linear search through the array.
+            </div>
+            <div class="padded-text place-title">
+	      This leaves the question of which one is actually better: it may still seem like chaining is better since it is not only simpler, but has slightly stronger guarantees: you can be a little more sure that collisions will be contained to the array slot (commonly called bucket).
+            </div>
+            <div class="big-title place-title">
+	      Caching: Why Linear Probing is (Sort of) Better
+            </div>
+            <div class="padded-text place-title">
+	      Despite the simplicity of Chaining, there is an implementation called a dense hashmap which turns out to be better (sometimes). There are a few key observations that help. In particular, it&rsquo;s a lot rarer for users of hashmaps to delete things. Usually, hashmaps are built in a function and then queried a bunch. Generally, they may be inserted into as well. This can be intuited from implementations of graph traversals and algorithms. This benefits linear probing with tombstones since the worst case is rarer. But there more, since, recall:
+            <div class="big-title center-text">
+	      Memory is Slow!
+            </div>
+            </div>
+            <div class="padded-text place-title">
+	      This is where the CPU does something smart: it prepares for the memory I/O by having layers of caching. It sucks nearby memory into a cache each time it needs to since it is likely that programs will access nearby memory soon after it accesses the memory being accessed (spatial and temporal locality respectively). Linked lists ruin this since it&rsquo;s hard to ensure that the nodes will be close enough for the cache to suck in adjacent nodes. Arrays, however, work really well for this. Traversing an array can be a lot faster. Another advantage is that the arrays could be traversed via SIMD instructions, particularly when probing for occupied slots.
+            </div>
+            <div class="padded-text place-title">
+	      This can be further optimized as the <a href="https://abseil.io/docs/cpp/guides/container#hash-tables"><code>flat_hash_map</code></a>. This can even be further optimized to incorporate chaining, but we end up reaching an important (tangential) discussion: theorizing only helps so much. At some point, you should just benchmark. Your dataset might have some biases, your CPU, or the memory layouts you end up with could vary. You do not actually know what will perform better until you measure it.
+            </div>
+	  </div>
+
+	  <div id="slide-10">
+            <div class="big-title">Benchmarking</div>
+            <div class="padded-text">
+	      <i>Not to imply that I have actually done any of this. But do as I say, not as I do.</i>
+            </div>
+            <div class="padded-text place-title">
+	      I hope the last two slides have made it clear that computers are a lot more complicated than you would think. And even then, they are hard to predict. It is definitely odd that the interaction of small predictable rules leads to unpredictable behavior. But such is life. So if you want to know about speed an be sure, benchmark.
+            </div>
+            <div class="padded-text place-title">
+	      The catch is that getting reliable benchmarks is hard. The behavior of various data structures and algorithms depends really heavily on the data you run it on. Sorting is a really important special case about this since it has been studied very heavily.
+            </div>
+	  </div>
+
+	  <div id="slide-11">
+            <div class="big-title">Static Checking, Correctness...</div>
+            <div class="padded-text">
+	      <i>...and the worst transition in topics ever.</i>
+            </div>
+            <div class="padded-text big-title">
+	      Now for someting Completely different<a href="https://www.youtube.com/results?search_query=now+for+something+completely+different">.</a>
+            </div>
+            <div class="padded-text place-title">
+	      The previous topics were sort of granular, small details. 細かい. They vary by CPU and detail precisely how the computer executes commands and what sorts of tricks it uses. The rest of these slides are really one abstraction layer above: they detail programming language design decisons and how they interact with programming. This can be seen as a lot broader, more opinionated, and (sorta) a move from science to mathematics.
+            </div>
+            <div class="padded-text place-title">
+	      The discussion of programming languages does have measurable hypotheses and long-term experiments, but also tends to lead to less data-dependant and more mathematical facts. Furthermore, it really helps to reason about the compiler as a theorem prover (particularly not for C++). These facts assist coding since when code behaves like math, it tends to be error (and weirdness) free. Once code is weirdness-free, it also becomes easier to optimize. (I will define "weirdness" as it is relevant.)
+            </div>
+            <div class="padded-text place-title">
+	      A key takeaway is that there is a difference between static and dynamic certitude that a program is correct. The point is that static assurances apply to the code and dynamic assurances would apply depending on the data.
+            </div>
+            <div class="padded-text place-title">
+	      Hence, there is an important point to be made about static guarantees: they assure you regardless of the data. This can protect your code from security vulnerabilities and crashes without the need of tests. (Though you <i>should</i> still have unit tests for some sweet dynamic guarantees too.)
+            </div>
+            <div class="padded-text place-title">
+	      This is made even better by the fact that static analysis tools are getting better. They understand more errors and patterns in larger programs. Compilers are getting smarter too.
+            </div>
+	  </div>
+
+	  <div id="slide-12">
+            <div class="big-title">Superior C Syntax</div>
+            <div class="padded-text place-title">
+	      This is a trend I have seen in quite a few programming languages that starts with this line of C/C++ code: <code><span class="keyword">int</span>* a, b;</code> and asks what the type of <code>b</code> is. Here, many people will have thought that <code>b</code> is an <code><span class="keyword">int</span>*</code>, whereas it is really an <code>int</code>.
+            </div>
+            <div class="padded-text place-title">
+	      Furthermore, consider <code><span class="keyword">typedef void</span>* (*alloc)(<span class="keyword">int</span>,<span class="keyword">int</span>)[2];</code> or any other weird alias of a function pointer type. This is a large complication, to the point where there is <a href="https://cdecl.org/">a website to decipher it</a>. (Exercise: guess what I was trying to forward declare. Suggest some (useful) values of that type.)
+            </div>
+            <div class="padded-text place-title">
+	      That&rsquo;s one of the simpler surface-level issues with C: its syntax makes it easy to run with scissors. Nowadays, having the type after the variable name has become more popular, so <code><span class="keyword">let</span> a, b: * <span class="built-in">int</span></code> would make two pointers two integers. (Actually, I would hope that the notion of a fixed <code><span class="keyword">int</span></code> also vanishes and we move to stating the size in the type like Rust&rsquo;s <code><span class="keyword">i32</span></code>. I also like that the <code><span class="keyword">unsigned</span></code> keyword can be replaced by a (in my opinion) cleaner <code><span class="keyword">u</span></code> prefix.)
+            </div>
+            <div class="big-title place-title">Bigger Critiques of C</div>
+            <div class="padded-text place-title">
+	      The above points are important: they would reduce the bugs in code and make the learning curve for some programming languages less steep. But there are bigger fish to fry. And that is mostly what the next sections discuss. I leave you with this link: <a href="https://queue.acm.org/detail.cfm?id=3212479">to a really good writeup</a>.
+            </div>
+            <div class="padded-text place-title">
+	      The most compelling critique to me is the small growth in replacement languages:
+	      <ul>
+		<li>Zig</li>
+		<li>Odin</li>
+		<li>Jiyu</li>
+	      </ul>
+	      (All are pretty small still, but they were made for a reason.)
+            </div>
+	  </div>
+
+	  <div id="slide-13">
+            <div class="big-title">Modules</div>
+            <div class="padded-text">
+	      <code><span class="keyword">using namespace</span> <span class="built-in">std</span>;</code>
+            </div>
+            <div class="padded-text">
+	      <i>Not really: do not use that and C++ namespaces are not modules</i>
+            </div>
+            <div class="padded-text place-title">
+	      This is (ok, also) at two levels: the C/C++ (and COBOL) use, and how C++20, Rust, and various newer languages do it.
+            </div>
+            <div class="big-title place-title">Header Files Suck</div>
+            <div class="padded-text place-title">
+	      I&rsquo;m going to say some things and if you recognise them, it will hurt.
+              <div class="padded-text">
+	        <i>ODR Violation</i>
+              </div>
+              <div class="padded-text">
+	        <i>Static Initialization Of a Global</i>
+              </div>
+              <div class="padded-text">
+	        <i>Include Guard</i>
+              </div>
+              <div class="padded-text">
+	        <i>Makefile (and automake)</i>
+              </div>
+	      Hurt yet? Had enough? (I had enough of my own CSS as well as these issues.)
+            </div>
+            <div class="padded-text place-title">
+	      What if I told you you were doing something COBOL does? That is the most egregious and striking example of C/C++&rsquo;s inclusion system, in my opinion.
+            </div>
+            <div class="padded-text place-title">
+	      In COBOL, the included file is called a copybook. And it is literally copied into the file. But wait, there&rsquo;s more:
+            </div>
+	    <pre>
+<span class="keyword">COPY</span> some-procedure <span class="keyword">IN</span> some-library <span class="keyword">REPLACING</span> ==:TAG:== <span class="keyword">BY</span> ==some-example==
+	    </pre>
+            <div class="padded-text place-title">
+	      This is explained in more detail in <a href="https://www.ibm.com/support/knowledgecenter/SS6SG3_4.2.0/com.ibm.entcobol.doc_4.2/PGandLR/ref/rlcdscop.htm">IBM&rsquo;s manual</a>.
+            </div>
+            <div class="padded-text place-title">
+	      My point is that there was a time when copying files in and replacing text was the cutting edge. But modules mean a lot more now. There are some invariants we would like that simple inclusion does not provide. In particular, I would like:
+	      <ul>
+		<li>Order of imports not to matter</li>
+		<li>Modules inside modules</li>
+		<li>Ways of specifying access and aliasing</li>
+		<li>Everything being in a module</li>
+	      </ul>
+	      This leads to a lot of issues going away since name collisons will be harder to contrive, and build tools can be significantly simpler since they do not have to worry about the order in which they build things. Programmers would have all the conveniences they need too. But I have a second point:
+            </div>
+            <div class="big-title place-title">Modules: The Real Encapsulation</div>
+            <div class="padded-text place-title">
+	      OOP is dead. Well <i>kinda</i>. That is the hot new thing to say. Why you say it and what you really mean does not matter, just like how it never mattered what you said when you "did OOP." But there was a rule in OOP that is quite interesting, and, to some extent important: encapsulation.
+            </div>
+            <div class="padded-text place-title">
+	      Encapsulation is the idea that drivers need not know how engines work. It is the division between understanding what something does and understanding how it works. In code, you do not have to look at the innards of a library to use it. An object would not reveal its fields.
+            </div>
+            <div class="padded-text place-title">
+	      This has been implemented in a sort of mantra that plagues Java code:
+            </div>
+	    <pre>
+<span class="keyword">public class</span> Point3D {
+  <span class="keyword">private int</span> x, y, z;
+
+  Point3D(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z) {
+    <span class="keyword">this</span>.x = x;
+    <span class="keyword">this</span>.y = y;
+    <span class="keyword">this</span>.z = z;
+  }
+
+  <span class="comment">//Drumroll please...</span>
+  <span class="keyword">public int</span> getX(){ <span class="keyword">return</span> x; }
+  <span class="keyword">public void</span> setX(<span class="keyword">int</span> x){ <span class="keyword">this</span>.x = x; }
+  <span class="keyword">public int</span> getY(){ <span class="keyword">return</span> y; }
+  <span class="keyword">public void</span> setY(<span class="keyword">int</span> y){ <span class="keyword">this</span>.y = y; }
+  <span class="keyword">public int</span> getZ(){ <span class="keyword">return</span> z; }
+  <span class="keyword">public void</span> setZ(<span class="keyword">int</span> z){ <span class="keyword">this</span>.z = z; }
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      This is not intended to critique Java as a programming language, but the lack of understanding of the point of encapsulation. The <code>Point3D</code> encapsulates nothing: it is just three integers and a smidge of semantics. It would be deceptive to add any semantics over this class -- it would loose its point. Philosophically, the death of OOP means that coupling data and behavior is no longer fashionable. This moves the responsibility of encapsulation away from the structures that store data (classes, structs, records, or whatever).
+            </div>
+            <div class="padded-text place-title">
+	      Modules can manage the encapsulation instead: instead of objects of hiding fields in them, type erasure (stay tuned!) and simply not exposing the type would help. This can extend to functions, traits (interfaces, concepts, type families, and so on), and even sub-modules.
+            </div>
+            <div class="padded-text place-title">
+	      To me, this is better for two reasons: classes do not end up becoming namespaces in some strange way, and the access specifications are simpler since there are only two and it is easier to trace what is being used where.
+            </div>
+	  </div>
+
+	  <div id="slide-14">
+            <div class="big-title">Compile-Time Programming</div>
+            <div class="padded-text">
+	      <i>Because everything becomes O(1), of course.</i>
+            </div>
+            <div class="padded-text place-title">
+	      This is also called metaprogramming. That is really what I shall focus on (particularly in the cases (Lisps) where there is not necessarily a compiler involved).
+            </div>
+            <div class="big-title place-title">Macros</div>
+            <div class="padded-text place-title">
+	      C/C++ have a notion of preprocessor macros. <a href="http://www.gigamonkeys.com/book/macros-defining-your-own.html#the-story-of-mac-a-just-so-story" title="I wish this story were true">Lisp has something different (as does Rust).</a> Macros are perhaps the simplest metaprogramming: they quite transparently transform code into code. This can get messy, though.
+            </div>
+            <div class="padded-text place-title">
+	      C/C++ preprocessor macros are notorious for being a headache. Consider this:
+            </div>
+	    <pre>
+<span class="keyword">#define</span> SQUARE(x) x*x
+
+<span class="keyword">double</span> vecNorm2D(Vec2D* v) {
+  <span class="keyword">return</span> sqrt(SQUARE(v->x) + SQUARE(v->y));
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      Looks cool, right? <code>SQUARE</code> might seem like it is acting as a sort of "function" that, at compile-time, puts in the code to square something. Seems awesome, but this has drawbacks. A whole list of them:
+	      <ul>
+		<li>The lack of type safety</li>
+		<li>The weirdness of predence rules (consider that <code>SQUARE(x + 1)</code> computes <code>x + 1 * x + 1</code>)</li>
+		<li>The silliness of string matching (if you <code><span class="keyword">#define</span> PI 3.1415</code>, <code>APPLE_PIE</code> could become mangled into <code>APPLE_3.1415E</code>)</li>
+		<li>The lack of hygiene (consider <code><span class="keyword">#define</span> INVENT(v) <span class="keyword">int</span> x = v;</code> which dirties the namespace where it is called to include some variable)</li>
+	      </ul>
+	      These can be mitigated by good conventions in C/C++ and Lisps. (Clojure, for instance, has <code>gensym</code> to ensure that values do not pollute the namespaces.) Rust is stricter, not only in limiting the complexity of macros (making them more local AST transformations unless you implement a procedural macro which is really Rust code that acts on a compiler-provided token stream), but also in the capability since macros cannot (yet) define values or implement interfaces of types.
+            </div>
+            <div class="padded-text place-title">
+	      Some languages use these ideas for conditional compilation too. This is important in cases where programs are compiled to run on different systems. Different systems may label things differently or simply include or exclude features. I conflate these since the C/C++ and Rust implementations of this (which are the only ones I know) use conditionals that can look similar to the macro invocation. Rust also integrates this with its build system, though, which is an essential difference (OK, if you wanna brave <code>-D</code> flags, you <i>could</i> say C/C++ build systems ("systems") include it).
+            </div>
+            <div class="big-title place-title">GADTs And Stuff</div>
+            <div class="padded-text place-title">
+	      GADTs are another way to get the compiler to do a lot of work for you. There is a different focus here, though, since GADTs are not directly about code generation. GADTs are special types that specify other types in their constructors. They can change behavior depending on the types they wrap.
+            </div>
+	  </div>
 	</div>
+
 
         <div class="content-blog centered-div">
 	  <div id="prev-slide" class="left-bit cv-link">Prev slide</div>

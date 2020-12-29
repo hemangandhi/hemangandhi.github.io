@@ -9,6 +9,10 @@ body {
     font-weight: bold;
 }
 
+table, th, td {
+    border: 1px solid green;
+}
+
 a {
     color: red;
     font-weight: normal;
