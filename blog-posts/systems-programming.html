@@ -606,11 +606,117 @@
             </div>
             <div class="big-title place-title">GADTs And Stuff</div>
             <div class="padded-text place-title">
-	      GADTs are another way to get the compiler to do a lot of work for you. There is a different focus here, though, since GADTs are not directly about code generation. GADTs are special types that specify other types in their constructors. They can change behavior depending on the types they wrap.
+	      GADTs are another way to get the compiler to do a lot of work for you. There is a different focus here, though, since GADTs are not directly about code generation. GADTs are special types that specify other types in their constructors. They can change behavior depending on the types they wrap. That is, they really start to look at generic types as functions into types, allowing the result to vary based on any input.
+            </div>
+            <div class="padded-text place-title">
+	      This is perhaps the more complex, theoretically rigorous way to understand Rust's const generics, C++'s non-type template parameters, and C++'s template specialization, and I will cover a simple view on them later, but if it was not already apparent to you, I like the sight of my own typing (like I like the sound of my own voice at times), so I shall have a section on GADTs anyway.
+            </div>
+	    <div class="collapsible-container place-title padded-text">
+	      <div class="padded-text place-title">
+		I'm so serious about how skippable this is that I will just let you skip: <span class="collapse-handle" title="Seriously, I wrote the 20 lines of JS for it too (and then refactored it to an elegant 40... did I say refactored, I meant added pointless features)">just collapse the content here.</span>.
+	      </div>
+              <div class="padded-text place-title collapsible">
+		Since the theory cat is out of the bag (not Shrodinger&rsquo;s cat, my theoretical cat), I should also admit that I will use Haskell for the time being. Since you may have realized that my explanations are impatient gobs of unedited text, you may want to skip this or read a little on GADTs in Haskell before proceeding. I will develop the example that introduced me to GADTs, not the one discussed in <a href="https://en.wikibooks.org/wiki/Haskell/GADT#:~:text=Generalized%20algebraic%20datatypes%2C%20or%20simply,the%20types%20of%20the%20constructors." title="trust me, this is a better explanation than one I can give">the Haskell wiki.</a> Before that, however, I want to detour into HoTT.
+              </div>
+              <div class="place-title collapsible" style="color:white">HoTT Stuff</div>
+              <div class="padded-text place-title collapsible">
+		HoTT means "homotopy type theory," and most of the time, the "type theory" part is the more important part for programming. The "homotopy" part only tangentially comes up and is brought up here mostly for a pun in the title (though technically, there's some refls that Haskell will need later on, so may be there's <i>kinda</i> homotopy?).
+              </div>
+              <div class="padded-text place-title collapsible">
+		So we can reduce this to a discussion of just type theory. (Sort of meaning any intuitionistic (I think) type theory.) There are some <a href="modal.html#types" title="See, the sight of my own writing style">really beautiful bits I already ranted about,</a> but for GADTs, I'd like to draw an equivalence to one thing: product types. Not the garden-variety <code>AxB</code> stuff, but the type theoretic big pi-notation, that is, <code title="I'm too lazy to MathJAX or whatever">\prod_{x \in X} A(x)</code>. Normally, we programmers are weirdos who work with <code title="OK, I tried to get you a mathcal">\prod_{x \in \mathcal{<i>U</i>}} A(x)</code>, which you need a nested universe structure for and doesn't really come up in proofs. But consider more: consider what you could do with something like <code>\prod_{l \in Nat, T \in \mathcal{<i>U</i>}} List(l, T)</code>. If you know C++, this is <code>std::array<T, l></code>. Except, the compiler really reasons about the <code>l</code> and assures operations. Let&rsquo;s work through one.
+              </div>
+              <div class="padded-text place-title">
+		This is mostly for my ego (and own future reference) so feel free to <span class="collapse-handle" title="If this seems hamfisted, it is because this sentence actually exists more for me to test the cool JS trick that hides all the collapsible kids in here. I hope it will work across slides too, but who knows if another slide will have an aside so long.">skip.</span>
+              </div>
+              <div class="padded-text place-title collapsible">
+		Now that you have two <span title="Read: demos of my sick JS skills">disclaimers</span>, let me steamroll through some Haskell. I'm going to focus on the <code><span class="keyword">data</span></code> declaration with GADTs first. Normally, <code class="keyword">data</code><!-- Shit that works--> begins the declaration of a sum type (tagged union, discriminated union, and what Rust calls an <code class="keyword">enum</code>). Hence, saying something like <code><span class="keyword">data</span> GoodWeekday = SATURDAY | FRIDAY</code> is <span title="and war on the bourgeois">declaring an enum of two days</span>. To add a generic, we put it before the <code>=</code> and use it after, like: <code><span class="keyword">data</span> Option a = Some a | None</code> (that being Rust's wording of Haskell's <code class="built-in">Maybe</code>). This still is not the product type. For that we need more and I'm going to just jump in (adding a comment or two to help you follow).
+              </div>
+	      <pre class="collapsible place-title">
+<span class="comment">{-# LANGUAGE DataKinds, KindSignatures, GADTs,</span>
+<span class="comment">  TypeFamilies, PolyKinds #-}</span>
+<span class="comment">-- DataKinds lets us define our own kinds (types of types)</span>
+<span class="comment">-- KindSignatures allows the * -> * sort of notation,</span>
+<span class="comment">-- TypeFamilies let us express functions on our kinds,</span>
+<span class="comment">-- PolyKinds lets us express functions about our kinds,</span>
+<span class="comment">-- and GADTs adds... well, GADTs.</span>
+
+<span class="comment">-- A kind for natural numbers. ZNat is 0, SNat is the next one.</span>
+<span class="keyword">data</span> Nat :: * <span class="keyword">where</span>
+  ZNat :: Nat
+  SNat :: Nat -> Nat
+
+<span class="comment">-- A fixed length vector. </span>
+<span class="comment">-- This takes the length as the second parameter.</span>
+<span class="comment">-- The property of Cons producing a vector one longer is key.</span>
+<span class="keyword">data</span> FixedVec :: * -> Nat -> * <span class="keyword">where</span>
+  Empty :: FixedVec a ZNat
+  Cons :: a -> FixedVec a n -> FixedVec a (SNat n)
+	      </pre>
+              <div class="padded-text place-title collapsible">
+		Since "kinds" came up, I'll mention that they're types of types: the higher universe we need when talking of functions on types. I like to think of it as the requisite Russell's paradox dodging you always need in a theoretical foundation of mathematics: your foundational object can't contain all instances of itself (sorta, usually). We can't have the type of all types, so we have the kind (<code>*</code>) of all types.
+              </div>
+	      <pre class="collapsible place-title">
+<span class="comment">-- Small complaint: it was hard to find the right syntax.</span>
+<span class="keyword">type family</span> Plus (x :: Nat) (y :: Nat) :: Nat
+<span class="keyword">type instance</span> Plus ZNat     m = m
+<span class="keyword">type instance</span> Plus (SNat n) m = SNat (Plus n m)
+
+<span class="comment">-- GHC just figures this out.</span>
+fconcat :: FixedVec a n -> FixedVec a m -> FixedVec a (Plus n m)
+fconcat Empty       ys = ys
+fconcat (Cons x xs) ys = Cons x $ fconcat xs ys
+	      </pre>
+              <div class="padded-text place-title collapsible">
+		A lot of what follows is thanks to <a href="https://stackoverflow.com/a/50788119" title="Hasochism is my new favorite word.">this SO post.</a>
+              </div>
+	      <pre class="collapsible place-title">
+<span class="comment">-- Brings in the :~: type-level equality</span>
+<span class="keyword">import</span> Data.Type.Equality
+		
+<span class="comment">-- Brings the Nat kind into the type universe.</span>
+<span class="keyword">data</span> ReifyNat (n :: Nat) <span class="keyword">where</span>
+  Zeify :: ReifyNat ZNat
+  Seify :: ReifyNat n -> ReifyNat (SNat n)
+
+<span class="comment">-- Brings the vector lenghts into the type universe.</span>
+reifyVecLen :: FixedVec a n -> ReifyNat n
+reifyVecLen Empty       = Zeify
+reifyVecLen (Cons _ xs) = Seify $ reifyVecLen xs
+
+<span class="comment">-- The proof of 1 + (x + y) = x + (y + 1).</span>
+<span class="comment">-- Base case: 1 + (0 + 0) = 0 + (0 + 1)</span>
+sumSuccRight :: ReifyNat x -> ReifyNat y
+  -> (SNat (Plus x y)) <span class="built-in">:~:</span> (Plus x (SNat y))
+sumSuccRight Zeify     Zeify     = Refl
+sumSuccRight (Seify n) Zeify     = apply Refl
+  $ sumSuccRight n Zeify
+sumSuccRight Zeify     (Seify n) = apply Refl
+  $ sumSuccRight Zeify n
+sumSuccRight (Seify m) (Seify n) = apply Refl
+  $ sumSuccRight m (Seify n)
+
+<span class="comment">-- GHC needs that (1 + (x + y)) = (x + (y + 1)).</span>
+<span class="comment">-- You'll note that that's not how we defined +.</span>
+fdup :: FixedVec a n -> FixedVec a (Plus n n)
+fdup Empty       = Empty
+fdup (Cons x xs) = <span class="keyword">case</span>
+  sumSuccRight (reifyVecLen xs) (reifyVecLen xs) <span class="keyword">of</span>
+    Refl -> Cons x (Cons x (fdup xs))
+	      </pre>
+              <div class="padded-text place-title collapsible">
+		The inductive cases above are non-trivial and this snippet brings in homotopies. The <code class="built-in">:~:</code> type (yeah, <code>TypeOperators</code> extension go brr) is the identity type that much of HoTT fixates on. It has one constructor called <code>Relf</code>. This <code>Refl</code> is the compiler marking that it can show that two types are equal. The other non-trivial thing is the use of <code>apply</code>. I'm going to butcher this with words when a diagram (in fact "geometric" intuition) would really help. <code>apply</code> takes two <span title="I'll hide this in the alt-text: this is the inverse of function extensionality (which Haskell also has -- C++ take notes)">equal functions</span> and two equal arguments and proves that the outputs of the functions on the arguments are equal. Hence, the inductive cases are really saying:
+		<ol>
+		  <li>Base case: <code>1 + (0 + 0) = 0 + (0 + 1)</code>.</li>
+		  <li><code>f(x) = x + 1</code> equals itself.<i>This isn't directly said, but pronounced as <code>Refl</code> since it is the fact that <code>SNat = SNat</code></i></li>
+		  <li><code>1 + ((n + 1) + 0) = (n + 1) + (0 + 1)</code> since 2 and <code>n = 0</code> is the base case.</li>
+		  <li>The next part of the function counts the other parameter down, showing <code>1 + 0 + (m + 1) = 0 + ((m + 1) + 1)</code> and the same base case (using <code>apply</code> thanks to 2).</li>
+		  <li>The final case counts down the first parameter, noting the same fact as 3, but for m (second parameters) more than 0.</li>
+		</ol>
+		That about wraps up this skippable type theory side-rant (that's probably reaching the length of my original type theory rant).
+              </div>
             </div>
 	  </div>
 	</div>
-
 
         <div class="content-blog centered-div">
 	  <div id="prev-slide" class="left-bit cv-link">Prev slide</div>
@@ -666,6 +772,55 @@
 	  document.getElementById('slide-' + curr_slide).style.display = "none";
 	  curr_slide = parseInt(slide_nav.value.replace('slide-', ''));
 	  updateSlide();
+      });
+
+      // Stuff for collapsible content
+      const hide_synonyms = ['collapse', 'hide', 'skip'];
+      const hide_antonyms = ['expand', 'show', 'read through'];
+      function swapText(text, idx, is_collapse) {
+	  if (is_collapse) {
+	      return text.replace(hide_synonyms[idx], hide_antonyms[idx]);
+	  }
+          return text.replace(hide_antonyms[idx], hide_synonyms[idx]);
+      }
+
+      // OK, I hate me too
+      function CollapseContent(c) {
+	  let is_collapse = false;
+	  function CollapseToggle(collapsible_kids, toggle) {
+              toggle.classList.add('cv-link');
+              let text = toggle.innerText;
+              let i = 0;
+              for(; i < hide_synonyms.length && !text.includes(hide_synonyms[i]); i++);
+              if (i == hide_synonyms.length) {
+		  toggle.innerText += " collapse";
+		  i = 0;
+	      }
+	      this.idx = i;
+	      this.t = toggle;
+	      this.activate = function(toggles) {
+		  toggle.addEventListener('click', function(e) {
+	              is_collapse = !is_collapse;
+	              toggles.forEach(function(t) {
+			  t.t.innerText = swapText(t.t.innerText, t.idx, is_collapse);
+		      });
+	              collapsible_kids.forEach(function(k) { k.style.display = is_collapse ? "none" : "block"; });
+		  });
+	      }
+	  }
+	  
+	  let collapsible_kids = c.querySelectorAll('.collapsible');
+	  let toggles = Array.from(c.querySelectorAll('.collapse-handle'), function(t) {
+	      return new CollapseToggle(collapsible_kids, t);
+	  });
+	  
+	  this.activate = function() {
+	      toggles.forEach(function(t) { t.activate(toggles); });
+	  }
+      }
+      
+      document.querySelectorAll('.collapsible-container').forEach(function(c) {
+	  (new CollapseContent(c)).activate();
       });
     </script>
 </html>
