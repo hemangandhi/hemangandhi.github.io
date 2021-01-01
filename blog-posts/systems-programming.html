@@ -233,7 +233,7 @@
 	      This a way to implement a lock. In theory. I have yet to test this (and I doubt I ever really will -- testing multithreading is really hard). A <code><span class="built-in">std::atomic</span>&lt;<span class="keyword">bool</span>&gt;</code> handles the locking, ensuring that between the check for whether the <code><span class="keyword">bool</span></code> was <code><span class="keyword">false</span></code> and when it was set to <code><span class="keyword">true</span></code>. This makes the locking safe. <a href="https://en.cppreference.com/w/cpp/atomic/atomic">Documentation on <code><span class="built-in">std::atomic</span></code>.</a> Be very careful with this: the built-in is great for small types that fit in hardware-based instructions. Otherwise you will see that the class will use locks and, honestly, it should.
             </div>
             <div class="padded-text place-title">
-	      These are important basic building blocks. I will (theoretically) implement an improvement on this in my discussion on RAII.
+	      These are important basic building blocks. I will (theoretically) implement an improvement on this in <a href="#slide-15">my discussion on RAII.</a>
             </div>
 	  </div>
 
@@ -781,7 +781,7 @@ Hyena ed;
 }
 	    </pre>
             <div class="padded-text place-title">
-	      Besides being a nonsensical <span title="LionKing&">film reference</span>, this snippet demonstrates something important about C++: the default constructor of <code>ed</code> was run -- hence, it was allocated. This <i>could</i> hold some resources (not that hyenas held much in the film). And there was only one way to get these resources: initialization. In a good API, the way to get a resource would be to initialize a handle. Then when that handle is destroyed (like any good leak-free program must), the destructor can release the resource. Consider:
+	      Besides being a nonsensical <span title="LionKing&">film reference</span>, this snippet demonstrates something important about C++: the default constructor of <code>ed</code> was run -- hence, it was allocated. This <i>could</i> hold some resources (not that hyenas held much in the film). And there was only one way to get these resources: initialization. In a good API, the way to get a resource would be to initialize a handle. Then when that handle is destroyed (like any good leak-free program must), the destructor can release the resource. Consider (<a href="#slide-7">as promised earlier</a>):
             </div>
 	    <pre>
 <span class="keyword">#include</span> <span class="built-in">&ltatomic&gt</span>
@@ -874,7 +874,7 @@ useLockedThingy(Locked&ltint&gt*):
 	      Other than that, it's worth mentioning the more important linear types: <code class="built-in">std::unique_ptr</code> in C++ and any type that isn't a <code class="built-in">Copy</code> in Rust. Haskell also has linear types. C++ and Haskell support linear types as a special subset of the semantics, but Rust makes it the default.
             </div>
             <div class="padded-text place-title">
-	      The idea of a linear type is that it is produced and then consumed. In a way, it's like thinking of values as molecules in chemistry. This, to me, is more like how resources should work in computers too since you don't get copies for free.
+	      The idea of a linear type is that it is produced and then consumed. In a way, it's like thinking of values as molecules in chemistry. This, to me, is more like how resources should work in computers too since you don't get copies for free. <a href="modal.html#linear">I've discussed this before too.</a>
             </div>
 	  </div>
 
@@ -1017,7 +1017,7 @@ It my_find_if(It begin, It end, Comp c) {
 }
 	    </pre>
             <div class="padded-text place-title">
-	      This doesn't compile since you can't pronounce <code><span class="keyword">int</span> *::value_type</code>. I tried to do some template voodoo to make that work with a "concept specialization" (yes it's a thing, you can now TMP with higher predicates UwU). After some finnagling, and giving up on the <code>value_type</code> being handed to be, I did get this to compile to a tidy loop:
+	      This doesn't compile since you can't pronounce <code><span class="keyword">int</span> *::value_type</code>. I tried to do some template voodoo to make that work with a "concept specialization" (yes it's a thing, you can now TMP with higher predicates UwU). After some finnagling, and giving up on the <code>value_type</code> being handed to me, I did get this to compile to a tidy loop:
             </div>
 	    <pre>
 <span class="keyword">#include</span> <span class="built-in">&lt;concepts&gt;</span>
@@ -1188,7 +1188,7 @@ It my_find_if(It begin, It end, Comp c) {
 		</tr>
 		<tr>
 		  <td><a href="https://youtu.be/VvbTP_k_Df4">CppCon 2015:Marshall Clow “Type Traits - what are they and why should I use them?"</a></td>
-		  <td>An overview of C++ types and the pre-concepts way to manage them. SNIFAE go brr.</td>
+		  <td>An overview of C++ types and the pre-concepts way to manage them. <span title="Substitution Failure Is Not An Error">SFINAE</span> go brr.</td>
 		</tr>
 		<tr>
 		  <td><a href="https://youtu.be/WjTrfoiB0MQ">CppCon 2015: Andrei Alexandrescu “Declarative Control Flow"</a></td>
@@ -1273,7 +1273,9 @@ It my_find_if(It begin, It end, Comp c) {
 	  let node;
 	  for(node = document.getElementById(id.substr(1)); node != document.body && !node.id.startsWith('slide-'); node = node.parentNode);
 	  if (node == document.body) return 0;
-	  return parseInt(node.id.replace('slide-', ''));
+	  let rv = parseInt(node.id.replace('slide-', ''));
+	  if (rv > i - 1 || rv < 0) return 0;
+	  return rv;
       }
 
       let curr_slide = getSlideOfUrl();
@@ -1303,6 +1305,12 @@ It my_find_if(It begin, It end, Comp c) {
 	  curr_slide = parseInt(slide_nav.value.replace('slide-', ''));
 	  updateSlide();
       });
+
+      window.onhashchange = function(){
+	  document.getElementById('slide-' + curr_slide).style.display = "none";
+	  curr_slide = getSlideOfUrl();
+	  updateSlide();
+      };
 
       // Stuff for collapsible content
       const hide_synonyms = ['collapse', 'hide', 'skip'];
