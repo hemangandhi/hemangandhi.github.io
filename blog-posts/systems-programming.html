@@ -126,7 +126,7 @@
 	      This is what GPUs do and they're really good at it, but the more interesting movement is the fact that CPUs also execute SIMD instructions and many compilers will output them.
             </div>
             <div class="padded-text place-title">
-	      CPU SIMD is a strange sort of thing since it can only do some arithmetic operations on up to 128-bit values. Yet this can be faster for large enough lists.
+	      CPU SIMD is a strange sort of thing since it can only do some arithmetic operations on up to 128-bit values. Yet this can be faster for large enough lists. Look into AVX and AMX for industry implementations of this.
             </div>
 	  </div>
 
@@ -216,7 +216,8 @@
 <span class="keyword">public</span>:
     Locked(T t): locked_(t), mutex_(<span class="keyword">false</span>) {}
     T& ExclusivelyAccess() {
-        <span class="keyword">while</span>(!mutex_.compare_exchange_strong(<span class="keyword">false</span>, <span class="keyword">true</span>));
+        <span class="keyword">bool</span> f = <span class="keyword">false</span>;
+        <span class="keyword">while</span>(!mutex_.compare_exchange_strong(f, <span class="keyword">true</span>));
         <span class="keyword">return</span> locked_;
     }
     <span class="keyword">void</span> EndExclusiveAccess() {
@@ -475,7 +476,16 @@
 		<li>Odin</li>
 		<li>Jiyu</li>
 	      </ul>
-	      (All are pretty small still, but they were made for a reason.)
+	      (All are pretty small still, but they were made for a reason.) Some trends are:
+	      <ul>
+		<li>Immutability by default.</li>
+		<li title="Get wrecked Golang">Support for Generics.</li>
+		<li>(Sometimes.) Closures.</li>
+		<li>(Sometimes.) RAII or destruction.</li>
+		<li>Better error handling either with panics or a result sum type</li>
+		<li>Enums being tagged unions (or at least namespaced)</li>
+		<li>Smarter handling of integer overflows or underflows (depending on compilation modes sometimes)</li>
+	      </ul>
             </div>
 	  </div>
 
@@ -712,8 +722,515 @@ fdup (Cons x xs) = <span class="keyword">case</span>
 		  <li>The next part of the function counts the other parameter down, showing <code>1 + 0 + (m + 1) = 0 + ((m + 1) + 1)</code> and the same base case (using <code>apply</code> thanks to 2).</li>
 		  <li>The final case counts down the first parameter, noting the same fact as 3, but for m (second parameters) more than 0.</li>
 		</ol>
-		That about wraps up this skippable type theory side-rant (that's probably reaching the length of my original type theory rant).
+		That about wraps up this skippable type theory side-rant (that's probably reaching the length of my original type theory rant). Here are some links: <a href="https://github.com/hemangandhi/derpspace/blob/master/Haskell/gadt.hs">the whole Haskell file</a> and <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/FixedVec.rs">a similar thing in Rust</a> (note that the Rust one needs so massaging for the correct lifetimes -- the simplest thing to do is make everything needed a <code class="keyword">'static</code>, but that's <span title="OK, and it probably never will be">not useful enough</span> for me to actually want to put it as my final version). This is one way to look at the next section and I really hope more theoretically inclined people actually unify this GADT approach with compile-time programming as we know it in C++.
               </div>
+            </div>
+	    <div class="collapsible-container place-title padded-text">
+              <div class="padded-text place-title">
+		Actually, there's a different side-rant I'd like to give before discussing <code class="keyword">constexpr</code>. Again, <span class="collapse-handle">feel free to skip.</span>
+              </div>
+              <div class="place-title collapsible" style="color:white">TMP does not GADTs Make</div>
+              <div class="padded-text place-title collapsible">
+		TMP (template metaprogramming) is the C++ construct that is a small functional programming language with pattern matching for conditionals and recursion (yes, it's Turing complete) that simplifies some C++ code generation. I'll spare you an example. All I mean to say here is that formally, TMP does not add GADTs into C++. (Concepts in C++20 might, but I cannot be too sure: since they don't have to be complete, they might not reach the same theorem-proving strength.)
+              </div>
+              <div class="padded-text place-title collapsible">
+		There are a few explanations for this. The one I personally found is that the C++ compiler does not prove any facts about the templates it sees: it merely stashes them for later use. You can put in some impossible nonsense in a template and have a compiling C++ program. The errors arise when, in the buildable unit, there is a use of the template (an instance) that the compiler cannot understand. The compiler tries to fill out every template for each of its instances and only raises errors when this "filling out" (expansion, instantiation) fails. GHC does not do that with GADTs: it actually ensures that the <code>Nat</code>s in the <code>FidexVec</code>, despite being unused, actually are the correct <code>Nat</code>s each time. Rustc does the same thing with the <code>PhantomData</code> marker and phantom types (where you specifically make types stronger than their representations as seen by the CPU).
+              </div>
+	    </div>
+            <div class="big-title place-title"><code class="keyword">constexpr</code> and Compile-time Programming</div>
+            <div class="padded-text place-title">
+	      It's strange to basically repeat the title of the slide so close to the end. <i>Cinema sins voice: roll credits.</i> But, there's no better way to express this. This type of programming does not (yet) emphasize code generation or verification. This really ends up filling in some gaps that low-level programming needs: easier initialization and computation of constants. The essential idea is that some constants need a little nudge to be ready for the lifetime of the program. Something like the list of the first <code>n</code> primes or some other product. Even complex types like a lookup table (or strings or a lookup table of strings). There are a few more complications: such as how many copies of the constant value the compiler may create (see C++'s <code class="keyword">inline constexpr</code>), and the fact that <code class="keyword">constexpr</code> functions and constructors can be run at runtime.
+            </div>
+            <div class="padded-text place-title">
+	      There are other instances of this. Really, compilers do this more than just when you tell them to: there's an optimization called constant propagation that does this sort of thing as much as possible. Furthermore, other programming languages have equivalents to <code class="keyword">constexpr</code>: Zig has <code class="keyword">comptime</code> as a keyword for function parameters known at compile time (these serve as means for adding generics too), <a href="https://without.boats/blog/shipping-const-generics/">const generics</a> are coming to Rust to complement <a href="https://doc.rust-lang.org/nightly/edition-guide/rust-next/const-fn.html">const fns</a>. It's worth noting that this is the simpler way to reason about array types too (that really should be qualified by their lengths).
+            </div>
+	  </div>
+
+	  <div id="slide-15">
+            <div class="big-title">RAII</div>
+            <div class="padded-text">
+	      <i>Resource Allocation is Initialization</i>
+            </div>
+            <div class="padded-text">
+	      <i>What a wonderful phrase</i>
+            </div>
+            <div class="padded-text">
+	      <i>Resource Allocation is Initialization</i>
+            </div>
+            <div class="padded-text">
+	      <i>Ain't no passing craze!</i>
+            </div>
+            <div class="padded-text">
+	      <i>It means no worries, for your resources.</i>
+            </div>
+            <div class="padded-text">
+	      <i>It's our problem-free philosophy,</i>
+            </div>
+            <div class="padded-text">
+	      <i>Resource Allocation is Initialization</i>
+            </div>
+            <div class="padded-text place-title">
+	      It really is. The incantation doesn't sound like Hakuna Matata, but if you're used to it, it will feel like that. This originates in C++, so my discussion will be focuessed on that. Rust has the same concept too, but it's easier to me to explain it in C++. In C++, when you declare a variable, you allocate memory for it. Consider:
+            </div>
+	    <pre>
+Hyena ed;
+<span class="keyword">if</span> (be_prepared()) {
+  ed = banzai;
+} <span class="keyword">else</span> {
+  ed = shenzi;
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      Besides being a nonsensical <span title="LionKing&">film reference</span>, this snippet demonstrates something important about C++: the default constructor of <code>ed</code> was run -- hence, it was allocated. This <i>could</i> hold some resources (not that hyenas held much in the film). And there was only one way to get these resources: initialization. In a good API, the way to get a resource would be to initialize a handle. Then when that handle is destroyed (like any good leak-free program must), the destructor can release the resource. Consider:
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&ltatomic&gt</span>
+
+<span class="keyword">template</span> &lt<span class="keyword">class</span> T&gt
+<span class="keyword">class</span> Locked {
+ <span class="keyword">public</span>:
+  <span class="keyword">class</span> HeldValue {
+   <span class="keyword">public</span>:
+    HeldValue(T* h, <span class="built-in">std::atomic</span>&lt<span class="keyword">bool</span>&gt* m) {
+      <span class="keyword">bool</span> f = <span class="keyword">false</span>;
+      <span class="keyword">while</span> (!m-&gtcompare_exchange_strong(f, <span class="keyword">true</span>));
+      held_ = h;
+      mutex_ = m;
+    }
+    T& <span class="keyword">operator</span>*() { <span class="keyword">return</span> *held_; }
+    T* <span class="keyword">operator</span>-&gt() { <span class="keyword">return</span> held_; }
+    ~HeldValue() { *mutex_ = false; }
+
+   <span class="keyword">private</span>:
+    T* held_;
+    <span class="built-in">std::atomic</span>&lt<span class="keyword">bool</span>&gt* mutex_;
+  };
+
+  Locked(T t) : locked_(t), mutex_(false) {}
+  HeldValue Lock() { <span class="keyword">return</span> HeldValue(&locked_, &mutex_); }
+  <span class="keyword">bool</span> IsHeld() { <span class="keyword">return</span> !mutex_; }
+
+ <span class="keyword">private</span>:
+  <span class="built-in">std::atomic</span>&lt<span class="keyword">bool</span>&gt mutex_;
+  T locked_;
+};
+
+<span class="keyword">void</span> useLockedThingy(Locked&lt<span class="keyword">int</span>&gt* p) {
+  Locked&lt<span class="keyword">int</span>&gt::HeldValue grabbed = p->Lock();
+  (*grabbed)++;
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      I think it's important to emphasize how this works. So here's the assembly, since that's how I'd like to explain it. (And <a href="https://gcc.godbolt.org/">gcc.godbolt.org</a> is really cool.)
+            </div>
+	    <pre>
+useLockedThingy(Locked&ltint&gt*):
+        <span class="keyword">mov</span>     <span class="built-in">BYTE PTR [rsp-1]</span>, 0
+        <span class="keyword">mov</span>     <span class="built-in">edx</span>, 1
+.L3:
+        <span class="keyword">movzx</span>   <span class="built-in">eax, BYTE PTR [rsp-1]</span>
+        <span class="keyword">lock cmpxchg</span> <span class="built-in">BYTE PTR [rdi], dl</span>
+        <span class="keyword">je</span>      .L4
+        <span class="keyword">mov</span>     <span class="built-in">BYTE PTR [rsp-1], al</span>
+        <span class="keyword">jmp</span>     .L3
+.L4:
+        <span class="keyword">add</span>     <span class="built-in">DWORD PTR [rdi+4]</span>, 1
+        <span class="keyword">xor</span>     <span class="built-in">eax, eax</span>
+        <span class="keyword">xchg</span>    <span class="built-in">al, BYTE PTR [rdi]</span>
+        <span class="keyword">ret</span>
+	    </pre>
+            <div class="padded-text place-title">
+	      This is really amazing: you'll notice that the notion of the <code>HeldValue</code> entirely disappears: all the functions that were called get inlined to just the five bytes that are the <code class="keyword">int</code> and the <code class="keyword">bool</code> as the values pointed to by <code>rdi</code>.
+            </div>
+            <div class="padded-text place-title">
+	      The most wonderful thing, though, is that despite having no increased cost, the right thing happens: the <code><span class="keyword">xchg</span> <span class="built-in">al, BYTE PTR [rdi]</span></code> releases the mutex.
+            </div>
+            <div class="padded-text place-title">
+	      RAII doesn't just apply to mutexes and memory, but files, sockets, database connections, and pretty much anything that you'll cease to need at a deterministic time.
+            </div>
+	    <div class="padded-text">
+	      <i>In the memory, unmanaged memory,</i>
+	    </div>
+	    <div class="padded-text">
+	      <i>Resources sleep tonight.</i>
+	    </div>
+	    <div class="padded-text">
+	      <i>Run destructors, clean up garbage,</i>
+	    </div>
+	    <div class="padded-text">
+	      <i>Resources sleep tonight.</i>
+	    </div>
+	  </div>
+
+	  <div id="slide-16">
+            <div class="big-title">Linear Types</div>
+            <div class="padded-text">
+	      <i><a href="https://youtu.be/ApuFuuCJc3s">Sage advice from Madagascar (the movie).</a></i>
+            </div>
+            <div class="padded-text place-title" title="OK, and I hamfisted a catchy earworm.">
+	      So linear types aren't really just about move semantics. This is another wedding of some concepts and I think really go hand-in-hand. Move semantics help use linear types and linear types help motivate the use of linear semantics. But I'm really just going to mention that moves exist as a thing. Bjarne Stoustroup has a <a href="https://youtu.be/86xWVb4XIyE?t=2395">good brief explanation of the issue</a>. Since this <i>is</i> about linear types, you should assume that a lot of things use move semantics.
+            </div>
+            <div class="padded-text place-title">
+	      Other than that, it's worth mentioning the more important linear types: <code class="built-in">std::unique_ptr</code> in C++ and any type that isn't a <code class="built-in">Copy</code> in Rust. Haskell also has linear types. C++ and Haskell support linear types as a special subset of the semantics, but Rust makes it the default.
+            </div>
+            <div class="padded-text place-title">
+	      The idea of a linear type is that it is produced and then consumed. In a way, it's like thinking of values as molecules in chemistry. This, to me, is more like how resources should work in computers too since you don't get copies for free.
+            </div>
+	  </div>
+
+	  <div id="slide-17">
+            <div class="big-title">Error Handling</div>
+            <div class="padded-text place-title">
+	      This is a trend I've seen that is pretty interesting. Rust has most of what I'm on about. Golang does too, and C++ supports it, but I know very little about exceptions and think that they're a philosophical anda syntactic mess. So first I'll bash them and then present the (monadic) light.
+            </div>
+            <div class="padded-text place-title">
+	      Exceptions are a really weird term for errors in a program. Pragmatically, there are two types of errors: something the program can handle, and something that the program cannot handle. The former is a reasonable candidate for error handling, the latter being something the OS should resolve on the program's behalf, perhaps terminating it. Consider some invalid input or a message from the network failing to parse versus a segmentation fault or running out of memory. The word "exception" has an implication: that something exceptional occured. This is a really weird conflation of the subjective divide on what errors programs should and should not be able to recover from. If the program can recover from the error, just how "exceptional" was the behavior? Are we supposed to expect exceptions to our rules? These semantics are strange to me. I'm sure the word made more sense earlier, but now, we have recoverable errors and crashes, and I don't think we need to really care about further distinctions.
+            </div>
+            <div class="padded-text place-title">
+	      Furthermore, semantics aside, I also think that the syntax of exceptions is invariably clumsy. You end up with a separate exit from a function, separate handling of the errors and various really strange workarounds for "exceptional exits." In particular, when trying to catch an exception, the control flow becomes really strange: if you must run code before exiting the function, you need a special goto now that's just relabelled as <code class="keyword">finally</code> (at least in Java which also now has some sort of RAII scoped try thingy that will cleanup resources for you). This adds a lot of mental overhead to a programming language, in my opinion. It is worsened by the notion of checked and unchecked exceptions (another quirk in the semantics too) and odd conventions like <a href="https://en.cppreference.com/w/cpp/language/noexcept_spec"><code class="keyword">noexcept</code>'s details</a>. I think these facts make error handling unsightly -- much uglier than it needs to be.
+            </div>
+            <div class="padded-text place-title">
+	      Now that I've bashed one approach, let me be even more opinionated by presenting the solution I like: the <code class="built-in">Result</code> built-in sum type. Rust has this. This type is great for various reasons: there is no overhead in terms of new syntax (except may be the <code>?</code> operator, but that's a success story if anything), no notion of unchecked exceptions, no extra changes in control flow, and no odd semantic implications about "exceptional behavior." The <code class="built-in">Result</code> type is also really well-understood in Haskell's <code class="built-in">Either</code> which provides a lot of useful functions for proceeding until the first error, or transforming the success state if there is one, or even transforming the error if that's there. This can lead to some beautiful code since you can chain operations rather elegantly with either <code>?</code> being used a lot or <a href="https://doc.rust-lang.org/std/result/enum.Result.html#method.and_then" title="Haskellers will know this as >>=">the <code>.and_then</code> function.</a>
+            </div>
+            <div class="padded-text place-title">
+	      Such a sum type is no panacea: the types of errors are hard to extend when working with a sum type, but this is an area of <a href="https://doc.rust-lang.org/beta/std/error/trait.Error.html">active work in Rust.</a>
+            </div>
+	  </div>
+
+	  <div id="slide-18">
+            <div class="big-title">Dispatch</div>
+	    <div class="padded-text"><i>How to Stop Worrying and Generically Program</i></div>
+            <div class="padded-text place-title">
+	      This is about static and dynamic dispatch. Broadly, dispatch is about knowing which concrete function to call for abstract types. Consider (in C++):
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&lt;string&gt;</span>
+
+<span class="keyword">class</span> Slide {
+<span class="keyword">public</span>:
+  <span class="keyword">virtual</span> <span class="built-in">std::string</span> GetText() = 0;
+  <span class="keyword">virtual</span> ~Slide();
+};
+
+<span class="keyword">class</span> LongSlide : <span class="keyword">public</span> Slide {
+<span class="keyword">public</span>:
+  <span class="built-in">std::string</span> GetText() <span class="keyword">override</span>;
+  <span class="keyword">int</span> GetScrollLevel();
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      This could lead to vague code: if I have a <code>Slide * s</code> and I <code>s->GetText()</code>, the exact implementation of <code>GetText</code> could be vague. If I added more child classes under <code>Slide</code>, the choices may abound. There are two ways the compiler may fix this:
+	      <ul>
+		<li>Static dispatch: where different functions are generated every time a choice is made and so there is excatly one function every time. This can also be called monomorphization.</li>
+		<li>Dynamic dispatch: where every object carries a small table of function pointers disambiguating which function you'd call.</li>
+	      </ul>
+	      There's a tradeoff worth knowing here: dynamic dispatch has at least 2 (since some lookups in C++ may defer to parent classes) jumps that could really slow the CPU down, but static dispatch can bloat the binary, also slowing down execution. The above example with <code>Slide</code>s actually does a dynamic dispatch (as of December 2020 on GCC with an <code>-O3</code>). C++ templates may do static dispatch, Rust's behavior varies based on the way you're using traits, how many traits you're using, and how large the traits are (in instances and probably number of functions). Java does something like what Rust does.
+            </div>
+	  </div>
+
+	  <div id="slide-19">
+            <div class="big-title">From Closures to Type Erasure</div>
+            <div class="padded-text place-title">
+	      Consider this: it's the mid 2000s and C++ has a standard (finally), but it's just a record of what C++ has become. There's a great library, and it provides much: <code class="built-in">&lt;algorithm&gt;</code>. It's really neat since a lot of array and vector transformations are easier -- more readable and things you don't need to rewrite repeatedly. Consider, however, the C code that <code>lfind</code> is based on: <code><span class="keyword">void </span>* lfind (<span class="keyword">const void</span>* key, <span class="keyword">const void</span>* base, <span class="built-in">size_t</span> nitems, <span class="built-in">size_t</span> size, <span class="keyword">int</span> (*compar) (<span class="keyword">const void</span>*, <span class="keyword">const void</span>*));</code> which, the bad function pointer syntax notwithstanding, makes the <code>compar</code>ator have to be a static constant. Suppose that we wanted to sort the same range with more or less the same comparator? If we wanted these comparators to vary, we'd need a different functions. For instance, if the <code><span class="keyword">void</span>*</code> referred to names, and we only wanted to find by first names or last names, and sometimes by the whole name, this would be three functions.
+            </div>
+            <div class="padded-text place-title">
+	      C++98 makes this a little easier since we could have what C++ calls a functor (it's sort of abuse of notation, but I'm not talking about real functors, so I'll use the C++ terminology). A functor is a callable with data, a <code class="keyword" title="or class, but you get the gist">struct</code> that overloads <code class="keyword">operator()</code>. So consider the C++ <code class="built-in">std::find_if</code>. In C++20 (or C++23  when this gets more standard), this would look like <code><span class="keyword">template</span>&lt;<span class="built-in">Iterator</span> It, <span class="built-in">FunctionType</span>&lt;<span class="keyword">bool</span>, It::ValueType&gt; Fn&gt; It <span class="built-in">std::find_if</span>(It begin, It end, Fn compar);</code> (which seems like jumping the gun since I am still really talking about C++98 where this would just be a template with nothing too fancy). In this case, you'd encode the logic of the three comparators (first name only, last name only, or whole name from the example above) into a <code class="keyword" title="I recommend a struct since I see them as emphasis on 'this type is just a wrapper or functor, not something with important long-term invariants' in C++">struct</code>. The really neat part about this is that the compiler can inline a lot of the notion of there having been a struct at all.
+            </div>
+            <div class="padded-text place-title">
+	      C++11 made this situation better by adding a really nice syntactic sugar for functors: lambdas. The notion of capturing codifies the state the functor would've been initialized with and the lambda body takes the place of the <code class="keyword">operator()</code>. This is getting better and better as C++ evolves, but there is more to the puzzle. The functor struct used to be a concrete type. Lambdas are also supposed to be compiler-generated (opaque) types. This brings up an issue: what if I want to write my own higher-order function? Am I forced to add a template? Does that have to propagate all the way down?
+            </div>
+            <div class="padded-text place-title">
+	      There's some alternate magic: <code class="built-in">std::function</code>. This can wrap any callable, but you can peer behind that curtain (other than the syntactic sugar that lets you write the return type first -- I have no clue what that is). There are two ways to do this. C++17 and earlier needed <code class="built-in">std::enable_if</code> hacks. But now I present another way to deal with this as of C++20's draft (using clang-trunk in December 2020):
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&lt;concepts&gt;</span>
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> RT, <span class="keyword">typename</span>... Args&gt;
+<span class="keyword">concept</span> Function = <span class="keyword">requires</span> (RT r, Args... a) {
+  {F{}(a...)} -&gt; <span class="built-in">std::convertible_to</span>&lt;RT&gt;;
+  <span class="built-in">std::copy_constructible</span>&lt;F&gt;;
+};
+
+<span class="comment">// Technically useless, but this is what C++17 (sorta) had as its std::function</span>
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> RT, <span class="keyword">typename</span>... Args&gt;
+<span class="keyword">requires</span> Function&lt;F, RT, Args...&gt;
+<span class="keyword">class</span> MyStdFunction {
+<span class="keyword">public</span>:
+  MyStdFunction(F f) : f_(f) {}
+  RT <span class="keyword">operator()</span>(Args... a) {
+      f_(a...);
+  }
+<span class="keyword">private</span>:
+  F f_;
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      Amazingly, this makes the "good" type declaration of <code class="built-in">std::find_if</code> that I wrote above fairly accurate. At the risk of overusing concepts (and not discussing the boring old <code class="built-in">std::enable_if</code>-based classes in C++17), here's an iterator concept too:
+            </div>
+	    <pre>
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> It&gt;
+<span class="keyword">concept</span> IteratorForFind = <span class="keyword">requires</span>(It i) {
+  <span class="keyword">typename</span> It::value_type;
+  { *i } -&gt; <span class="built-in">std::convertible_to</span>&lt;<span class="keyword">typename</span> It::value_type&gt;;
+  { i++ } -&gt; <span class="built-in">std::convertible_to</span>&lt;It&gt;;
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      This isn't <i>quite</i> the right thing. The next slide is that, because I got distracted and the concepts are way cooler than the class-based old type erasure. Rust has it too: <a href="https://doc.rust-lang.org/std/ops/trait.Fn.html">See the <code class="built-in">std::ops::Fn</code> trait.</a>
+            </div>
+	  </div>
+
+	  <div id="slide-20">
+            <div class="big-title">C++20 Concepts: A Detour Because I Can</div>
+            <div class="padded-text place-title">
+	      So this started with baby type erasure:
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&lt;concepts&gt;</span>
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> RT, <span class="keyword">typename</span>... Args&gt;
+<span class="keyword">concept</span> Function = <span class="keyword">requires</span> (RT r, Args... a) {
+  {F{}(a...)} -&gt; <span class="built-in">std::convertible_to</span>&lt;RT&gt;;
+  <span class="built-in">std::copy_constructible</span>&lt;F&gt;;
+};
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> It&gt;
+<span class="keyword">concept</span> IteratorForFind = <span class="keyword">requires</span>(It i) {
+  <span class="keyword">typename</span> It::value_type;
+  { *i } -&gt; <span class="built-in">std::convertible_to</span>&lt;<span class="keyword">typename</span> It::value_type&gt;;
+  { i++ } -&gt; <span class="built-in">std::convertible_to</span>&lt;It&gt;;
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      To get the <a href="https://gcc.godbolt.org/">compiler explorer (as of December 2020, clang trunk, <code>--std=c++2a -O3</code>)</a> to output <i>something</i>, I added (rather naturally if I say so myself):
+            </div>
+	    <pre>
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> It, <span class="keyword">typename</span> Comp&gt;
+<span class="keyword">requires</span> IteratorForFind&lt;It&gt; && Function&lt;Comp, <span class="keyword">bool</span>, <span class="keyword">typename</span> It::value_type&gt;
+It my_find_if(It begin, It end, Comp c) {
+  <span class="keyword">for</span>(; begin != end && !c(*begin); begin++);
+  <span class="keyword">return</span> begin;
+}
+
+<span class="keyword">int</span> * find_int(<span class="keyword">int</span> n, <span class="keyword">int</span>* arr, <span class="keyword">int</span> key) {
+    <span class="keyword">return</span> my_find_if(arr, arr + n, [key](<span class="keyword">int</span> i) { <span class="keyword">return</span> i == key;});
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      This doesn't compile since you can't pronounce <code><span class="keyword">int</span> *::value_type</code>. I tried to do some template voodoo to make that work with a "concept specialization" (yes it's a thing, you can now TMP with higher predicates UwU). After some finnagling, and giving up on the <code>value_type</code> being handed to be, I did get this to compile to a tidy loop:
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&lt;concepts&gt;</span>
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> RT, <span class="keyword">typename</span>... Args&gt;
+<span class="keyword">concept</span> Function = <span class="keyword">requires</span> (RT r, Args... a) {
+  {F{}(a...)} -&gt; <span class="built-in">std::convertible_to</span>&lt;RT&gt;;
+  <span class="built-in">std::copy_constructible</span>&lt;F&gt;;
+};
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> It, <span class="keyword">typename</span> T&gt;
+<span class="keyword">concept</span> IteratorForFind = <span class="keyword">requires</span>(It i) {
+  { *i } -&gt; <span class="built-in">std::convertible_to</span>&lt;T&gt;;
+  { i++ } -&gt; <span class="built-in">std::convertible_to</span>&lt;It&gt;;
+  <span class="built-in">std::equality_comparable_with</span>&lt;It, It&gt;;
+};
+
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> It, <span class="keyword">typename</span> Comp&gt;
+<span class="keyword">requires</span> IteratorForFind&lt;It, T&gt; && Function&lt;Comp, <span class="keyword">bool</span>, T&gt;
+It my_find_if(It begin, It end, Comp c) {
+  <span class="keyword">for</span>(; begin != end && !c(*begin); begin++);
+  <span class="keyword">return</span> begin;
+}
+
+<span class="keyword">int</span> * find_int(<span class="keyword">int</span> n, <span class="keyword">int</span>* arr, <span class="keyword">int</span> key) {
+    <span class="keyword">return</span> my_find_if&lt;<span class="keyword">int</span>&gt;(arr, arr + n, [key](<span class="keyword">int</span> i) { <span class="keyword">return</span> i == key;});
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      This works, but got me wondering about the built-ins. Turns out the in <code class="built-in">iterator</code>, there are concepts for iterators already. (In hindsight, duh.) Here they use <code class="built-in">std::iterator_traits</code> to get at the value (duh, again).
+            </div>
+	    <pre>
+<span class="keyword">#include</span> <span class="built-in">&lt;concepts&gt;</span>
+<span class="keyword">#include</span> <span class="built-in">&lt;iterator&gt;</span>
+
+<span class="keyword">template</span> &lt;<span class="built-in">std::forward_iterator</span> It, <span class="keyword">typename</span> Comp&gt;
+<span class="keyword">requires</span> <span class="built-in">std::predicate</span>&lt;Comp, <span class="keyword">typename</span> <span class="built-in">std::iterator_traits</span>&lt;It&gt;::value_type&gt;
+It my_find_if(It begin, It end, Comp c) {
+  <span class="keyword">for</span> (; begin != end && !c(*begin); begin++);
+  <span class="keyword">return</span> begin;
+}
+
+<span class="keyword">int</span>* find_int(<span class="keyword">int</span> n, <span class="keyword">int</span>* arr, <span class="keyword">int</span> key) {
+  <span class="keyword">return</span> my_find_if(arr, arr + n, [key](<span class="keyword">int</span> i) { <span class="keyword">return</span> i == key; });
+}
+	    </pre>
+            <div class="padded-text place-title">
+	      Yeah, there's a built-in for predicats too. And this makes life really easy.
+            </div>
+          </div>
+
+	  <div id="slide-21">
+            <div class="big-title">References and TL;DR</div>
+            <div class="padded-text">
+	      <i>Yeah, this should've been everything, may be.</i>
+            </div>
+            <div class="big-title">TL;DR</div>
+            <div class="padded-text place-title">
+	      Instead of reading all of the stuff I wrote out, I think this summary would help:
+	      <ul>
+		<li>CPUs are not speeding up as much as they used to so hardware is specializing.</li>
+		<li>One specialization is SIMD where, even commodity CPUs but especially in GPUs, one instruction acts on much data.</li>
+		<li>Atomics provide ways to implement multi-threading.</li>
+		<li>CPUs are confusing and complicated, and micro-architectural state is not easy.</li>
+		<li>Benchmarking is difficult and specific datasets will make algorithms behave differently.</li>
+		<li>Static guarantees and tooling is the best it's ever been and is only getting better.</li>
+		<li>There's a wellspring of low-level systems languages. They're all modernizing C in many ways and agree on some interesting new trends, making code easier to understand.</li>
+		<li>Compile-time programming is a great way to get static guarantees and code generation.</li>
+		<li>Modules are the "right" way to do encapsulation.</li>
+		<li>Resource allocation is initialization: that is, tie resources to object lifetimes.</li>
+		<li>Error handling should fit in with other bits of code.</li>
+		<li>Static and dynamic dispatch are well-understood, and you should know about that. This is applied in type erasure.</li>
+		<li>C++20 concepts are really cool.</li>
+	      </ul>
+	      It's worth noting that this "slideshow" is a little bit of everything, best understood through larger complicated low-level (that is non-managed) languages. I've generally used C++ because it's the easiest for me to get my hands on examples, but Rust is just as good. Zig, Odin, C, and similar languages also could cover a lot of the earlier topics. I broadly call this systems programming since systems programmers seem to engineer large complex systems with the help of the latest programming tools and with great attention to how these abstract bits of code interact with the hardware. I'm not sure what the hard academic line is between systems programming, operating systems, distributed systems, programming language theory, and computer architecture -- I like to think that systems programming is a unification of all these topics.
+            </div>
+            <div class="big-title" id="works-cited">References</div>
+            <div class="padded-text place-title">
+	      You may not recall, but one of the titles mentioned CppCon. Here's why:
+	      <table>
+		<tr>
+		  <th>Talk</th>
+		  <th>Topics</th>
+		</tr>
+		<tr>
+		  <td><a href="https://www.youtube.com/watch?v=6lurOCdaj0Y">Empirically Measuring, & Reducing, C++’s Accidental Complexity - Herb Sutter - CppCon 2020</a></td>
+		  <td>This is about parameter passing (not something I talked about enough) which is a great example of declarative code.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/ImLFlLjSveM">How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020</a></td>
+		  <td>An overview of concepts, ranges, and coroutines as they will be in C++20.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/d_E-VLyUnzc">C++20 Ranges in Practice - Tristan Brindle - CppCon 2020</a></td>
+		  <td>A detailed look at ranges. I love how this can interact with <code class="keyword">constexpr</code>.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/7oV7hiAsVTI">Structure and Interpretation of Computer Programs: SICP - Conor Hoekstra - CppCon 2020</a></td>
+		  <td>Just another plug for both C++20 and one of my favorite books.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/Y1o4rc9P1FQ">How to Implement Your First Compiler Feature:The Story of Concepts in Clang - Saar Raz - CppCon 2019</a></td>
+		  <td>A really fun look at the story of concepts in C++20 with a lot of good advice on collaboration and navigating a large codebase.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/3jCOwajNch0">Back to Basics: Lambdas from Scratch - Arthur O'Dwyer - CppCon 2019</a> and then <a href="https://youtu.be/tbUCHifyT24">Back to Basics: Type Erasure - Arthur O'Dwyer - CppCon 2019</a></td>
+		  <td>A great coverage of lambdas and how they work followed by the talk that actually made me want to talk about type erasure.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/HG6c4Kwbv4I">CppCon 2019: Matt <span title="Sound familliar?">Godbolt</span> “Path Tracing Three Ways: A Study of C++ Style”</a></td>
+		  <td>A really fun talk about some good C++ code, with a got bit on benchmarking.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/kIoZDUd5DKw">CppCon 2019: Matt Godbolt “Compiler Explorer: Behind The Scenes”</a></td>
+		  <td>Explains some of compiler explorer, which is one of my favorite things.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/rHIkrotSwcc">CppCon 2019: Chandler Carruth “There Are No Zero-cost Abstractions”</a></td>
+		  <td>I honestly don't fully remember what the talk was about. But it was good. I like the notion of "no zero-cost abstractions" given the explanations given here.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/v_yzLe-wnfk">CppCon 2019: Titus Winters “Maintainability and Refactoring Impact of Higher-Level Design Features”</a></td>
+		  <td>Really similar to the above, but mentions how to refactor incrementally in really interesting ways.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/VN0VNoykxtk">CppCon 2019: Hyrum Wright Time Travel: Applying Gradual Typing to Time Types with Clang's LibTooling</a></td>
+		  <td>Conversion of types and really neat arithmetic optimizations leading to a great library.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/ARYP83yNAWk">CppCon 2019: Herb Sutter “De-fragmenting C++: Making Exceptions and RTTI More Affordable and Usable”</a></td>
+		  <td>This is a really neat summary on the entire error handling point I wanted to make.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/FJJTYQYB1JQ">CppCon 2019: Andrei Alexandrescu “Speed Is Found In The Minds of People"</a></td>
+		  <td>A really good talk about benchmarking and optimization. This is the speaker who made me want to mention benchmarking.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/8khWb-Bhhvs">CppCon 2018: Jefferson Amstutz “Compute More in Less Time Using C++ Simd Wrapper Libraries”</a></td>
+		  <td>A really good talk about SIMD, particularly about AVX and how to use it pratically.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/_f7O3IfIR2k">CppCon 2018: Chandler Carruth “Spectre: Secrets, Side-Channels, Sandboxes, and Security”</a></td>
+		  <td>A great overview on the Spectre attack in the CPU.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/ncHmEUmJZf4">CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”</a> and then <a href="https://youtu.be/JZE3_0qvrMg">CppCon 2019: Matt Kulukundis “Abseil's Open Source Hashtables: 2 Years In”</a></td>
+		  <td>The talks that got me talking about hashmaps.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/kSWfushlvB8">CppCon 2017: Bob Steagall “How to Write a Custom Allocator”</a></td>
+		  <td>A really nice overview of <code class="built-in">std::allocator</code> and the design of allocators. I wish I could discuss these -- allocators are essential in low-level programming.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/ZQFzMfHIxng">CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”</a></td>
+		  <td><code class="built-in">std::atomic</code> and the talk that made me want to talk about those.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/YM8Xy6oKVQg">CppCon 2017: P. McKenney, M. Michael & M. Wong “Is Parallel Programming still hard? PART 1 of 2”</a> and then <a href="https://youtu.be/74QjNwYAJ7M">CppCon 2017: P. McKenney, M. Michael & M. Wong “Is Parallel Programming still hard? PART 2 of 2”</a></td>
+		  <td>Very interesting survey on issues in parallel programming, particularly history and low-level details with caching. I should mention that I don't really like the speakers, but their content is awesome.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/4AfRAVcThyA">CppCon 2017: Herb Sutter “Meta: Thoughts on generative C++”</a></td>
+		  <td>An ambitious proposal for generative C++ macros (they seem to be like better Rust procedural macros).</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/bSkpMdDe4g4">CppCon 2017: Matt Godbolt “What Has My Compiler Done for Me Lately? Unbolting the Compiler's Lid”</a></td>
+		  <td>A tour through some really fun compiler optimizations powered by the compiler explorer.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/VvbTP_k_Df4">CppCon 2015:Marshall Clow “Type Traits - what are they and why should I use them?"</a></td>
+		  <td>An overview of C++ types and the pre-concepts way to manage them. SNIFAE go brr.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/WjTrfoiB0MQ">CppCon 2015: Andrei Alexandrescu “Declarative Control Flow"</a></td>
+		  <td>Another chapter in the tale of exceptions: resolving resources through exceptions.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/JfmTagWcqoE">CppCon 2016: Herb Sutter “Leak-Freedom in C++... By Default.”</a></td>
+		  <td>A memory management system for C++.</td>
+		</tr>
+	      </table>
+	      Of course, cppcon is no longer the only set of good systems programming talks, and there are other interesting topics. Here are a few others from various other places:
+	      <table>
+		<tr>
+		  <th>Talk</th>
+		  <th>Topics</th>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/A3AdN7U24iU">Rust: A Language for the Next 40 Years - Carol Nichols</a></td>
+		  <td>A good overview on how Rust was trending in mid 2019, outlining a lot of the philosophy and direction.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/NNwK5ZPAJCk">The Talk You've Been Await-ing for</a></td>
+		  <td>An overview of Rust async/await that explains the architecture of the whole system in Rust, with wakers, polling, tasks, and all the malarchy.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/Z4oYSByyRak">Zig: A programming language designed for robustness, optimality, and clarity –  Andrew Kelley</a></td>
+		  <td>An overview of Zig, by its creator.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/re96UgMk6GQ">Simon Peyton-Jones: Escape from the ivory tower: the Haskell journey</a></td>
+		  <td>The tale of Haskell, as explained by one of its creators.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/6COvD8oynmI">Adventure with Types in Haskell - Simon Peyton Jones (Lecture 1)</a> and the three subsequent lectures.</td>
+		  <td>A tour through the implementation of Haskell's more complex type stuff. This is actually the first place that made me really think about dynamic dispatch as a small table of functions (I think that's in the second lecture somewhere).</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/rCqFdYUnC24">Odin Programming Language: An Introduction - 2020-11-26</a></td>
+		  <td>An overview of Odin, another "new C" programming language.</td>
+		</tr>
+	      </table>
+	      If there's something incorrect in my writing, it's not due to the videos. It may be from my own experience or misremembering. Either way, blame me, and just watch the video.
             </div>
 	  </div>
 	</div>
@@ -746,7 +1263,20 @@ fdup (Cons x xs) = <span class="keyword">case</span>
 	  slide_nav.appendChild(option);
       }
 
-      let curr_slide = i - 1; // TODO: make 0
+      function getSlideOfUrl() {
+	  let id = window.location.hash;
+	  if (!id.startsWith('#')) {
+	      return 0;
+	  } else if (id.startsWith('#slide-')) {
+	      return parseInt(id.replace('#slide-', ''));
+	  }
+	  let node;
+	  for(node = document.getElementById(id.substr(1)); node != document.body && !node.id.startsWith('slide-'); node = node.parentNode);
+	  if (node == document.body) return 0;
+	  return parseInt(node.id.replace('slide-', ''));
+      }
+
+      let curr_slide = getSlideOfUrl();
       function updateSlide() {
 	  document.getElementById('slide-' + curr_slide).style.display = 'block';
 	  document.getElementById('slide-ct').innerText = (curr_slide + 1) + '/' + i;
