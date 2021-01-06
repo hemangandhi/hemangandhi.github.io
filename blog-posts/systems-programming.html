@@ -797,6 +797,19 @@ Hyena ed;
       held_ = h;
       mutex_ = m;
     }
+
+    <span class="comment">// For more on this, <a href="#raii-afterword">see below</a></span>
+    HeldValue(HeldValue&& other)
+        : held_(<span class="built-in">std::exchange</span>(other.held_, <span class="keyword">nullptr</span>)),
+          mutex_(<span class="built-in">std::exchange</span>(other.mutex_, <span class="keyword">nullptr</span>)) {}
+    HeldValue operator=(HeldValue&& rhs) {
+      if (<span class="keyword">this</span> != &amp;rhs) {
+        held_ = <span class="built-in">std::exchange</span>(rhs.held_, <span class="keyword">nullptr</span>);
+        mutex_ = <span class="built-in">std::exchange</span>(rhs.mutex_, <span class="keyword">nullptr</span>);
+      }
+      return <span class="built-in">std::move</span>(*<span class="keyword">this</span>);
+    }
+
     T& <span class="keyword">operator</span>*() { <span class="keyword">return</span> *held_; }
     T* <span class="keyword">operator</span>-&gt() { <span class="keyword">return</span> held_; }
     ~HeldValue() { *mutex_ = false; }
@@ -804,6 +817,11 @@ Hyena ed;
    <span class="keyword">private</span>:
     T* held_;
     <span class="built-in">std::atomic</span>&lt<span class="keyword">bool</span>&gt* mutex_;
+
+    <span class="comment">// We will only move and construct with 2 params.</span>
+    HeldValue <span class="keyword">operator</span>=(<span class="keyword">const</span> HeldValue& rhs) = <span class="keyword">delete</span>;
+    HeldValue(<span class="keyword">const</span> HeldValue& h) = <span class="keyword">delete</span>;
+    HeldValue() = <span class="keyword">delete</span>;
   };
 
   Locked(T t) : locked_(t), mutex_(false) {}
@@ -860,6 +878,52 @@ useLockedThingy(Locked&ltint&gt*):
 	    <div class="padded-text">
 	      <i>Resources sleep tonight.</i>
 	    </div>
+            <div class="big-title place-title" id="raii-afterword">Afterword: the rule of zero and why C++ is difficult.</div>
+            <div class="padded-text">
+	      I like yakking, but <a href="https://www.youtube.com/watch?v=7Qgd9B1KuMQ" title="This should be at the top of this slide, but is part of an edit and I don't wanna mess up the old content too much.">this video covers this stuff better</a> and introduced me to the rule of zero.
+            </div>
+            <div class="padded-text place-title">
+	      RAII is great for simplifying correctness guarantees in C++, but they aren't the whole story. It's actually more complex given the semantics of C++ objects. (Note: this doesn't apply to Rust, C, and probably most other languages.)
+            </div>
+            <div class="padded-text place-title">
+	      Suppose I have some really simple C++ code. Like a few characters: <code><span class="keyword">struct</span> Basic { <span class="keyword">int</span> x; };</code>. This actually produces (at least, something roughly like):
+            </div>
+	    <pre>
+<span class="keyword">struct</span> Basic {
+  <span class="keyword">int</span> x;
+
+  <span class="comment">// constructors, </span>
+  Basic() { x = 0; }
+  Basic(<span class="keyword">int</span> x_) : x(x_) {}
+  Basic(<span class="keyword">const</span> Basic&amp; other) { x = other.x; }
+  Basic(Basic&amp;&amp; other) { x = other.x; }
+
+  <span class="comment">// assignment operators, </span>
+  Basic <span class="keyword">operator</span>=(<span class="keyword">const</span> Basic&amp; other) {
+    x = other.x;
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+  }
+  Basic <span class="keyword">operator</span>=(Basic&amp;&amp; other) {
+    x = other.x;
+    <span class="keyword">return</span> *<span class="keyword">this</span>;
+  }
+
+  <span class="comment">// and a destructor.</span>
+  ~Basic() {}
+};
+	    </pre>
+            <div class="padded-text place-title">
+	      These constructors actually end up enabling different things like default construction (like <code>Basic b;</code>), assignment (<code>Basic c, b(5); c = b;</code> has the second expression use it, and you'll note that the return type allows for chaining (like <code>a = b = c;</code>)), and copy-construction (<code>Basic b = c;</code> or <code>Basic b(c);</code>). The destructor is also there in case the class holds any resources.
+            </div>
+            <div class="padded-text place-title">
+	      Now that I've introduced a lot of non-basic stuff in our seemingly <code>Basic</code> struct, I should mention why: I got this wrong in my first writing of <code>HeldValue</code> above. You see, without deleting the copy constructor, this is possible: <code>Locked&lt;Basic&gt;::HeldValue h = something.lock(), i = h;</code> and now <code>h</code> and <code title="My least favorite naming, sorry">i</code> could both mess with the mutex (holding copies of the same pointers). Technically, this copy behavior would destroy the mutex: it'd be possible to access the value through the copy. This makes the mutex a little more specific than something simpler like a vector. Mutexes are unique: you can only have one at a time.
+            </div>
+            <div class="padded-text place-title">
+	      Once you settle on the "one at a time" semantics, life becomes easy: you just need to <code class="keyword">delete</code> the copy constructors and assignment operators. However, you <i>could</i> move the <code>HeldValue</code> around, ensuring that there is only one copy. You'll note that I mericlessly set all the pointers to <code class="keyword">nullptr</code> to maintain unique ownership (and then let the user seg fault if they dereference a dangling moved value -- but I consider this their fault since they'd have to say <code class="built-in">std::move</code> in the first place).
+            </div>
+            <div class="padded-text place-title">
+	      In general, once you write a destructor, start wondering about what the semantics of copying and moving should be for your class. And <a href="https://www.youtube.com/watch?v=7Qgd9B1KuMQ">watch the video that showed me my folly</a>.
+            </div>
 	  </div>
 
 	  <div id="slide-16">
@@ -1065,7 +1129,7 @@ It my_find_if(It begin, It end, Comp c) {
 }
 	    </pre>
             <div class="padded-text place-title">
-	      Yeah, there's a built-in for predicats too. And this makes life really easy.
+	      Yeah, there's a built-in for predicates too. And this makes life really easy.
             </div>
           </div>
 
@@ -1197,6 +1261,10 @@ It my_find_if(It begin, It end, Comp c) {
 		<tr>
 		  <td><a href="https://youtu.be/JfmTagWcqoE">CppCon 2016: Herb Sutter “Leak-Freedom in C++... By Default.”</a></td>
 		  <td>A memory management system for C++.</td>
+		</tr>
+		<tr>
+		  <td><a href="https://youtu.be/7Qgd9B1KuMQ">Back to Basics: RAII and the Rule of Zero - Arthur O'Dwyer - CppCon 2019</a></td>
+		  <td>RAII, why it's good, and how to use it properly.</td>
 		</tr>
 	      </table>
 	      Of course, cppcon is no longer the only set of good systems programming talks, and there are other interesting topics. Here are a few others from various other places:
