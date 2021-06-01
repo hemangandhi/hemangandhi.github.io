@@ -531,10 +531,83 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
         </pre>
 
-        <div class="padded-text">You can also use a <code><span class="built-in">Vec</span>&lt;<span class="built-in">Box</span>&lt;A&gt;&gt;</code> to avoid cloning, if you like your references.</div>
+        <div class="padded-text">You can also use a <code><span class="built-in">Vec</span>&lt;<span class="built-in">Rc</span>&lt;A&gt;&gt;</code> to avoid cloning, if you like your references.</div>
 
-        <div class="padded-text">I can't convince rustc that I know what I'm doing with the Scheme or OCaML streams, so I'll add that later on. (The compiler might not be inferring a closure type properly, so I don't even know if I'm using lifetimes incorrectly (which is very likely), but the error is a type mismatch and I can't even type-hint. <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">It's on GitHub if you wanna investigate.</a>)</div>
+        <div class="padded-text">
+	  A more OcaML-like implementation is possible, but brings up some interesting issues. To implement the precise record type, the function
+	  pointer you'd need is quite painful to work with. The trouble starts with the <code><span class="keyword">impl</span> <span class="built-in">Fn</span>(A) -&gt; B </code>
+	  that is the mapping function passed to "map." This needs a lifetime to be allowed to be moved into the recursive call to map. If you follow that
+	  path, however, you find that the lifetimes you need are hellish (<a href="https://github.com/hemangandhi/derpspace/commit/7810efafc7c7696ae3479f41a4e600f468254687" title="Everything up to the subsets function itself works">example</a>). However, after reading up on what <a href="https://doc.rust-lang.org/rust-by-example/scope/lifetime/static_lifetime.html" title="Thanks Obama"><span class="keyword">'static</span> means in a trait bound</a>, the following turned out to make sense:
+	</div>
 
+	<pre>
+<span class="keyword">use</span> std::rc::Rc;
+
+<span class="keyword">enum</span> Stream&lt;T&gt; {
+    Data {
+        value: T,
+        next: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>() -> Stream&lt;T&gt;&gt;,
+    },
+    Nil,
+}
+
+<span class="keyword">impl</span>&lt;T: <span class="built-in">Clone</span>&gt; <span class="built-in">Clone</span> <span class="keyword">for</span> Stream&lt;T&gt; {
+    <span class="keyword">fn</span> clone(<span class="keyword">&amp;self</span>) -> <span class="keyword">Self</span> {
+        <span class="keyword">match self</span> {
+            Stream::Nil => Stream::Nil,
+            Stream::Data { value, next } => Stream::Data {
+                value: value.<span class="built-in">clone</span>(),
+                next: next.<span class="built-in">clone</span>(),
+            },
+        }
+    }
+}
+
+<span class="keyword">fn</span> map&lt;A: <span class="keyword">'static</span>, B: <span class="keyword">'static</span>&gt;(stream: Stream&lt;A&gt;, func: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>(A) -&gt; B&gt;) -> Stream&lt;B&gt; {
+    <span class="keyword">match</span> stream {
+        Stream::Nil => Stream::Nil,
+        Stream::Data { value, next } => Stream::Data {
+            value: func(value),
+            next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || map(next(), func.<span class="built-in">clone</span>())),
+        },
+    }
+}
+
+<span class="keyword">fn</span> concat&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream1: Stream&lt;A&gt;, stream2: Stream&lt;A&gt;) -> Stream&lt;A&gt; {
+    <span class="keyword">match</span> stream1 {
+        Stream::Nil => stream2,
+        Stream::Data { value, next } => Stream::Data {
+            value: value.clone(),
+            next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || concat(next(), stream2.<span class="built-in">clone</span>())),
+        },
+    }
+}
+
+
+<span class="keyword">fn</span> singleton_stream&lt;A&gt;(a: A) -> Stream&lt;A&gt; {
+    Stream::Data {
+        value: a,
+        next: <span class="built-in">Rc</span>::new(|| Stream::Nil),
+    }
+}
+
+
+<span class="keyword">fn</span> subsets&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream: Stream&lt;A&gt;) -> Stream&lt;Stream&lt;A&gt;&gt; {
+    <span class="keyword">match</span> stream {
+        Stream::Nil => singleton_stream(Stream::Nil),
+        Stream::Data { value, next } => {
+            <span class="keyword">let</span> others = subsets(next());
+            concat(
+                others.<span class="built-in">clone</span>(),
+                map(others, <span class="built-in">Rc</span>::new(<span class="keyword">move</span> |st| concat(singleton_stream(value.<span class="built-in">clone</span>()), st))),
+            )
+        }
+    }
+}
+	</pre>
+        
+        <div class="padded-text">I don't really like the assumptions about <span class="built-in">Clone</span>, but it's a reasonable compromise since one stream element is actually rather cheap to clone. A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a></div>
+	
         <div class="big-title">Conclusion</div>
         <div class="padded-text">That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code><span class="built-in">std</span>::random_access_iterator_tag</code>. The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
         C was definately worse since lambdas are an extension, so closures are painful. The lack of deterministic destruction
