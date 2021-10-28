@@ -252,7 +252,7 @@ subsets xs = <span class="built-in">map</span> (subset_of_int xs) [0.. (2^(<span
 powerset :: [a] -> [[a]]
 powerset [] = [[]]
 powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
-<span class="keyword">where</span> ps = powerset xs
+  <span class="keyword">where</span> ps = powerset xs
             </pre>
 
             <div class="big-title">OCaml</div>
@@ -606,12 +606,38 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
 	</pre>
         
-        <div class="padded-text">I don't really like the assumptions about <span class="built-in">Clone</span>, but it's a reasonable compromise since one stream element is actually rather cheap to clone. A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a></div>
+        <div class="padded-text">I don't really like the assumptions about <code class="built-in">Clone</code>, but it's a reasonable compromise since one stream element is actually rather cheap to clone. A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a></div>
 	
         <div class="big-title">Conclusion</div>
-        <div class="padded-text">That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code><span class="built-in">std</span>::random_access_iterator_tag</code>. The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
+        <div class="padded-text">That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code class="built-in">std::random_access_iterator_tag</code>. The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
         C was definately worse since lambdas are an extension, so closures are painful. The lack of deterministic destruction
         makes it worse: iterating down such a list multiple times needs deletion and that needs some notion of a root. I have a few ideas on better memory semantics, so I'll keep y'all posted... It's just that there's no real good user interface for it, TBH.</div>
+
+        <div class="big-title">Addendum: More Infinity and Laziness</div>
+        <div class="padded-text">
+	  This is an exercise in crazy in Haskell. So I won't propose it as "another implementation" for the lazy lists above. (It could be, but it's
+          sort of painful outside Haskell.)
+	  This implementation is a lot like the counting implementation (where we run some int from 0 to 2^(length) - 1 and use the bits to pick
+	  which elements get into that subset (so 0 has the empty set, 1 picks the first element, 2 the second, 3 the first two and so on...)),
+	  but this implementation focusses on the potential infiniteness of the set we're picking subsets from. Without further ado:
+	</div>
+<pre>
+nextSubset :: [<span class="built-in">Bool</span>] -&gt; [<span class="built-in">Bool</span>]
+nextSubset []         = [<span class="built-in">True</span>]
+nextSubset (<span class="built-in">True</span>:xs)  = <span class="built-in">False</span>:(nextSubset xs)
+nextSubset (<span class="built-in">False</span>:xs) = <span class="built-in">True</span>:xs
+
+subsets :: [a] -&gt; [[a]]
+subsets xs = <span class="built-in">map</span> (<span class="built-in">map fst . filter snd</span>
+                          <span class="built-in">. zip xs</span>)
+                 $ <span class="built-in">iterate</span> nextSubset []
+
+finiteSubsets :: [a] -> [[a]]
+finiteSubsets xs = <span class="built-in">take</span> (2 ^ (<span class="built-in">length</span> xs)) $ subsets xs
+</pre>
+        <div class="padded-text">
+            Actually, the integer-based implementation is identical since <code class="built-in">Integer</code> is a bignum so wouldn't overflow.
+	</div>
 
         </div>
         <div class="centered-div bottom-div">
