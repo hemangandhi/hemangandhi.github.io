@@ -1,0 +1,58 @@
+{
+    "left_bit": [
+        "まっ", "別に何も求めてないけど", "やっと目を覚ましたかい？"
+    ],
+    "scripts": ["japanese", "romaji", "english"],
+    "songs": [{
+        "name": {
+            "english": "Telecaster B-boy",
+            "romaji": "Terekyasuta bi-boi",
+            "japanese": "テレキャスター　ビーボイ"
+        },
+        "content_warnings": {
+            "english": ["suicide", "bullying", "transphobia"],
+            "japanese": ["自殺", "いじめ", "トランスフォビア"]
+        },
+        "preamble": {
+            "english": "Pumped up kicks is a hard song to like as a high-schooler. But it's a bop. It's got that whistled bit. The video has so many people vibing. The frisbee air-bounce. There's a <a href=\"https://www.youtube.com/shorts/DrFh1cuXAVw\">meme comparing it to 夜に駆ける (yoru ni kakeru)</a>. However, that's not the Japanese song that pumped up kicks is like. Telecaster b-boy is that song.<br/> I learned the song as a DDR map that has some fun twists and a quirky video. Then I started to listen to it casually. And I thought I knew what it meant: some sort of romance ending or something about some enigmatic television anchor or something.<br/> After a <a href=\"https://lmgtfy.app/?q=%E3%83%86%E3%83%AC%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%93%E3%83%BC%E3%83%9C%E3%83%BC%E3%82%A4%E6%AD%8C%E8%A9%9E\">quick google search</a>, I realized that I was horrendously wrong. So horrendously wrong that I despaired for a day, convincing myself that my interpretation was one of many. But now I'm much more certain that I know what the song is about. But there's a lot of details that are... hard. And there are many versions of the song that you can find, each of which is fun to listen to and some are interesting interpretations of the original."
+        },
+        "lyrics": {
+            "japanese": [
+               "まっ",
+                "大人になるほどDeDeDe<br/>はみ出しものです伽藍堂<br/>人生論者が語った<br/>少女は鳥になって<br/>綺麗事だけでPaPaPa<br/>ボロボロの靴を結んで<br/> デジタル信者が祟った<br/> 少年は風になって<br/>",
+                "ゆらりくらり大往生<br/>お疲れ様ですご臨終<br/>",
+                "テレキャスタービーボーイ<br/>僕に愛情を<br/>嘘で固めたウォーアイニー<br/>うざったいんだジーガール<br/>魅惑ハイテンション<br/>カニバリズム踊れば<br/>一つ二つ殺めた手で<br/>何を描いているんだろう<br/>テレキャスタービーボーイ<br/>僕に愛情を<br/>誰か答えてくれないか<br/>",
+                "見た目がどうやらDeDeDe<br/>ステレオバイアス、サディスティック<br/>毒針持ったように歌った<br/>少女は花になって<br/>耳を塞いでもPaPaPa<br/>奴らの声は派手になって<br/>胸に刺さったあの言葉<br/>少年は振り返って<br/>",
+                "ゆらりくらり大妄想<br/>お互い様ですご臨終<br/>",
+                "テレキャスタービーボーイ<br/>僕に感情を<br/>ノイズ混じりのウォーアイニー<br/>じれったいんだジーガール<br/>油断禁物さ<br/>頬に溶けた涙を<br/>忘れたくて喉を締めた<br/>過去に残した傷痕<br/>テレキャスタービーボーイ<br/>僕に感情を<br/>今だけ抱いてくれないか<br/>",
+                "こんな世界じゃもう<br/>息ができなくて<br/>さよなら告げた現実に<br/>許してはくれないか<br/>弱い僕たちを<br/>また何処かで会いましょう<br/>",
+                "テレキャスタービーボーイ<br/>僕に愛情を<br/>嘘で固めたウォーアイニー<br/>うざったいんだジーガール<br/>魅惑ハイテンション<br/>カニバリズム踊れば<br/>一つ二つ殺めた手で<br/>何を描いているんだろう<br/>テレキャスタービーボーイ<br/>僕に愛情を<br/>誰か答えてくれないか<br/>",
+                "パルラルラ"
+            ],
+            "romaji": [
+                "ma",
+                "otona ni naru hodo dedede<br/>hamidashi mono desu garantou<br/>jinseironshya ga katatta<br/>shyoujyouha tori ni natte<br/>kireigoto dakede papapa<br/>borobrono kutsu wo musunde<br/>dejitarushinjya ga tatatta<br/>shyounen ha kaze ni natte<br/>",
+                "yurari kurari daioujyou<br/> otsukaresama desu gorinjyuu",
+                "terecasuta biboi<br/>boku ni aijyou wo<br/>uso de katameta wo ai ni<br/>uzattainta jigaru<br/>miwaku hitensyoun<br/>kanibarizumu otoreba<br/>hitotsu futatsu ayameta tede<br/>nani wo egaiteirun tarou<br/>terecasuta biboi<br/>boku ni aijyou wo<br/>dareka kotaete kurenaika<br/>",
+                "mitamega dou yara dedede<br/>sutereo baiasu, sadeisutikku<br/>dokubari motta youni utatta<br/>syoujyouwa hana ninatte<br/>mimiwo fusaidemo papapa<br/>yatsura no koe ha hade ni natte<br/>muneni sasatta ano kotoba<br/>syounen ha furi kaette<br/>",
+                "yurari kurari daimousou<br/>otagaisamadesu gorinjyuu<br/>",
+                "terecasuta biboi<br/>boku ni aijyou wo<br/>noizu majiri no wo ai ni<br/>jirettainta jigaru<br/>yudankinmotsusa<br/>hooni yoketa namida wo<br/>wasuretakute nodowo shimeta<br/>kakoni nokoshita kizuato<br/>terecasuta biboi<br/>boku ni aijyou wo<br/>dareka daite kurenaika<br/>",
+                "konna sekai jyamou<br/>ikiga dekinakute<br/>sayonara tsugeta genjitsu ni<br/>yurushite kurenaika<br/>yowai bokutachiwo<br/>mata doko de aimasyou<br/>",
+                "terecasuta biboi<br/>boku ni aijyou wo<br/>uso de katameta wo ai ni<br/>uzattainta jigaru<br/>miwaku hitensyoun<br/>kanibarizumu otoreba<br/>hitotsu futatsu ayameta tede<br/>nani wo egaiteirun tarou<br/>terecasuta biboi<br/>boku ni aijyou wo<br/>dareka kotaete kurenaika<br/>",
+                "parurarura"
+            ],
+            "english": [
+                "ma",
+                "As one becomes an adult dedede<br/>They're also isolated in wide open space.<br/>A life philosopher then spoke up,<br/>The girl became a bird.<br/>Paying only lip service Papapa<br/>Tying on battered shoes.<br/>The digital believer said a curse,<br/>The boy became wind.",
+                "Swinging and swaying, Nirvana<br/>Rest well inside hospice care.",
+                "Telecaster b-boy<br/>The affection to me<br/>The lie-hardened <i>Je te aime</i><br/>The annoying g-girl<br/>Charmingly excited<br/>Canibalistically dancing<br/>A victim, another, killed of by that hand there,<br/>What could it be drawing?<br/>Telecaster b-boy<br/>The affection to me<br/>Can nobody return?",
+                "Wondering on appearance Dedede<br/>Biased and prejudiced<br/>Sadistic<br/>Speaking with those poised barbs<br/>The girl became a flower<br/>Even covering eyes Papapa<br/>The people's voices became harsher<br/>Those words that stabbed the heart<br/>The boy turned around.",
+                "Swinging and swaying, Delusions<br/>It's the two of us in hospice care.",
+                "Telecaster b-boy<br/>The affection to me<br/>The noise frazzled <i>Je te aime</i><br/>The agitated g-girl<br/>Can't catch a break<br/>The tear melting on the cheek<br/>Wanting to forget, closing down the throat.<br/>The remaining scabs<br/>Telecaster b-boy<br/>The affection to me<br/>Can you just hold me right now?",
+                "In this current world<br/>It's impossible to breathe<br/>When a farewell was announced<br/>Could you forgive us?<br/>The weak people.<br/>Let's meet again.",
+                "Telecaster b-boy<br/>The affection to me<br/>The lie-hardened <i>Je te aime</i><br/>The annoying g-girl<br/>Charmingly excited<br/>Canibalistically dancing<br/>A victim, another, killed of by that hand there,<br/>What could it be drawing?<br/>Telecaster b-boy<br/>The affection to me<br/>Can nobody return?",
+                "Parurarura"
+            ]
+        }
+    }]
+}
