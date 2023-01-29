@@ -1,9 +1,10 @@
 {
     "left_bit": [
-        "まっ", "別に何も求めてないけど", "やっと目を覚ましたかい？"
+        "まっ", "別に何も求めてないけど", "やっと目を覚ましたかい？",
+        "さ始めようか天体観測", "赤い赤い車を君を乗せて"
     ],
-    "scripts": ["japanese", "romaji", "english"],
     "songs": [{
+        "scripts": ["japanese", "romaji", "english"],
         "name": {
             "english": "Telecaster B-boy",
             "romaji": "Terekyasuta bi-boi",
@@ -13,9 +14,7 @@
             "english": ["suicide", "bullying", "transphobia"],
             "japanese": ["自殺", "いじめ", "トランスフォビア"]
         },
-        "preamble": {
-            "english": "Pumped up kicks is a hard song to like as a high-schooler. But it's a bop. It's got that whistled bit. The video has so many people vibing. The frisbee air-bounce. There's a <a href=\"https://www.youtube.com/shorts/DrFh1cuXAVw\">meme comparing it to 夜に駆ける (yoru ni kakeru)</a>. However, that's not the Japanese song that pumped up kicks is like. Telecaster b-boy is that song.<br/> I learned the song as a DDR map that has some fun twists and a quirky video. Then I started to listen to it casually. And I thought I knew what it meant: some sort of romance ending or something about some enigmatic television anchor or something.<br/> After a <a href=\"https://lmgtfy.app/?q=%E3%83%86%E3%83%AC%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%93%E3%83%BC%E3%83%9C%E3%83%BC%E3%82%A4%E6%AD%8C%E8%A9%9E\">quick google search</a>, I realized that I was horrendously wrong. So horrendously wrong that I despaired for a day, convincing myself that my interpretation was one of many. But now I'm much more certain that I know what the song is about. But there's a lot of details that are... hard. And there are many versions of the song that you can find, each of which is fun to listen to and some are interesting interpretations of the original."
-        },
+        "preamble": "Pumped up kicks is a hard song to like as a high-schooler. But it's a bop. It's got that whistled bit. The video has so many people vibing. The frisbee air-bounce. There's a <a href=\"https://www.youtube.com/shorts/DrFh1cuXAVw\">meme comparing it to 夜に駆ける (yoru ni kakeru)</a>. However, that's not the Japanese song that pumped up kicks is like. Telecaster b-boy is that song.<br/> I learned the song as a DDR map that has some fun twists and a quirky video. Then I started to listen to it casually. And I thought I knew what it meant: some sort of romance ending or something about some enigmatic television anchor or something.<br/> After a <a href=\"https://lmgtfy.app/?q=%E3%83%86%E3%83%AC%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%93%E3%83%BC%E3%83%9C%E3%83%BC%E3%82%A4%E6%AD%8C%E8%A9%9E\">quick google search</a>, I realized that I was horrendously wrong. So horrendously wrong that I despaired for a day, convincing myself that my interpretation was one of many. But now I'm much more certain that I know what the song is about. But there's a lot of details that are... hard. And there are many versions of the song that you can find, each of which is fun to listen to and some are interesting interpretations of the original.",
         "lyrics": {
             "japanese": [
                "まっ",
