@@ -1,35 +1,37 @@
 // 曲名を書く
 function render_title(song, element) {
-    if (!song.title) return;
+    if (!song.name) return;
     let new_div = document.createElement("div");
     new_div.classList.add("big-title");
-    new_div.textContent = "|".join(song.scripts.map(s => song.title[s]));
+    new_div.classList.add("content-blog");
+    new_div.textContent = song.scripts.map(s => song.name[s]).join("|");
     element.appendChild(new_div);
 }
 
 // 曲に関する注意を書く
 function render_content_warning(song, element) {
-    const CW_FORMATTERS = {
-        japanese: cw => "注意：" + "、".join(cw) + "を含む曲です。",
-        english: cw => "Warning: this song touches on " + ",".join(cw)
-    };
+    function format_cw([lang, warnings]) {
+        const CW_FORMATTERS = {
+            japanese: cw => "\u6ce8\u610f\uff1a" + cw.join("\u3001") + "\u3092\u542b\u3080\u66f2\u3067\u3059\u3002",
+            english: cw => "Warning: this song touches on " + cw.join(",")
+        };
+        return (CW_FORMATTERS[lang] ?? (x => x))(warnings);
+    }
 
     if (!song.content_warnings) return;
     let new_div = document.createElement("div");
+    new_div.innerHTML = Object.entries(song.content_warnings)
+        .map(format_cw).join("<br/>");
     new_div.classList.add("content-blog");
-    new_div.classList.add("centered-div");
-    new_div.innerHTML = "<br/>".join(
-        song.content_warnings.entries.map(([k, v]) => (CW_FORMATTERS[k] ?? x => x)(v)));
     element.appendChild(new_div);
 }
 
 // 前書きを書く
-function render_preamble(preamble, element) {
+function render_preamble(song, element) {
     if (!song.preamble) return;
     let new_div = document.createElement("div");
+    new_div.innerHTML = song.preamble;
     new_div.classList.add("content-blog");
-    new_div.classList.add("centered-div");
-    new_div.innerHTML = preamble;
     element.appendChild(new_div);
 }
 
@@ -38,18 +40,17 @@ function render_lyrics_table(song, element) {
     if (!song.lyrics) return;
     let table = document.createElement("table");
     let top_row = document.createElement("tr");
-    top_row.innerHTML = "".join(song.scripts.map(s => "<th>" + s + "</th>"));
+    top_row.innerHTML = song.scripts.map(s => "<th>" + s + "</th>").join("");
     table.appendChild(top_row);
-    let min = Math.min(...song.lyrics.map(l => l.length));
+    let min = Math.min(...Object.entries(song.lyrics).map(([_, l]) => l.length));
     for (let i = 0; i < min; i++) {
         let row = document.createElement("tr");
-        row.innerHTML = "".join(song.scripts.map(s => "<td>" + song.lyrics[s][i] + "</td>"));
+        row.innerHTML = song.scripts.map(s => "<td>" + song.lyrics[s][i] + "</td>").join("");
         table.appendChild(row);
     }
     let new_div = document.createElement("div");
-    new_div.classList.add("content-blog");
-    new_div.classList.add("centered-div");
     new_div.appendChild(table);
+    new_div.classList.add("content-blog");
     element.appendChild(new_div);
 }
 
