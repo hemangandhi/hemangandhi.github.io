@@ -1,7 +1,7 @@
 {
     "left_bit": [
         "まっ", "別に何も求めてないけど", "やっと目を覚ましたかい？",
-        "さ始めようか天体観測", "赤い赤い車を君を乗せて"
+        "さ始めようか天体観測", "赤い赤い小さな車が君を乗せて"
     ],
     "songs": [{
         "scripts": ["japanese", "romaji", "english"],
@@ -52,6 +52,56 @@
                 "Telecaster b-boy<br/>The affection to me<br/>The lie-hardened <i>Je te aime</i><br/>The annoying g-girl<br/>Charmingly excited<br/>Canibalistically dancing<br/>A victim, another, killed of by that hand there,<br/>What could it be drawing?<br/>Telecaster b-boy<br/>The affection to me<br/>Can nobody return?",
                 "Parurarura"
             ]
-        }
+        },
+        "links": [
+            "<a href=\"https://youtu.be/i-DZukWFR64\">The original</a>",
+            "<a href=\"https://youtu.be/0BIm5TNTe9U\">An english cover (has a lot of translation differences to fit the tune).</a>",
+            "<a href=\"https://youtu.be/h_Vl_MmX09E\" alt=\"Yes, I can do the 12, no just a 60%.\">The DDR map that introduced me to this.</a>",
+            "<a href=\"https://youtu.be/CbrBh-m9F54\">The internet meme this song seems to be.</a>"
+        ]
+    },
+    {
+        "scripts": ["japanese", "romaji", "english"],
+        "name": {
+            "english": "Rock n' roll, the morning light falls on you",
+            "romaji": "Korogaru iwa, kimi ni asa ga furu",
+            "japanese": "転がる岩、君に朝が降る"
+        },
+        "preamble": "The ending of Bocchi the rock hits hard. I mean, here's <a href=\"https://youtu.be/GqV4szgejoI\">a spoiler-laced reaction video that resonates with me</a>. But one thing that stuck with me is the song. After learning about the connection to Asian Kung-fu Generation, I became a fan -- the world world world album is great, <span title=\"kimi no machi made, to your town\">君の街まで</span> slaps, and Re:re: has been stuck in my head since erased anyway.",
+        "lyrics": {
+            "japanese": [
+                "出来れば世界を僕は塗り変えたい<br/>戦争をなくすような大逸れたことじゃない<br/>だけどちょっと それもあるよな",
+                "俳優や映画スターには成れない<br/>それどころか 君の前でさえも上手に笑えない<br/>そんな僕に術はないよな",
+                "何を間違った それさえもわからないんだ<br/>ローリング ローリング<br/>初めから持ってないのに胸が痛んだ<br/>僕らはきっとこの先も<br/>心絡まって ローリング ローリング<br/>凍てつく地面を転がるように走り出した",
+                "理由もないのに何だか悲しい<br/>泣けやしないから 余計に救いがない<br/>そんな夜を温めるように歌うんだ",
+                "岩は転がって 僕たちを何処かに連れて行くように ように<br/>固い地面を分けて命が芽生えた<br/>あの丘を越えたその先は<br/>光輝いたように ように<br/>君の孤独も全て暴き出す朝だ",
+                "赤い 赤い小さな車は君を乗せて<br/>遠く向こうの角を曲がって<br/>此処からは見えなくなった",
+                "何をなくした それさえもわからないんだ<br/>ローリング ローリング<br/>初めから持ってないのに胸が痛んだ<br/>僕らはきっとこの先も<br/>心絡まって ローリング ローリング<br/>凍てつく世界を転がるように走り出した"
+            ],
+            "romaji": [
+                "dekireba sekai wo boku wa nurikaetai<br/>sensou wo nakusu youna taisoureta koto jyanai<br/>dakedo chyotto soremo aruyona",
+                "haiyuu ya eiga suta ni ha narenai<br/>soredokoro ka kimi no mae de sae mo jyouzu ni waraenai<br/>sonna boku ni subewa naiyo na",
+                "naniwo macchiggata sore sae mo wakaranainda<br/>roringu roringu<br/>hajime kara motte nai noni mune ga itanda<br/>bokura wa kitto kono saki mo<br/>kokorokaramatte roringu roring<br/>itetsuku jimen wo korokaru you ni hashiridashita",
+                "wake mo nai no ni nandaka kanashii<br/>nakeya shinai kara yokei ni tsukui ganai<br/>sonna yoru wo atatameru youni utaunda",
+                "iwa wo korogatte boku tachi wo dokoka ni tsureteiku youni youni<br/>katai jimen wo wakete inochiga mebaeta<br/>ano oka wo koeta sono sakiha<br/>hikari kagayaita youni youni<br/>kimi no kodoku mo subete bakakidasu asa da",
+                "akai akai chiisana kuruma wa kimi wo nosete<br/>tooku mukou no kado wo magatte<br/>koko kara wa mienakunatta",
+                "naniwo nakushita sore sae mo wakaranainda<br/>roringu roringu<br/>hajime kara motte nai noni mune ga itanda<br/>bokura wa kitto kono saki mo<br/>kokorokaramatte roringu roring<br/>itetsuku sekai wo korokaru you ni hashiridashita"
+            ],
+            "english": [
+                "If I could I'd repaint the world<br/>Not something as big as world peace<br/>But maybe there's a bit of that too",
+                "I can't be an actor or a movie star<br/>Somebody like me? I can't smile properly in front of you<br/>What can a guy like me do?",
+                "I don't even know the mistake that I made<br/>rolling rolling<br/>something I didn't have from the start still hurts my heart<br/>surely from now on we'll still<br/>be entangled rolling rolling<br/>running like we're slipping on an icy floor",
+                "I don't have a reason, I'm just somewhat sad<br/>I won't cry so I'm more helpless<br/>I'm singing to warm up those nights.",
+                "The boulder rolls as if it's taking us some place some place<br/>cutting the hard ground it sprouts life<br/>crossing that hill and beyond that<br/>in the light shining shining<br/>the morning will expose your lonliness",
+                "A small small red car, with you in it<br/>turns a distant corner<br/>becomes invisible from here",
+                "I don't even know what I have lost<br/>rolling rolling<br/>something I didn't have from the start still hurts my heart<br/>surely from now on we'll still<br/>be entangled rolling rolling<br/>running like we're slipping on an icy world"
+            ]
+        },
+        "links": [
+            "<a href=\"https://music.youtube.com/watch?v=ci97r8R1uu8&feature=share\">The original</a>",
+            "<a href=\"https://music.youtube.com/watch?v=H7ZyZdqLb5Q&feature=share\">The bocchi the rock version</a>",
+            "<a href=\"https://youtu.be/C8Hay53J_Yc\" alt=\"第12話のバージョンじゃないのはおかしい\">A bocchi the rock AMV</a>",
+            "<a href=\"https://www.jpopasia.com/asiankungfugeneration/lyrics/18151/world-world-world/korogaru-iwa-kimi-ni-asa-ga-furu-%E8%BB%A2%E3%81%8C%E3%82%8B%E5%B2%A9%E3%80%81%E5%90%9B%E3%81%AB%E6%9C%9D%E3%81%8C%E9%99%8D%E3%82%8B/?cookie=close\">A translation that helped me a lot.</a>"
+        ]
     }]
 }

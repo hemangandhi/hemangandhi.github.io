@@ -4,7 +4,7 @@ function render_title(song, element) {
     let new_div = document.createElement("div");
     new_div.classList.add("big-title");
     new_div.classList.add("content-blog");
-    new_div.textContent = song.scripts.map(s => song.name[s]).join("|");
+    new_div.textContent = song.scripts.map(s => song.name[s]).join(" | ");
     element.appendChild(new_div);
 }
 
@@ -13,7 +13,7 @@ function render_content_warning(song, element) {
     function format_cw([lang, warnings]) {
         const CW_FORMATTERS = {
             japanese: cw => "\u6ce8\u610f\uff1a" + cw.join("\u3001") + "\u3092\u542b\u3080\u66f2\u3067\u3059\u3002",
-            english: cw => "Warning: this song touches on " + cw.join(",")
+            english: cw => "Warning: this song touches on " + cw.join(", ")
         };
         return (CW_FORMATTERS[lang] ?? (x => x))(warnings);
     }
@@ -54,12 +54,30 @@ function render_lyrics_table(song, element) {
     element.appendChild(new_div);
 }
 
+function render_links(song, element) {
+    if(!song.links) return;
+    let list = document.createElement("ul");
+    for (const link of song.links) {
+        let item = document.createElement("li");
+        item.innerHTML = link;
+        list.appendChild(item);
+    }
+    let new_div = document.createElement("div");
+    let intro_div = document.createElement("div");
+    intro_div.textContent = "Here are some links related to this song:";
+    new_div.appendChild(intro_div);
+    new_div.appendChild(list);
+    new_div.classList.add("content-blog");
+    element.appendChild(new_div);
+}
+
 // JSONを読んでHTMLを書く
 function render_song(song, element) {
     render_title(song, element);
     render_content_warning(song, element);
     render_preamble(song, element);
     render_lyrics_table(song, element);
+    render_links(song, element);
 }
 
 function draw_from_json() {
