@@ -73,11 +73,117 @@ function render_links(song, element) {
 
 // JSONを読んでHTMLを書く
 function render_song(song, element) {
-    render_title(song, element);
-    render_content_warning(song, element);
-    render_preamble(song, element);
-    render_lyrics_table(song, element);
-    render_links(song, element);
+    return function() {
+        element.innerHTML = "";
+        render_title(song, element);
+        render_content_warning(song, element);
+        render_preamble(song, element);
+        render_lyrics_table(song, element);
+        render_links(song, element);
+    };
+}
+
+// 言語の選択
+function draw_language_options(song_map, element, datalist) {
+    let curr_lang = '';
+
+    function populate_datalist() {
+        datalist.innerHTML = Object.keys(song_map[curr_lang]).map((name) => {
+            return '<option value="' + name + '">';
+        });
+    }
+
+    function render_option(lang, i) {
+        let input = document.createElement("input");
+        input.setAttribute('type', 'radio');
+        input.setAttribute('name', 'gengo');
+        input.value = lang;
+        input.id = lang;
+        if (i === 0) {
+            curr_lang = lang;
+            input.setAttribute('checked', true);
+        }
+        input.addEventListener('change', () => {
+            curr_lang = lang
+            populate_datalist();
+        });
+        let label = document.createElement('label');
+        label.setAttribute('for', lang);
+        label.innerText = lang;
+        element.appendChild(input);
+        element.appendChild(label);
+    }
+
+    element.innerHTML = "";
+    Object.keys(song_map).forEach(render_option);
+    populate_datalist();
+
+    return function() { return curr_lang; };
+}
+
+// 左上のテキスト
+function draw_left_bit(lefts, element) {
+    return function () {
+        element.innerHTML = lefts[Math.floor(Math.random() * lefts.length)];
+    }
+}
+
+// TODO: non-stupid separation of concerns/API for the search feature vs. the table.
+// Probably would be a lot better if the table is rendered first and returns the name_id_map and highlight_table_row_and_render_song.
+// It's also smelly that song_map... exists.
+function tabulate_song_map_and_search(songs, song_map, song_container, table_container, input_elt, left_bit_updater, lang_getter) {
+    // map<int, tuple<DomElement, void()>>
+    let table_and_render = {};
+    function highlight_table_row_and_render_song(song_id, update_search) {
+        table_and_render[song_id][1]();
+        Array.prototype.forEach.call(document.querySelectorAll('.sentaku-kyoku'), (elem) => {
+            elem.classList.remove('sentaku-kyoku');
+        });
+        table_and_render[song_id][0].classList.add('sentaku-kyoku');
+        left_bit_updater();
+        if (!update_search) return;
+        input_elt.value = songs[song_id - 1].name[lang_getter()];
+    }
+
+    let name_id_map = {};
+
+    let table_elt = document.createElement('table');
+    let table_header = document.createElement('tr');
+    for (const script of Object.keys(song_map)) {
+        let script_heading = document.createElement('th');
+        script_heading.textContent = script;
+        table_header.appendChild(script_heading);
+        for (const title of Object.keys(song_map[script])) {
+            let song_id = song_map[script][title][1];
+            // TODO: worry about cross-lingual collisions?
+            name_id_map[title] = song_id;
+            if (!table_and_render[song_id]) table_and_render[song_id] = [document.createElement('tr'), song_map[script][title][0]];
+            // Enclose over for-loop vars to capture a copy instead of whatever is last.
+            let td_elt_maker = function(title, song_id, table_and_render) {
+                let td_elt = document.createElement('td');
+                td_elt.textContent = title;
+                td_elt.addEventListener('click', function() {
+                    highlight_table_row_and_render_song(song_id, true);
+                });
+                table_and_render[song_id][0].appendChild(td_elt);
+            }
+            td_elt_maker(title, song_id, table_and_render);
+        }
+    }
+    table_elt.appendChild(table_header);
+    for (const id of Object.keys(table_and_render)) {
+        table_elt.appendChild(table_and_render[id][0]);
+    }
+    table_container.appendChild(table_elt);
+
+    input_elt.addEventListener('input', () => {
+        let id = name_id_map[input_elt.value];
+        if (!id) {
+            song_container.innerHTML = "Please finish entering your input. 検索を待ちます〜";
+            return;
+        }
+        highlight_table_row_and_render_song(id, false);
+    });
 }
 
 function draw_from_json() {
@@ -86,13 +192,21 @@ function draw_from_json() {
         .then(response => response.json())
         .then(data => {
             let song_container = document.getElementById("song-container");
+            let song_map = {};
+            // Off-by-one for a hack in the failure of a search.
+            let i = 1;
             for (const song of data.songs) {
-                let new_div = document.createElement("div");
-                render_song(song, new_div);
-                song_container.appendChild(new_div);
+                const renderer = render_song(song, song_container);
+                for (const script of song.scripts) {
+                    if (!song_map[script]) song_map[script] = {};
+                    song_map[script][song.name[script]] = [renderer, i];
+                }
+                i++;
             }
-            const lefts = data.left_bit;
-            document.getElementById("the-left-bit").innerHTML = lefts[Math.floor(Math.random() * lefts.length)];
+            const left_draw = draw_left_bit(data.left_bit, document.getElementById("the-left-bit"));
+            left_draw();
+            let get_lang = draw_language_options(song_map, document.getElementById("gengo-erabi"), document.getElementById("kyoku-risuto"));
+            tabulate_song_map_and_search(data.songs, song_map, song_container, document.getElementById("table-container"), document.getElementById("kyoku-kensaku"), left_draw, get_lang);
         })
         .catch(console.error);
 }
