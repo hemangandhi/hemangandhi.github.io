@@ -149,5 +149,68 @@
             "<a href=\"https://music.youtube.com/watch?v=0JD-aUhjgWU&feature=share\" alt=\"なとなく。。。キモいです〜\">English version.</a>",
             "<a href=\"https://pcoroom.com/post-3474/\">A translation I referred to and then avoided.</a>"
         ]
-    }]
+    },
+    {
+        "scripts": ["japanese", "romaji", "english"],
+        "name": {
+            "english": "Hikarutoki (when you shine)",
+            "romaji": "Hikarutoki",
+            "japanese": "光る時"
+        },
+        "preamble": "Heike monogatari is an underrated anime. It's hard to recommend a large-scale operatic Japanese historical piece's anime adaptation. But its OP and the band it's by are easier to recommend. After writing this translation, though, I've realized that I'm probably not good enough. This is so much more beautiful than the English makes it seem. And you get the guitar riff. Also, I picked a very 'heike-monogatari'-first interpretation of this song -- the main character can see the future and I think it's her talking to the character who becomes her father-figure.",
+        "lyrics": {
+            "japanese": [
+                "あの花が咲いたのは そこに種が落ちたからで<br/>いつかまた枯れた後で種になって続いてく",
+                "君たちの足跡は 進むたび変わってゆくのに<br/>永遠に見えるものに苦しんでばかりだね",
+                "荒野を駆ける この両足で<br/>ゴーイング ゴーイング それだけなんだ<br/>明日へ旅立つ準備はいいかい",
+                "そこで戸惑う でも運命が<br/>コーリング コーリング 呼んでいる<br/>ならば 全てを生きてやれ ah-ah",
+                "何回だって言うよ 世界は美しいよ<br/>君がそれを諦めないからだよ<br/>最終回のストーリーは初めから決まっていたとしても<br/>今だけはここにあるよ 君のまま光ってゆけよ",
+                "あの花が落ちるとき その役目を知らなくても<br/>側にいた人はきっと分かっているはずだから",
+                "海風を切る 胸いっぱいに<br/>ゴーイング ゴーイング 息をするんだ<br/>今日を旅立つ準備はいいかい",
+                "ときに戸惑う 繰り返すんだ<br/>コーリング コーリング 聞こえてる<br/>ならば 全てを生きてやる",
+                "何回だって言うよ 世界は美しいよ<br/>君がそれを諦めないからだよ<br/>混沌の時代に 泥だらけの君のままで輝きを見つめていて<br/>悲しみに向かう夜も 揺るがずに光っていてよ",
+                "いつか巡ってまた会おうよ<br/>最終回のその後も<br/>誰かが君と生きた記憶を語り継ぐでしょう",
+                "いつか笑ってまた会おうよ<br/>永遠なんてないとしたら<br/>この最悪な時代もきっと続かないでしょう",
+                "君たちはありあまる奇跡を<br/>駆け抜けて今をゆく"
+            ],
+            "romaji": [
+                "ano hanaga saitanowa sokoni taneka ochitakarade<br/>itsukamata kareta atode taneninatte suzuideku",
+                "kimitachino ashiatowa susumutabi kawatte yukunoni<br/>eienni mierumononi kurushinde bakaritane",
+                "kouyawo kakeru kono ryouashide<br/>go-ingu go-ingu soretakenanda<br/>ashitahe tabidatsu jyunbiwa iikai",
+                "sokode tomadou demo unmeiga<br/>co-ringu co-ringu yondeiru<br/>naraba subetewo ikiteyare ah-ah",
+                "nankai datte iiuyo sekaiwa utsukushiyo<br/>kimi ga sorewo akiramenai karadayo<br/>saishyuukaino suto-ri-wa hajimekara kimatteita doshitemo<br/>ima takewa kokoniareyo kiminomama hikatteyukeyo",
+                "anohanaga ochiru toki sono yakumeiwo shiranakudemo<br/>sobaniita hitowa kitto wakatteiru hazudakara",
+                "umikazewo kiru muneippaini<br/>go-ingu go-ingu ikiwo surunda<br/>kyouwo tabidatsu jyunbiwa iikai",
+                "tokini tomadou furikaesunda<br/>co-ringu co-ringu kikoeru<br/>naraba subetewo kiteyaru",
+                "nankai datte iiuyo sekaiwa utsukushiyo<br/>kimi ga sorewo akiramenai karadayo<br/>kontonno jidaini dorodarakeno kiminomamade kagayakiwo mitsumeteite<br/>kanashimini mukau yorumo yurugazuni hikatteiteyo",
+                "itsuka megutte mata aouyo<br/>saishyukaino sono atomo<br/>darekaga kimito ikita kiyokuwo katarisugudeshyouu",
+                "itsuka waratte mata aouyo<br/>eien nante nai toshitara<br/>kono saiakuna jitaimo kitto suzukanai deshyou",
+                "kimitachiwa ariamaru kisekiwo<br/>kakenukete imawoyuku"
+            ],
+            "english": [
+                "That that flower bloomed, was because the seed fell there<br/>even as it withers, it'll make a seed and continue.",
+                "Your footsteps may change as you proceed<br/>but you'll always suffer what you can always see.",
+                "Running through this wilderness<br/>I'm only going going<br/>Am I ready to travel to tomorrow?",
+                "I hesitate there but fate<br/>is calling calling calling me<br/>so I might as will live through it all.",
+                "You say it over and over that the world is beautiful.<br/>You never give it up.<br/>The end of this story was decided from the start but,<br/>you're only here in the present so shine in your own way.",
+                "When that flower falls, even if it didn't know its purpose<br/>it's because those around knew it.",
+                "The sea breeze cuts me a lot<br/>going going as I breathe<br/>am I ready to travel through today.",
+                "I hestitate at times looking back<br/>calling calling I can hear<br/>so I might as will live through it all.",
+                "You say it over and over that this world is beautiful<br/>you never give that up.<br/>In these messed up times, looking at you shining though muddied<br/>unflailingly shining as you face sadness.",
+                "Let's hope we're blessed with one more meeting.<br/>After the end<br/>somebody will pass on your story.",
+                "Let's meet sometime smiling.<br/>If there's no forever then<br/>these worst times won't necessarily continue.",
+                "All these miracles that you all<br/>Race through to get to now."
+            ]
+        },
+        "links": [
+            "<a href=\"https://music.youtube.com/watch?v=ddphnLgZg2A&feature=share\">The original.</a>",
+            "<a href=\"https://youtu.be/mxlaTV4zM2Y\">A Japanese guitarist youtuber being a fan of the band and song.</a> I like the <span alt=\"儚い世界観\">'beautiful ephemeral worldliness'</span> as he describes.",
+            "<a href=\"https://youtu.be/p6uYq0_4ct8\" alt=\"Frickin' GOAT in sheep's clothing\">A hitsujibungaku performance.</a>",
+            "<a href=\"https://youtu.be/RbH_B-YPtbk\">I.. don't usually like such versions, but this. This is something.</a> 本当に、普通、僕はこういいうアレンジ気に入らないけどこれは、、、違う。",
+            "<a href=\"https://youtu.be/Tp6G-GBaY8I\" alt=\"This video made me realize that I can put this song up here.\">A live performance of this song.</a>",
+            "<a href=\"https://youtu.be/9scJiVo4K54\">Another live performance, with en subs.</a> We disagree on the subject sometimes because Japanese subjects you to that subjectivity.",
+            "<a href=\"https://youtu.be/aEDlSU3an_8\">The Heike monogatari AMV.</a>"
+        ]
+    }
+    ]
 }
