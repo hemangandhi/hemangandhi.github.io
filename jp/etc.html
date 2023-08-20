@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "はじめましてへマンです。喜びとコード目指しています。" name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Programming languages, compilers, program synthesis, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>雑談：へマン*ガンジー</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+
+    <style>
+      .tangential {
+	  font-style: italics;
+      }
+
+      .tangential > .place-title::before {
+	  content: "(関係ある) ";
+	  color: blue;
+      }
+
+      .deselected {
+	  text-decoration: line-through;
+      }
+
+      #filters > li:hover {
+	  border-bottom: solid red 1px;
+      }
+    </style>
+  </head>
+
+  <body>
+        <div class="centered-div">
+            <div class="left-bit">できるからやりました</div>
+            <div class="right-bit">
+                <a href="index.html">/ホーム</a>
+                <a href="experience.html">/経験</a>
+                <a href="projects.html">/プロジェクト</a>
+                <a href="skills.html">/技術</a>
+                <a class="this-page" href="etc.html">/雑談</a>
+                <a href="../heman_resume.pdf">/レジュメ(英語)</a>
+            </div>
+        </div>
+
+    <div class="content centered-div place-description">
+        以下にわ散らばっている雑談しかありませんので助かるフィルターを付いてみました。
+        フィルターの意味は不明かも知りませんのですみません。フィルターリングは<i>記事</i>の部分のみです。
+      以下の文章がこの科目を含めます:
+      <ul id="filters"></ul>
+      上のテキストをクリックしたらフイルターを変えます。
+    </div>
+
+    <div class="content centered-div">
+      <div id="filtrate-wrapper">
+        <div class="big-title">記事</div>
+        以下の記事はほとんど英語なので、要約も英語で残します。
+	<div class="filter-item applied-programming">
+          <div class="place-title"><a href="../blog-posts/iterators.html">Iterators, Iterators Everywhere.</a></div>
+          <div class="place-description">
+            A bunch of iterator implementations in various languages to try out programming styles
+            and the like.a Has a lot of (tested) code. Subject to many updates as I add more languages.
+          </div>
+        </div>
+	<div class="filter-item math-and-theory">
+          <div class="place-title"><a href="../blog-posts/rings.html">Many, Many Rings</a></div>
+          <div class="place-description">
+            Interactive graph of a bunch of ring types. May include theorems
+            should have decent references.
+          </div>
+        </div>
+	<div class="filter-item semi-math-and-theory miscellaneous">
+          <div class="place-title"><a href="../blog-posts/agda.html">How not to Learn Agda</a></div>
+          <div class="place-description">
+	    A rant about how I wish I learned Agda and things I wish were just written somewhere for the
+	    programmers who try. (Including what I hope is a large enough disclaimer to read the manual.)
+          </div>
+        </div>
+	<div class="filter-item math-and-theory semi-applied-programming">
+          <div class="place-title"><a href="../blog-posts/modal.html">Der Monaden sind kiene Burritos</a></div>
+          <div class="place-description">
+	    A rant about the mathematical concepts I was not taught and the way they are described in
+	    the functional programming blog-o-sphere.
+          </div>
+        </div>
+	<div class="filter-item miscellaneous">
+          <div class="place-title"><a href="../blog-posts/disculpe.html">Disculpe: Mi Español es Mal</a></div>
+          <div class="place-description">
+            Lamentación de mi mala español y mi educación incompleto.
+          </div>
+        </div>
+	<div class="filter-item miscellaneous">
+          <div class="place-title"><a href="../blog-posts/pascal-turtle.html">Pascal's Turtle</a></div>
+          <div class="place-description">
+	    A quick'n'dirty site to draw Pascal's turtle (and explain it).
+          </div>
+        </div>
+	<div class="filter-item applied-programming semi-math-and-theory">
+          <div class="place-title"><a href="../blog-posts/systems-programming.html">Systems Programming</a></div>
+          <div class="place-description">
+	    A collection of little (and large) articles on various programming concepts that interest me. If you don't like reading my writing please open a github issue about it, I'd love to hear from you, but please also consider watching <a href="blog-posts/systems-programming.html#works-cited">the talks that motivated me to do this.</a>
+          </div>
+        </div>
+	<div class="filter-item anime">
+          <div class="place-title"><a href="../blog-posts/anime-relations.html">Anime Relations</a></div>
+          <div class="place-description">
+	    A dump of strange connections between anime and (mostly) non-anime stuff that I find interesting.
+          </div>
+        </div>
+        <div class="filter-item miscellaneous">
+          <div class="place-title"><a href="../blog-posts/jpop-ongaku.html">JPop 音楽</a></div>
+          <div class="place-description">
+              僕がハマっているJpop音楽の英訳と感想。感想が殆ど英語で書いています。
+          </div>
+        </div>
+        <div class="big-title">記事 II: <i>近日公開</i></div>
+	<div class="filter-item miscellaneous">
+          <div class="place-title">Mouse-free Fu</div>
+          <div class="place-description">
+            A progression from my normal windows usership to
+            crazy Linux fandom laced with vim and tiling window
+            managers.
+          </div>
+        </div>
+	<div class="filter-item miscellaneous">
+          <div class="place-title">HeckRU</div>
+          <div class="place-description">
+            The story of HackRU R&amp;D.
+          </div>
+        </div>
+	<div class="filter-item anime">
+          <div class="place-title"><a href="../blog-posts/monogatari.html">物語シリーズ</a></div>
+          <div class="place-description">
+	    物語アニメシリーズのまとめ。今はまだ終っていませんけどネタバレを隠すように作ってみました。
+	    英語ですけど日本語の<i>色々</i>入いています。<br/>
+	    A work-in-progress summary of the Bakemonogatari Anime series created to
+	    avoid revealing spoilers. It's in English, but with some Japanese
+	    <i>stuff</i>.
+          </div>
+        </div>
+      </div> <!-- filtrate wrapper (all the scribblings) -->
+
+      <div class="big-title">囲碁</div>
+      <div class="place-description">
+        時々囲碁をやっています。
+        <a href="https://online-go.com/player/165969/">OGSで遊びましょう！</a>
+      </div>
+
+      <div class="big-title">地図</div>
+      <div class="place-description">
+        地図を集まります。家族と友達からもらった地図の方が多いので
+        図形られている場所を全て行ったことがないです。店で見った
+        地図も写っていますので持ってい地図には限っていません。
+        <a href="https://photos.app.goo.gl/8xMd3f3SMIKmBxKU2">
+          ネットバージョンはこちらです。（重くない方です。）
+        </a>
+      </div>
+
+      <div class="big-title">ファンフィクションなど</div>
+      <div class="place-description">
+        (そんなに良くないと思います。)
+        黒歴史ですが、ファンフィクション書いたことがあります。
+        英語ですが、急いで書いて、編集もほぼやっていません。
+        でも一回リンクを置かないと。。。
+        <a href="https://www.fanfiction.net/u/5970139/hugoGrant">ここ</a> そしてちょっと<a href="https://www.fictionpress.com/u/1025394/">ここ</a>にも。
+        <a href="https://www.reddit.com/r/WritingPrompts/" title="値落ち前に書いたのでこれはファンフィクション以下のものを書いています。">r/writingPrompts</a>
+        で書きながら、夢中になって、
+	<a href="https://www.wattpad.com/user/hugogrant6">wattpad</a>でも時々書きます。
+      </div>
+
+      <div class="big-title">Reddit</div>
+      <div class="place-description">
+        ファンフィクションの黒歴史をバラしたら、隠す事がなさそうので
+        <a href="https://www.reddit.com/user/hugogrant">僕のredditはこちらです。</a>
+      </div>
+
+      <div class="big-title">アニメ</div>
+      <div class="place-description">
+	実はアニメは日本語勉強の一部ですけど普通にアメリカでアニメを見る方々はそんなつもりで見ません。そのため、 Max cringe.
+        <a href="https://myanimelist.net/profile/hugogrant" alt="Y-you d-don't have to look at it">My anime list. (今まで見ましたアニメ。)</a>
+      </div>
+
+    </div>
+
+    <div class="centered-div bottom-div">
+      <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+      <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+      <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+    </div>
+  </body>
+
+  <script>
+    // はい、キモいです〜
+    function addFiltration(filters, filter_container, input_container, options) {
+        const semi_related_class = options.semi_related_class || "tangential";
+        const relation_level = options.relation_level_getter || ((cls, filt) => {
+            if (cls == filt) return 2;
+            if (cls == 'semi-' + filt) return 1;
+            return 0;
+        });
+        const filter_type_namer = options.filter_type_namer || (name => {
+            return name.replace('semi-', '').split('-').map((wd) => wd.charAt(0).toUpperCase() + wd.substr(1)).join(' ');
+        });
+        const filter_item_class = options.filter_item_class || 'filter-item';
+
+        function relationToState(cls, filter_states) {
+            let r = 0;
+            filter_states.forEach((v, k, m) => {
+                if (!v) return;
+                r = Math.max(r, relation_level(cls, k));
+            });
+            return r;
+        }
+
+        function applyFilters(filter_states) {
+            input_container.childNodes.forEach(kid => {
+                const kid_classes = kid.classList;
+                if (kid_classes === undefined || !kid_classes.contains(filter_item_class)) return;
+                let relation = 0;
+                kid_classes.forEach((kc) => relation = Math.max(relation, relationToState(kc, filter_states)));
+                if (relation == 2) {
+                    kid.style.display = "block";
+                    kid_classes.remove(semi_related_class);
+                } else if (relation == 1) {
+                    kid.style.display = "block";
+                    kid_classes.add(semi_related_class);
+                } else {
+                    kid.style.display = "none";
+                }
+            });
+        }
+
+        let filter_states = new Map();
+        for(const filter of filters) {
+            // by default we show everything
+            filter_states.set(filter, true);
+            let filter_elt = document.createElement('li');
+            filter_elt.textContent = filter_type_namer(filter);
+            filter_elt.addEventListener('click', function (e) {
+                filter_elt.classList.toggle('deselected');
+                filter_states.set(filter, !filter_states.get(filter));
+                applyFilters(filter_states);
+            });
+            filter_container.appendChild(filter_elt);
+        }
+    }
+
+    function nihongo_filter_mei(class_mei) {
+        let class_mei_map = {
+            'applied-programming': 'プログラミング',
+            'math-and-theory': '数学やコンピューター科学理論',
+            'anime': 'アニメ'
+        };
+        let yakushita_class_mei = class_mei_map[class_mei.replace('semi-', '')];
+        if (yakushita_class_mei === undefined) {
+            yakushita_class_mei = 'その他';
+        }
+        return yakushita_class_mei;
+    }
+
+    addFiltration(['applied-programming', 'math-and-theory', 'anime', 'miscellaneous'],
+          document.getElementById('filters'), document.getElementById('filtrate-wrapper'), {
+                    filter_type_namer: nihongo_filter_mei
+                });
+  </script>
+</html>

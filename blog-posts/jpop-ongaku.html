@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>JPop</title>
+        <link rel="stylesheet" href="../css/styles.css"/>
+<style>
+.sentaku-kyoku {
+  background: blue;
+}
+</style>
+    </head>
+
+    <body>
+        <div class="centered-div">
+            <div class="left-bit" id="the-left-bit">Thank you for the music (loading...)</div>
+            <div class="right-bit">
+                <a href="../index.html">/home</a>
+                <a href="../experience.html">/experience</a>
+                <a href="../projects.html">/projects</a>
+                <a href="../skills.html">/skills</a>
+                <a href="../etc.html">/etc</a>
+                <div class="cv-link">/cv
+                    <ul>
+                        <li><a href="heman.cv.pdf">/software engineering cv</a></li>
+                        <li><a href="heman.research.cv.pdf">/research cv</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="kensaku" class="content-blog centered-div">
+            <div class="big-title">検索|Search</div>
+            Choose a language and then a song. (言語を選んだら曲の名前で検索できます)
+            <div id="gengo-erabi">Loading. 言語情報がお待ちです</div>
+            <input id="kyoku-kensaku" list="kyoku-risuto">
+            <datalist id="kyoku-risuto">
+            </datalist>
+        </div>
+
+        <div id="song-container" class="content-blog centered-div">
+        </div>
+        <div id="table-container" class="centered-div">
+            <div class="big-title">全曲|All songs</div>
+            Click anywhere in a row to render that song above. Your song selection will be highlighted in blue.
+            以下の表面にクリックして曲を選べます。選択した曲名を青くハイライトされます。
+        </div>
+
+
+        <div class="centered-div bottom-div">
+            <a class="left-bit" href="mailto:hemang@ndhi.ninja">Email</a>
+            <a class="right-bit" href="http://github.com/hemangandhi">GitHub</a>
+            <div class="center-text"><a class="center-bit" href="http://www.linkedin.com/in/hemangandhi/">LinkedIn</a></div>
+        </div>
+        <script src="../js/ongaku.js"></script>
+    </body>
+</html>

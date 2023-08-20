@@ -138,8 +138,8 @@
 <span class="comment">; This applies a function over each aligned value of iterators.</span>
 <span class="comment">; If I1 and I2 are iterators of integers, (lazy-map + I1 I2) is an</span>
 <span class="comment">; iterator through the component-wise sum.</span>
-(<span class="keyword">define</span> (lazy-map fn . seqs) ; seqs is a list of iterators.
-  (<span class="keyword">if</span> (any null? seqs) '()   ; on the first empty iterator, stop.
+(<span class="keyword">define</span> (lazy-map fn . seqs) <span class="comment">; seqs is a list of iterators.</span>
+  (<span class="keyword">if</span> (any null? seqs) '()   <span class="comment">; on the first empty iterator, stop.</span>
       (lazy-cons (<span class="keyword">apply</span> fn (map lazy-car seqs))
                  (<span class="keyword">apply</span> lazy-map (<span class="built-in">cons</span> fn (map lazy-cdr seqs))))))
 
@@ -252,7 +252,7 @@ subsets xs = <span class="built-in">map</span> (subset_of_int xs) [0.. (2^(<span
 powerset :: [a] -> [[a]]
 powerset [] = [[]]
 powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
-<span class="keyword">where</span> ps = powerset xs
+  <span class="keyword">where</span> ps = powerset xs
             </pre>
 
             <div class="big-title">OCaml</div>
@@ -534,28 +534,29 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
         <div class="padded-text">You can also use a <code><span class="built-in">Vec</span>&lt;<span class="built-in">Rc</span>&lt;A&gt;&gt;</code> to avoid cloning, if you like your references.</div>
 
         <div class="padded-text">
-	  A more OcaML-like implementation is possible, but brings up some interesting issues. To implement the precise record type, the function
-	  pointer you'd need is quite painful to work with. The trouble starts with the <code><span class="keyword">impl</span> <span class="built-in">Fn</span>(A) -&gt; B </code>
-	  that is the mapping function passed to "map." This needs a lifetime to be allowed to be moved into the recursive call to map. If you follow that
-	  path, however, you find that the lifetimes you need are hellish (<a href="https://github.com/hemangandhi/derpspace/commit/7810efafc7c7696ae3479f41a4e600f468254687" title="Everything up to the subsets function itself works">example</a>). However, after reading up on what <a href="https://doc.rust-lang.org/rust-by-example/scope/lifetime/static_lifetime.html" title="Thanks Obama"><span class="keyword">'static</span> means in a trait bound</a>, the following turned out to make sense:
-	</div>
+          A more OcaML-like implementation is possible, but brings up some interesting issues. To implement the precise record type, the function
+          pointer you'd need is quite painful to work with. The trouble starts with the <code><span class="keyword">impl</span> <span class="built-in">Fn</span>(A) -&gt; B </code>
+          that is the mapping function passed to "map." This needs a lifetime to be allowed to be moved into the recursive call to map. If you follow that
+          path, however, you find that the lifetimes you need are hellish (<a href="https://github.com/hemangandhi/derpspace/commit/7810efafc7c7696ae3479f41a4e600f468254687" title="Everything up to the subsets function itself works">example</a>).
+          However, after reading up on what <a href="https://doc.rust-lang.org/rust-by-example/scope/lifetime/static_lifetime.html" title="Thanks Obama"><span class="keyword">'static</span> means in a trait bound</a>, the following turned out to make sense:
+        </div>
 
-	<pre>
+<pre>
 <span class="keyword">use</span> std::rc::Rc;
 
 <span class="keyword">enum</span> Stream&lt;T&gt; {
     Data {
         value: T,
-        next: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>() -> Stream&lt;T&gt;&gt;,
+        next: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>() -&gt; Stream&lt;T&gt;&gt;,
     },
     Nil,
 }
 
 <span class="keyword">impl</span>&lt;T: <span class="built-in">Clone</span>&gt; <span class="built-in">Clone</span> <span class="keyword">for</span> Stream&lt;T&gt; {
-    <span class="keyword">fn</span> clone(<span class="keyword">&amp;self</span>) -> <span class="keyword">Self</span> {
+    <span class="keyword">fn</span> clone(<span class="keyword">&amp;self</span>) -&gt; <span class="keyword">Self</span> {
         <span class="keyword">match self</span> {
-            Stream::Nil => Stream::Nil,
-            Stream::Data { value, next } => Stream::Data {
+            Stream::Nil =&gt; Stream::Nil,
+            Stream::Data { value, next } =&gt; Stream::Data {
                 value: value.<span class="built-in">clone</span>(),
                 next: next.<span class="built-in">clone</span>(),
             },
@@ -563,20 +564,20 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
     }
 }
 
-<span class="keyword">fn</span> map&lt;A: <span class="keyword">'static</span>, B: <span class="keyword">'static</span>&gt;(stream: Stream&lt;A&gt;, func: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>(A) -&gt; B&gt;) -> Stream&lt;B&gt; {
+<span class="keyword">fn</span> map&lt;A: <span class="keyword">'static</span>, B: <span class="keyword">'static</span>&gt;(stream: Stream&lt;A&gt;, func: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>(A) -&gt; B&gt;) -&gt; Stream&lt;B&gt; {
     <span class="keyword">match</span> stream {
-        Stream::Nil => Stream::Nil,
-        Stream::Data { value, next } => Stream::Data {
+        Stream::Nil =&gt; Stream::Nil,
+        Stream::Data { value, next } =&gt; Stream::Data {
             value: func(value),
             next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || map(next(), func.<span class="built-in">clone</span>())),
         },
     }
 }
 
-<span class="keyword">fn</span> concat&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream1: Stream&lt;A&gt;, stream2: Stream&lt;A&gt;) -> Stream&lt;A&gt; {
+<span class="keyword">fn</span> concat&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream1: Stream&lt;A&gt;, stream2: Stream&lt;A&gt;) -&gt; Stream&lt;A&gt; {
     <span class="keyword">match</span> stream1 {
-        Stream::Nil => stream2,
-        Stream::Data { value, next } => Stream::Data {
+        Stream::Nil =&gt; stream2,
+        Stream::Data { value, next } =&gt; Stream::Data {
             value: value.clone(),
             next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || concat(next(), stream2.<span class="built-in">clone</span>())),
         },
@@ -584,7 +585,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
 
 
-<span class="keyword">fn</span> singleton_stream&lt;A&gt;(a: A) -> Stream&lt;A&gt; {
+<span class="keyword">fn</span> singleton_stream&lt;A&gt;(a: A) -&gt; Stream&lt;A&gt; {
     Stream::Data {
         value: a,
         next: <span class="built-in">Rc</span>::new(|| Stream::Nil),
@@ -592,10 +593,10 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
 
 
-<span class="keyword">fn</span> subsets&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream: Stream&lt;A&gt;) -> Stream&lt;Stream&lt;A&gt;&gt; {
+<span class="keyword">fn</span> subsets&lt;A: <span class="keyword">'static</span> + <span class="built-in">Clone</span>&gt;(stream: Stream&lt;A&gt;) -&gt; Stream&lt;Stream&lt;A&gt;&gt; {
     <span class="keyword">match</span> stream {
-        Stream::Nil => singleton_stream(Stream::Nil),
-        Stream::Data { value, next } => {
+        Stream::Nil =&gt; singleton_stream(Stream::Nil),
+        Stream::Data { value, next } =&gt; {
             <span class="keyword">let</span> others = subsets(next());
             concat(
                 others.<span class="built-in">clone</span>(),
@@ -604,14 +605,129 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
         }
     }
 }
-	</pre>
-        
-        <div class="padded-text">I don't really like the assumptions about <span class="built-in">Clone</span>, but it's a reasonable compromise since one stream element is actually rather cheap to clone. A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a></div>
-	
+        </pre>
+
+        <div class="padded-text">
+            I don't really like the assumptions about <code class="built-in">Clone</code>, but it's a reasonable compromise since one stream element is actually rather cheap to clone.
+            A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a>
+        </div>
+
         <div class="big-title">Conclusion</div>
-        <div class="padded-text">That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code><span class="built-in">std</span>::random_access_iterator_tag</code>. The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
-        C was definately worse since lambdas are an extension, so closures are painful. The lack of deterministic destruction
-        makes it worse: iterating down such a list multiple times needs deletion and that needs some notion of a root. I have a few ideas on better memory semantics, so I'll keep y'all posted... It's just that there's no real good user interface for it, TBH.</div>
+        <div class="padded-text">
+            That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code class="built-in">std::random_access_iterator_tag</code>.
+            The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
+            C was definately worse since lambdas are an extension, so closures are painful. The lack of deterministic destruction
+            makes it worse: iterating down such a list multiple times needs deletion and that needs some notion of a root.
+            I have a few ideas on better memory semantics, so I'll keep y'all posted... It's just that there's no real good user interface for it, TBH.
+        </div>
+
+        <div class="big-title">Addendum: More Infinity and Laziness</div>
+        <div class="padded-text">
+          This is an exercise in crazy in Haskell. So I won't propose it as "another implementation" for the lazy lists above. (It could be, but it's
+          sort of painful outside Haskell.)
+          This implementation is a lot like the counting implementation (where we run some int from 0 to 2^(length) - 1 and use the bits to pick
+          which elements get into that subset (so 0 has the empty set, 1 picks the first element, 2 the second, 3 the first two and so on...)),
+          but this implementation focusses on the potential infiniteness of the set we're picking subsets from. Without further ado:
+        </div>
+        <pre>
+nextSubset :: [<span class="built-in">Bool</span>] -&gt; [<span class="built-in">Bool</span>]
+nextSubset []         = [<span class="built-in">True</span>]
+nextSubset (<span class="built-in">True</span>:xs)  = <span class="built-in">False</span>:(nextSubset xs)
+nextSubset (<span class="built-in">False</span>:xs) = <span class="built-in">True</span>:xs
+
+subsets :: [a] -&gt; [[a]]
+subsets xs = <span class="built-in">map</span> (<span class="built-in">map fst . filter snd</span>
+                          <span class="built-in">. zip xs</span>)
+                 $ <span class="built-in">iterate</span> nextSubset []
+
+finiteSubsets :: [a] -&gt; [[a]]
+finiteSubsets xs = <span class="built-in">take</span> (2 ^ (<span class="built-in">length</span> xs)) $ subsets xs
+        </pre>
+        <div class="padded-text">
+            Actually, the integer-based implementation is identical since <code class="built-in">Integer</code> is a bignum so wouldn't overflow.
+        </div>
+
+        <div class="big-title">Added Addendum: Much Infinite Rust</div>
+        <div class="padded-text">
+            The algorithm in the addendum actually wasn't so painful in Rust. So, here goes nothing. First, Rust needs a few small preliminaries:
+            <pre>
+<span class="keyword">fn</span> filter_map&lt;A: <span class="built-in">'static</span>, B: <span class="built-in">'static</span>&gt;(
+    stream: Stream&lt;A&gt;,
+    func: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>(A) -&gt; <span class="built-in">Option</span>&lt;B&gt;&gt;,
+) -&gt; Stream&lt;B&gt; {
+    <span class="keyword">match</span> stream {
+        Stream::Nil =&gt; Stream::Nil,
+        Stream::Data { value, next } =&gt; <span class="keyword">match</span> func(value) {
+            <span class="built-in">Option</span>::Some(val) =&gt; Stream::Data {
+                value: val,
+                next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || filter_map(next(), func.clone())),
+            },
+            <span class="built-in">Option</span>::None =&gt; filter_map(next(), func.clone()),
+        },
+    }
+}
+
+<span class="keyword">fn</span> zip_streams&lt;A: <span class="built-in">'static</span>, B: <span class="built-in">'static</span>&gt;(left: Stream&lt;A&gt;, right: Stream&lt;B&gt;) -&gt; Stream&lt;(A, B)&gt; {
+    <span class="keyword">match</span> left {
+        Stream::Nil =&gt; Stream::Nil,
+        Stream::Data {
+            value: lv,
+            next: ln,
+        } =&gt; <span class="keyword">match</span> right {
+            Stream::Nil =&gt; Stream::Nil,
+            Stream::Data {
+                value: rv,
+                next: rn,
+            } =&gt; Stream::Data {
+                value: (lv, rv),
+                next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || zip_streams(ln(), rn())),
+            },
+        },
+    }
+}
+
+<span class="keyword">fn</span> iterate_fn_stream&lt;T: <span class="built-in">'static</span> + <span class="built-in">Clone</span>&gt;(initial: T, update: <span class="built-in">Rc</span>&lt;<span class="keyword">dyn</span> <span class="built-in">Fn</span>(T) -&gt; T&gt;) -&gt; Stream&lt;T&gt; {
+    Stream::Data {
+        value: initial.clone(),
+        next: <span class="built-in">Rc</span>::new(<span class="keyword">move</span> || iterate_fn_stream(update(initial.clone()), update.clone())),
+    }
+}
+            </pre>
+        </div>
+        <div class="padded-text">
+            After that, we can have the Haskell code above more-or-less translated. I do think that <code>filter_map</code> is more
+            idiomatic to have than having to compose a <code>filter</code> inside some <code>map</code>. I'm also not really sure if the better way to write
+            <code>zip_streams</code> would be with a nested <code class="keyword">if let</code> and then just return <code>Stream::Nil</code> at the bottom.
+            But that's a trifle. Here's the rest of the code:
+            <pre>
+<span class="keyword">fn</span> increment_infinite_binary_num(prev: Stream&lt;<span class="built-in">bool</span>&gt;) -&gt; Stream&lt;<span class="built-in">bool</span>&gt; {
+    <span class="keyword">match</span> prev {
+        Stream::Nil =&gt; singleton_stream(<span class="built-in">true</span>),
+        Stream::Data { value: <span class="built-in">true</span>, next } =&gt; concat(
+            singleton_stream(<span class="built-in">false</span>),
+            increment_infinite_binary_num(next()),
+        ),
+        Stream::Data { value: <span class="built-in">false</span>, next } =&gt; concat(singleton_stream(<span class="built-in">true</span>), next()),
+    }
+}
+
+<span class="keyword">fn</span> large_finite_subsets&lt;A: <span class="built-in">'static</span> + <span class="built-in">Clone</span>&gt;(set: Stream&lt;A&gt;) -&gt; Stream&lt;Stream&lt;A&gt;&gt; {
+    <span class="keyword">let</span> nats = iterate_fn_stream(Stream::Nil, <span class="built-in">Rc</span>::new(increment_infinite_binary_num));
+    map(
+        nats,
+        <span class="built-in">Rc</span>::new(<span class="keyword">move</span> |nat| {
+            filter_map(
+                zip_streams(set.clone(), nat),
+                <span class="built-in">Rc</span>::new(|(x, n)| <span class="keyword">if</span> n { <span class="built-in">Option</span>::Some(x) } <span class="keyword">else</span> { <span class="built-in">Option</span>::None }),
+            )
+        }),
+    )
+}
+            </pre>
+            I enjoy how much <code>increment_infinite_binary_num</code> looks like the Haskell function <code>nextSubset</code>, but I do wonder if I should've constructed the <code>Stream::Data</code> in-place
+            instead of concatenating a singleton in front of the list. What I wrote is definitely pithy, I just hope that the inliner sees me, at least a little bit -- I have no hope that <code>concat</code> can
+            (or should) be inlined.
+        </div>
 
         </div>
         <div class="centered-div bottom-div">
