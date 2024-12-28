@@ -21,8 +21,8 @@ function getSlideOfUrl() {
         return parseInt(id.replace('#slide-', ''));
     }
     let node;
-    for(node = document.getElementById(id.substr(1)); node != document.body && !node.id.startsWith('slide-'); node = node.parentNode);
-    if (node == document.body) return 0;
+    for(node = document.getElementById(id.substr(1)); node !== null && node != document.body && !node.id.startsWith('slide-'); node = node.parentNode);
+    if (node === null || node == document.body) return 0;
     let rv = parseInt(node.id.replace('slide-', ''));
     if (rv > i - 1 || rv < 0) return 0;
     return rv;
