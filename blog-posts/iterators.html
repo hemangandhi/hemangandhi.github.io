@@ -9,7 +9,6 @@
         <title>Iterators, Iterators Everywhere</title>
         <link rel="stylesheet" href="../css/styles.css"/>
         <link rel="stylesheet" href="../css/code.css"/>
-        <link rel="stylesheet" href="../css/readable.css"/>
     </head>
 
     <body>
@@ -52,17 +51,17 @@
             </ul>
             All follow the same pattern and use-case. If a language does not include these, they are not too difficult to implement. Unfortunately, having experience a gamut of languages and customs, I will use the above terms interchangeably (though subtle differences do exist).</div>
 
-            <div class="big-title">All the Implementations</div>
+            <div class="big-title" id="implementations">All the Implementations</div>
             <div class="padded-text">Here are some implementations of iterators in various languages. In general, each will show how to make an iterator through the set of subsets of a list. The following languages will be used (in this pretty much random order):
             <ul>
-                <li>Scheme</li>
-                <li>Clojure</li>
-                <li>Haskell</li>
-                <li>OCaml</li>
-                <li>Python</li>
-                <li>C#</li>
-                <li>Javascript</li>
-                <li>Rust</li>
+                <li><a href="#scheme">Scheme</a></li>
+                <li><a href="#clojure">Clojure</a></li>
+                <li><a href="#haskell">Haskell</a></li>
+                <li><a href="#ocaml">OCaml</a></li>
+                <li><a href="#python">Python</a></li>
+                <li><a href="#c-sharp">C#</a></li>
+                <li><a href="#javascript">Javascript</a></li>
+                <li><a href="#rust">Rust</a></li>
                 <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a></li>
             </ul>
 
@@ -98,7 +97,7 @@
 
             <div class="padded-text">Note that in most cases, the second loop will actually be divided into two separate loops.</div>
 
-            <div class="big-title">Scheme</div>
+            <div class="big-title" id="scheme">Scheme</div>
 
             <div class="padded-text">Scheme is a nice starting point as it explains the true implementation of iterators. This is introduced in the end of chapter 3 in SICP, explaining streams.</div>
 
@@ -206,7 +205,7 @@
       (concat-streams (lazy-map (<span class="keyword">lambda</span> (s) (<span class="built-in">cons</span> h s)) ss) ss))))
             </pre>
 
-            <div class="big-title">Clojure</div>
+            <div class="big-title" id="clojure">Clojure</div>
             <div class="padded-text">Clojure has more built-in... with semi-colons as comments too. The strings after the square brackets are a built-in documentation feature. Due to builtins, not everything had had to be implemented.</div>
 
             <pre>
@@ -234,7 +233,7 @@
 
             <div class="padded-text">This works since map is inherently lazy. Furthermore, concat will maintain the laziness.</div>
 
-            <div class="big-title">Haskell</div>
+            <div class="big-title" id="haskell">Haskell</div>
             <div class="padded-text">Haskell is naturally lazy. It evaluates expressions only when forced to. This means that every form of iteration is an iterator. Here is a power-set maker:</div>
 
             <pre>
@@ -255,7 +254,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
   <span class="keyword">where</span> ps = powerset xs
             </pre>
 
-            <div class="big-title">OCaml</div>
+            <div class="big-title" id="ocaml">OCaml</div>
             <div class="padded-text">OCaml is, unfortunately, normal. It does not evaluate lazily. Nor does it include as many built-ins. We differ to a scheme-like implementation.</div>
 
             <pre>
@@ -315,7 +314,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
             </pre>
             <div class="padded-text">That's all for the functional languages, unfortunately.</div>
 
-            <div class="big-title">Python</div>
+            <div class="big-title" id="python">Python</div>
             <div class="padded-text">This will be in Python 3 with notes on how to translate it to Python 2. There are two syntaxes for the same design in python. I'll show the bit-based algorithm using the object-oriented syntax and the recursive builder using the generator feature.</div>
 
             <pre>
@@ -353,7 +352,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
             <span class="keyword">yield</span> i
             <span class="keyword">yield</span> i + [h]
         </pre>
-        <div class="big-title">C#</div>
+        <div class="big-title" id="c-sharp">C#</div>
         <div class="padded-text">C# is cool too. Perhaps the best C-based language after Rust. And it has a weird liking for uppercase.</div>
 
         <pre>
@@ -391,7 +390,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
         </pre>
 
-        <div class="big-title">JavaScript</div>
+        <div class="big-title" id="javascript">JavaScript</div>
         <div class="padded-text">JavaScript has difficulty with iterators. And objects. ES6 would be a different story, but here it is in good old JavaScript (5). This is very much like the OCamL version, minus a nice syntax. Or type system.</div>
 
         <pre>
@@ -488,7 +487,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 };
         </pre>
 
-        <div class="big-title">Rust</div>
+        <div class="big-title" id="rust">Rust</div>
 
         <div class="padded-text">Saving a good one for the last. I love how much like Python this looks, but with like everything fixed.</div>
 
@@ -612,7 +611,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
             A full proof-of-concept is <a href="https://github.com/hemangandhi/derpspace/blob/master/rust/Stream.rs">on my GitHub</a>
         </div>
 
-        <div class="big-title">Conclusion</div>
+        <div class="big-title" id="conclusion">Conclusion</div>
         <div class="padded-text">
             That's about it. I tried a C++ implementation, but it got boring. Probably because I decided to implement a <code class="built-in">std::random_access_iterator_tag</code>.
             The half-baked code is <a href="https://github.com/hemangandhi/derpspace/blob/master/c%2B%2B/iterators/iterators.cpp">here</a> and an attempt to do it in C <a href="https://github.com/hemangandhi/derpspace/tree/master/c/c_iterator">here</a>.
@@ -621,7 +620,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
             I have a few ideas on better memory semantics, so I'll keep y'all posted... It's just that there's no real good user interface for it, TBH.
         </div>
 
-        <div class="big-title">Addendum: More Infinity and Laziness</div>
+        <div class="big-title" id="addendum">Addendum: More Infinity and Laziness</div>
         <div class="padded-text">
           This is an exercise in crazy in Haskell. So I won't propose it as "another implementation" for the lazy lists above. (It could be, but it's
           sort of painful outside Haskell.)
