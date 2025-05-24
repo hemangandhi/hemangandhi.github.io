@@ -1,7 +1,11 @@
 {
     "left_bit": [
-        "まっ", "別に何も求めてないけど", "やっと目を覚ましたかい？",
-        "さ始めようか天体観測", "赤い赤い小さな車が君を乗せて"
+        "まっ",
+        "別に何も求めてないけど",
+        "やっと目を覚ましたかい？",
+        "さ始めようか天体観測",
+        "赤い赤い小さな車が君を乗せて",
+        "夕方５時のチャイム鳴る"
     ],
     "songs": [{
         "scripts": ["japanese", "romaji", "english"],
@@ -210,6 +214,54 @@
             "<a href=\"https://youtu.be/Tp6G-GBaY8I\" alt=\"This video made me realize that I can put this song up here.\">A live performance of this song.</a>",
             "<a href=\"https://youtu.be/9scJiVo4K54\">Another live performance, with en subs.</a> We disagree on the subject sometimes because Japanese subjects you to that subjectivity.",
             "<a href=\"https://youtu.be/aEDlSU3an_8\">The Heike monogatari AMV.</a>"
+        ]
+    },
+    {
+        "scripts": ["japanese", "romaji", "english"],
+        "name": {
+            "english": "Haruka kanata (far, far away)",
+            "romaji": "Harukakanata",
+            "japanese": "ハルカカナタ"
+        },
+        "preamble": "<span title=\"なんで勝手に響けユーフォニアムのモノマネするんだ\">この曲はなんか不思議でとっても悲しい曲かも。</span><br/>For real, though, somehow, something in this song unerringly makes me sad. It's not just some momento mori, but more of the reflective side of looking back and noticing how far away the past is, may be.",
+        "lyrics": {
+            "japanese": [
+                "夕方５時のチャイム鳴る<br/>いい子はおうちに帰るんだ<br/>ご飯のにおい漂う",
+                "駐輪場の片隅に<br/>あの日のあの子が見えた<br/>今はママなんてね",
+                "移りゆく未来と<br/>置いてけぼりの記憶<br/>はいつでも<br/>儚さを知っている",
+                "ばいばい<br/>もう帰れない日に<br/>チグハグな今を繋いだ<br/>曖昧な空白ばかり<br/>ぼんやりと浮かぶんだ<br/>遥か彼方",
+                "遠くなった草木のにおい<br/>あんな近くにいたのに<br/>今は目も合わない",
+                "これからのことなら<br/>だいたい予想がつく<br/>何度も<br/>レールから落ちてゆく",
+                "ばいばい<br/>もう選べない日に<br/>泡のような今を繋いだ<br/>曖昧な空白ばかり<br/>ぼんやりと浮かぶんだ",
+
+                "砂の城へ<br/>水をそっとかけ<br/>固めて<br/>積み上げる<br/>誰にも負けないいちばんの<br/>誰も追いつけないくらいに<br/>高くしたい<br/>５時のチャイムが過ぎたって",
+                "ばいばい<br/>もう帰れない日に<br/>チグハグな今を繋いだ<br/>曖昧な空白ばかり<br/>ぼんやりと浮かぶんだ<br/>ばいばい<br/>今日も同じように<br/>陽はまた昇り沈んでゆくね<br/>ばいばい<br/>もう戻れない日は<br/>瞬きの合間に<br/>遥か彼方"
+            ],
+            "romaji": [
+                "yuugata go ji no chyaimu naru<br/>ii ko wa ouchi ni kaerunda<br/>gohan no nioi tadou",
+                "chyuu rin jyou no katasumini<br/>ano hi no ano ko ga mieta<br/>ima wa mama nante ne",
+                "utsuri yuku miraito<br/>oiteke bori no kioku<br/>wa itsu demo<br/>hakanasa wo shitteiru",
+                "bai-bai<br/>mou kaerenai hini<br/>chiguhagu na ima wo tsunaita<br/>aimai na kuuhaku bakari<br/>bonyarito ukabunda<br/>harukakanata",
+                "tookunatta kusakino nioi<br/>anna chikakuni itanoni<br/>ima wa me mo awanai",
+                "korekara no kotonara<br/>daitai yousou ga tsuku<br/>nandomo<br/>reru kara ochiteyuku",
+                "bai-bai<br/>mou erabenai hini<br/>awano youni ima wo tsunaida<br/>aimai na kuuhaku bakari<br/>bonyari to ukabunda",
+                "suna no shiro he<br/>mizu wo sottokake<br/>katamete<br/>tsumi ageru<br/>darenimo makenai ichibanno<br/>daremo oikakenai gurai ni<br/>takakushitai<br/>gojino chyaimu ga tsugitatte",
+                "bai-bai<br/>mou kaerenai hini<br/>chiguhagu na ima wo tsunaita<br/>aimai na kuuhaku bakari<br/>bonyarito ukabunda<br/>bai-bai<br/>kyou mo onajiyouni<br/>youwa mata nobori shizunede yukune<br/>bai-bai<br/>mou modorenai hiwa<br/>mabataki no aima ni<br/>harukakanata"
+            ],
+            "english": [
+                "The 5pm bell tolls<br/>good kids go home<br/>the smell of dinner wafts.",
+                "In the corner of the bike parking<br/>I saw that girl from the other day<br/>she's a mother now she says.",
+                "The ever-changing future and<br/>my lagging memories<br/>always reveal<br/>impermanence.",
+                "Bye, bye,<br/>to the days that won't return.<br/>The haphazard today is connected,<br/>vague blank spaces all over,<br/>unconsciously come up,<br/>from far far away.",
+                "The distant smell of flora,<br/>though it's so close,<br/>but I don't see them now.",
+                "Even the things from now<br/>I can more-or-less predict.<br/>Over and over,<br/>I fall off the rail.",
+                "Bye, bye,<br/>to the days that I can't change.<br/>As if with bubbles today is connected by,<br/>vague blank spaces all over,<br/>unconsciously come up.",
+                "Upon my sandcastle,<br/>I pour some water,<br/>harden it,<br/>and stack it up.<br/>It won't lose to anyone, become the top,<br/>so tall nobody can keep up,<br/>I'll build it up.<br/>I'm out past the 5pm chime.",
+                "Bye, bye,<br/>to the days that won't return.<br/>The haphazard today is connected,<br/>vague blank spaces all over,<br/>unconsciously come up.<br/>Bye, bye,<br/>just like today,<br/>the sun will rise and fall.<br/>Bye, bye,<br/>to the days that won't return,<br/>in a blink of an eye, it goes<br/>far, far, away."
+            ]
+        },
+        "links": [
+            "<a href=\"https://note.com/chika_nyarons/n/nfb3cd826dc82\">The singer's page with the lyrics.</a> Note that I divided up the lyrics by the pauses I can remember in the song."
         ]
     }
     ]
