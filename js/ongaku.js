@@ -134,13 +134,22 @@ function draw_left_bit(lefts, element) {
 function tabulate_song_map_and_search(songs, song_map, song_container, table_container, input_elt, left_bit_updater, lang_getter) {
     // map<int, tuple<DomElement, void()>>
     let table_and_render = {};
+    let max_song_id = 0;
     function highlight_table_row_and_render_song(song_id, update_search) {
+        if (song_id > max_song_id) {
+            song_id = max_song_id;
+        }
+        if (song_id < 1) {
+            song_id = 1;
+        }
+
         table_and_render[song_id][1]();
         Array.prototype.forEach.call(document.querySelectorAll('.sentaku-kyoku'), (elem) => {
             elem.classList.remove('sentaku-kyoku');
         });
         table_and_render[song_id][0].classList.add('sentaku-kyoku');
         left_bit_updater();
+        window.location.hash = '#song-' + song_id;
         if (!update_search) return;
         input_elt.value = songs[song_id - 1].name[lang_getter()];
     }
@@ -155,6 +164,7 @@ function tabulate_song_map_and_search(songs, song_map, song_container, table_con
         table_header.appendChild(script_heading);
         for (const title of Object.keys(song_map[script])) {
             let song_id = song_map[script][title][1];
+            max_song_id = song_id;
             // TODO: worry about cross-lingual collisions?
             name_id_map[title] = song_id;
             if (!table_and_render[song_id]) table_and_render[song_id] = [document.createElement('tr'), song_map[script][title][0]];
@@ -184,6 +194,16 @@ function tabulate_song_map_and_search(songs, song_map, song_container, table_con
         }
         highlight_table_row_and_render_song(id, false);
     });
+
+    function hash_change_handler() {
+        if (!window.location.hash.startsWith('#song-')) return;
+        const hash_song_id = parseInt(window.location.hash.substring(6));
+        if (isNaN(hash_song_id)) return;
+        highlight_table_row_and_render_song(hash_song_id, true);
+    }
+    window.addEventListener("hashchange", (e) => hash_change_handler());
+    hash_change_handler();
+
 }
 
 function draw_from_json() {
