@@ -521,14 +521,14 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 			<span class="keyword">if</span> next == <span class="keyword">nil</span> {
 				<span class="keyword">return</span> <span class="keyword">nil</span>
 			}
-			sts = append(sts, *next)
+			sts = <span class="built-in">append</span>(sts, *next)
 		}
 		<span class="keyword">return</span> &sts
 	}
 
 	vals := []T{}
 	<span class="keyword">for</span> _, s := <span class="keyword">range</span> str {
-		vals = append(vals, s.value)
+		vals = <span class="built-in">append</span>(vals, s.value)
 	}
 
 	val := fn(vals<span class="keyword">...</span>)
@@ -556,7 +556,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 		<span class="keyword">func</span>() *Stream[T] {
 			new_streams := []*Stream[T]{strs[0].next()}
 			<span class="keyword">for</span> _, s := <span class="keyword">range</span> strs[1:] {
-				new_streams = append(new_streams, s)
+				new_streams = <span class="built-in">append</span>(new_streams, s)
 			}
 			<span class="keyword">return</span> StreamConcat(new_streams<span class="keyword">...</span>)
 		},
@@ -573,7 +573,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 	next_sets := streamOfSubsets(set, offset+1)
 	// NOTE: concat can't <span class="keyword">return</span> <span class="keyword">nil</span> <span class="keyword">for</span> non-<span class="keyword">nil</span> args.
 	<span class="keyword">return</span> *StreamConcat(&next_sets, StreamMap(<span class="keyword">func</span>(strs <span class="keyword">...</span>[]T) []T {
-		<span class="keyword">return</span> append(strs[0], set[offset])
+		<span class="keyword">return</span> <span class="built-in">append</span>(strs[0], set[offset])
 	}, next_sets))
 }
 
@@ -596,7 +596,7 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 <span class="keyword">func</span> StreamGetArray[T <span class="built-in">any</span>](s *Stream[T]) []T {
 	a := []T{}
 	<span class="keyword">for</span> s != <span class="keyword">nil</span> {
-		a = append(a, s.value)
+		a = <span class="built-in">append</span>(a, s.value)
 		s = s.next()
 	}
 	<span class="keyword">return</span> a
