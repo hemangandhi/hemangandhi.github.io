@@ -619,6 +619,47 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
 }
         </pre>
 
+        <div class="padded-text">
+            Furthermore, golang 1.23 adds <a href="https://go.dev/blog/range-functions">iterators</a>, which they brilliantly document (in a blog-post) as "range functions,"
+            which isn't one of the many synonyms I've heard. The post even mentions two other alternatives: "iterator," and "Seq."
+        </div>
+        <div class="padded-text">
+            Ranting aside, though, I do like the implementation since it's a nice continuation-passing style API.
+            In the lexicon of that blog post, all I'm doing with streams is probably a "pull iterator," and most APIs I've seen implement those, but the conversion
+            between the two should be trivial.
+        </div>
+
+        <pre>
+<span class="keyword">func</span> IterSubsets[T <span class="built-in">any</span>](ts []T) iter.Seq[[]T] {
+	<span class="keyword">return</span> <span class="keyword">func</span>(yield <span class="keyword">func</span>([]T) <span class="built-in">bool</span>) {
+		setIndex := 0
+		max := <span class="built-in">int</span>(math.Pow(2.0, <span class="built-in">float64</span>(<span class="built-in">len</span>(ts))))
+		<span class="keyword">for</span> setIndex &lt; max {
+			s := []T{}
+			<span class="keyword">for</span> i, t := <span class="keyword">range</span> ts {
+				<span class="keyword">if</span> setIndex&(1&lt;&lt;i) > 0 {
+					s = <span class="built-in">append</span>(s, t)
+				}
+			}
+			<span class="keyword">if</span> !yield(s) {
+				<span class="keyword">return</span>
+			}
+			setIndex += 1
+		}
+	}
+}
+        </pre>
+
+        <div class="padded-text">
+            Naturally the use is a little more ergonomic:
+        </div>
+
+        <pre>
+	<span class="keyword">for</span> s := <span class="keyword">range</span> IterSubsets(first10) {
+		fmt.Printf("Subset: %q\n", s)
+	}
+        </pre>
+
         <div class="big-title" id="rust">Rust</div>
 
         <div class="padded-text">Saving a good one for the last. I love how much like Python this looks, but with like everything fixed.</div>
