@@ -61,6 +61,7 @@
                 <li><a href="#python">Python</a></li>
                 <li><a href="#c-sharp">C#</a></li>
                 <li><a href="#javascript">Javascript</a></li>
+                <li><a href="#golang">Golang</a></li>
                 <li><a href="#rust">Rust</a></li>
                 <li><a href="https://github.com/three/assembly-miniprojects/tree/master/powerset-iterator">AMD 64 (x_64) thanks to a friend.</a></li>
             </ul>
@@ -485,6 +486,137 @@ powerset (x:xs) = (<span class="built-in">map</span> (x:) ps) ++ ps
         }, [r])]);
     }
 };
+        </pre>
+
+        <div class="big-title" id="golang">Golang</div>
+
+        <div class="padded-text">
+            Now that this has had generics for a while
+            and <span title="(July 2025, after I left the company that made the language)">
+            I messed around with it for work</span>, I decided to plonk this in.
+        </div>
+        <div class="padded-text">
+            On one hand, this is quite ergonomic and doesn't feel too bad to write.
+            But I hate <span class="keyword">nil</span> and found the ownership rules with <span class="keyword">...</span>
+            unpacking to be a little surprsing (it doesn't copy?).
+        </div>
+
+        <pre>
+<span class="keyword">package</span> main
+
+<span class="keyword">import</span> "fmt"
+
+<span class="keyword">type</span> Stream[T <span class="built-in">any</span>] <span class="keyword">struct</span> {
+	value T
+	next  func() *Stream[T]
+}
+
+<span class="comment">// Maps the fn over all the streams provided, returns a stream of the output.</span>
+<span class="comment">// The returned stream ends when any input stream ends.</span>
+<span class="keyword">func</span> StreamMap[T <span class="built-in">any</span>](fn <span class="keyword">func</span>(<span class="keyword">...</span>T) T, str <span class="keyword">...</span>Stream[T]) *Stream[T] {
+	getNexts := <span class="keyword">func</span>(ss []Stream[T]) *[]Stream[T] {
+		sts := []Stream[T]{}
+		<span class="keyword">for</span> _, s := <span class="keyword">range</span> ss {
+			next := s.next()
+			<span class="keyword">if</span> next == <span class="keyword">nil</span> {
+				<span class="keyword">return</span> <span class="keyword">nil</span>
+			}
+			sts = append(sts, *next)
+		}
+		<span class="keyword">return</span> &sts
+	}
+
+	vals := []T{}
+	<span class="keyword">for</span> _, s := <span class="keyword">range</span> str {
+		vals = append(vals, s.value)
+	}
+
+	val := fn(vals<span class="keyword">...</span>)
+	composition := <span class="keyword">func</span>() *Stream[T] {
+		nexts := getNexts(str)
+		<span class="keyword">if</span> nexts == <span class="keyword">nil</span> {
+			<span class="keyword">return</span> <span class="keyword">nil</span>
+		}
+		<span class="keyword">return</span> StreamMap(fn, *nexts<span class="keyword">...</span>)
+	}
+
+	<span class="keyword">return</span> &Stream[T]{val, composition}
+
+}
+
+<span class="keyword">func</span> StreamConcat[T <span class="built-in">any</span>](strs <span class="keyword">...</span>*Stream[T]) *Stream[T] {
+	<span class="keyword">if</span> <span class="built-in">len</span>(strs) == 0 {
+		<span class="keyword">return</span> <span class="keyword">nil</span>
+	}
+	<span class="keyword">if</span> strs[0] == <span class="keyword">nil</span> {
+		<span class="keyword">return</span> StreamConcat(strs[1:]<span class="keyword">...</span>)
+	}
+	<span class="keyword">return</span> &Stream[T]{
+		strs[0].value,
+		<span class="keyword">func</span>() *Stream[T] {
+			new_streams := []*Stream[T]{strs[0].next()}
+			<span class="keyword">for</span> _, s := <span class="keyword">range</span> strs[1:] {
+				new_streams = append(new_streams, s)
+			}
+			<span class="keyword">return</span> StreamConcat(new_streams<span class="keyword">...</span>)
+		},
+	}
+}
+
+<span class="keyword">func</span> streamOfSubsets[T <span class="built-in">any</span>](set []T, offset <span class="built-in">int</span>) Stream[[]T] {
+	<span class="keyword">if</span> offset &gt;= <span class="built-in">len</span>(set) {
+		<span class="keyword">return</span> Stream[[]T]{
+			[]T{},
+			<span class="keyword">func</span>() *Stream[[]T] { <span class="keyword">return</span> <span class="keyword">nil</span> },
+		}
+	}
+	next_sets := streamOfSubsets(set, offset+1)
+	// NOTE: concat can't <span class="keyword">return</span> <span class="keyword">nil</span> <span class="keyword">for</span> non-<span class="keyword">nil</span> args.
+	<span class="keyword">return</span> *StreamConcat(&next_sets, StreamMap(<span class="keyword">func</span>(strs <span class="keyword">...</span>[]T) []T {
+		<span class="keyword">return</span> append(strs[0], set[offset])
+	}, next_sets))
+}
+
+<span class="keyword">func</span> StreamOfSubsets[T <span class="built-in">any</span>](set []T) Stream[[]T] {
+	<span class="keyword">return</span> streamOfSubsets(set, 0)
+}
+
+<span class="keyword">func</span> StreamTakeN[T <span class="built-in">any</span>](s *Stream[T], n <span class="built-in">int</span>) *Stream[T] {
+	<span class="keyword">if</span> n == 0 || s == <span class="keyword">nil</span> {
+		<span class="keyword">return</span> <span class="keyword">nil</span>
+	}
+	<span class="keyword">return</span> &Stream[T]{
+		s.value,
+		<span class="keyword">func</span>() *Stream[T] {
+			<span class="keyword">return</span> StreamTakeN(s.next(), n-1)
+		},
+	}
+}
+
+<span class="keyword">func</span> StreamGetArray[T <span class="built-in">any</span>](s *Stream[T]) []T {
+	a := []T{}
+	<span class="keyword">for</span> s != <span class="keyword">nil</span> {
+		a = append(a, s.value)
+		s = s.next()
+	}
+	<span class="keyword">return</span> a
+}
+
+<span class="keyword">func</span> main() {
+	<span class="keyword">var</span> ones, nats Stream[<span class="built-in">int</span>]
+	ones = Stream[<span class="built-in">int</span>]{1, <span class="keyword">func</span>() *Stream[<span class="built-in">int</span>] {
+		<span class="keyword">return</span> &ones
+	}}
+	nats = Stream[<span class="built-in">int</span>]{1, <span class="keyword">func</span>() *Stream[<span class="built-in">int</span>] {
+		<span class="keyword">return</span> StreamMap(<span class="keyword">func</span>(is <span class="keyword">...</span><span class="built-in">int</span>) <span class="built-in">int</span> {
+			<span class="keyword">return</span> is[0] + is[1]
+		}, ones, nats)
+	}}
+	first10 := StreamGetArray(StreamTakeN(&nats, 10))
+	fmt.Printf("Nats: %q", first10)
+	subsets := StreamOfSubsets(first10)
+	fmt.Printf("Subsets: %q", StreamGetArray(&subsets))
+}
         </pre>
 
         <div class="big-title" id="rust">Rust</div>
