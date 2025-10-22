@@ -5,6 +5,8 @@
         "やっと目を覚ましたかい？",
         "さ始めようか天体観測",
         "赤い赤い小さな車が君を乗せて",
+        "Darlin' 夢が叶ったの",
+        "Darlin' 愛してる",
         "夕方５時のチャイム鳴る"
     ],
     "songs": [{
@@ -263,6 +265,48 @@
         "links": [
             "<a href=\"https://note.com/chika_nyarons/n/nfb3cd826dc82\">The singer's page with the lyrics.</a> Note that I divided up the lyrics by the pauses I can remember in the song."
         ]
-    }
-    ]
+    },
+    {
+        "scripts": ["japanese", "romaji", "english"],
+        "name": {
+            "english": "Kataomoi (one-sided love)",
+            "romaji": "Kataomoi",
+            "japanese": "カタオモイ"
+        },
+        "preamble": "I am an idiot for not doing this one first. This is probably one of the first JPop songs I liked. Particularly one that wasn't from an anime. I was literally singing this while translating.",
+        "lyrics": {
+            "japanese": [
+                "例えば君の顔に昔よりシワが増えても　それでもいいんだ<br />僕がギターを思うように弾けなくなっても　心の歌は君で溢れているよ<br />高い声も出せずに思い通り歌えない<br />それでもうなずきながら一緒に歌ってくれるかな<br />割れんばかりの拍手も　響き渡る歓声もいらない<br />君だけ　分かってよ　分かってよ",
+                "Darlin'　夢が叶ったの<br />お似合いの言葉が見つからないよ<br />Darlin'　夢が叶ったの<br />「愛してる」",
+                "たった一度の　たった一人の　生まれてきた幸せ味わってるんだよ<br />今日がメインディッシュで　終わりの日には甘酸っぱいデザートを食べるの<br />山も谷も全部フルコースで<br />気が利くような言葉はいらない　素晴らしい特別もいらない<br />ただずっと　ずっと側に置いていてよ<br />僕の想いは歳をとると増えてくばっかだ　好きだよ<br />分かってよ　分かってよ",
+                "ねえ、Darlin'　夢が叶ったの<br />お似合いの言葉が見つからないよ<br />Darlin'　夢が叶ったの<br />愛が溢れていく",
+                "君が僕を忘れてしまっても　ちょっと辛いけど…　それでもいいから<br />僕より先に　どこか遠くに　旅立つことは　絶対　許さないから<br />生まれ変わったとしても　出会い方が最悪でも　また僕は君に恋するんだよ<br />僕の心は君にいつも片想い　好きだよ<br />分かってよ　分かってよ　分かってよ",
+                "Darlin'　夢が叶ったの<br />お似合いの言葉が見つからないよ<br />Darlin'　夢が叶ったの",
+                "ねえ Darlin'　「愛してる」"
+            ],
+            "romaji": [
+                "tatoeba kimino kaoni mukashiyori shiwaga fuetemo soredemo iinda<br />bokuga gitawo omouyouni hikenakunattemo kokorono utawa kimide afurete iruyo<br />takai koemo dasezuni omoidoori utaenai<br />soredemo unazukinagara issyouni utatte kurerukana<br />waren bakarino hakshyumo hibikewataru kansei iranai<br />kimidake wakatteyo wakatteyo",
+                "Darlin'　yumega kanattano<br />oniaino kotobaga mitsukaranaiyo<br />Darlin'　yumega kanattano<br />aisiteru",
+                "tatta ichidono tatta hitorino umarete kitashiawase ajiwatterundayo<br />kyouga main dish de owarinohiniwa amaisuppai dessert wo taberuno<br />yamamo tanimo senbu full course de<br />kigakikiyouna kotobawa iranai subarashi tokubetsumo iranai<br />tadazutto zutto sobani oiteiteyo<br />boku no omoi ha tosi wo toruto fuetekubakkada sukidayo<br />wakatteyo wakatteyo",
+                "nee Darlin'　yumega kanattano<br />oniaino kotobaga mitsukaranaiyo<br />Darlin'　yumega kanattano<br />aiga afureteiku",
+                "kimiga bokuwo wasurete simattemo chyotto tsuraikedo soredemo iikara<br />boku yori sakini dokoka tooku ni tabedatsu kotowa zettai yurusanaikara<br />umarekawatta tositemo deaikatagasaiaku demo mata bokuwa kimini aisurundayo<br />bokuno kokorowa kimini itsumo kataomoi sukidayo<br />wakatteyo wakatteyo wakatteyo",
+                "Darlin'　yumega kanattano<br />oniaino kotobaga mitsukaranaiyo<br />Darlin'　yumega kanattano<br />",
+                "nee Darlin' aisiteru"
+            ],
+            "english": [
+                "Suppose that the wrinkles on your face, increased from before, that'd be fine.<br/>If I couldn't play the guitar as well, the song of our hearts will still ring,<br/>without a loud voice I can use as I please,<br/>even then you'll nod along and sing with me.</br>I don't need the cheers or the applause, I just need you to understand, understand.",
+                "Darlin' you've made my dreams come true,<br/>I can't find the proper words<br/>Darlin', you've made my dreams come true,<br/>\"I love you.\"",
+                "My one and only life, my personal joy of being alive, is what I get to taste.<br/>Today's main dish is my apocalyptic dessert,<br/>all the mountains and valleys as a full-course.<br/>I don't need heartfelt words, I don't need something superb or special<br/>just leave me forever beside you.<br/>My feelings grow as I age: I like you<br/>please understand, understand.",
+                "Hey, Darlin' you've made my dreams come true,<br/>I can't find the proper words<br/>Darlin', you've made my dreams come true,<br/>my love is in full bloom.",
+                "If you forget me, that'd hurt, but... it'll be fine.<br/>If you go somewhere far without me, I'll not allow it.<br/>Even if we were reborn, even if we met in the worst way, I will love you.<br/>In my heart you're always a one-sided love, I love you.<br/>Understand, understand, understand.",
+                "Darlin' you've made my dreams come true,<br/>I can't find the proper words<br/>Darlin', you've made my dreams come true.",
+                "Well, Darlin', I. Love. You."
+            ]
+        },
+        "links": [
+            "<a href=\"https://youtu.be/kxs9Su_mbpU?si=7ByqMskfHNRADRoy\">The original.</a>",
+            "<a href=\"https://youtu.be/Opp9nqiN5m0?si=A-N71uh5YA5EPFNI\">The first take.</a>",
+            "<a href=\"https://youtu.be/DPz-BPD4GdM?si=YNsz19ZxM6Yeu6JA\">An amazing intro to Aimer.</a>"
+        ]
+    }]
 }
