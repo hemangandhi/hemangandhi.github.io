@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Heman Gandhi" name="author">
+        <meta content= "I'm Heman Gandhi, a junior pursuing his math and CS degree." name="description">
+        <meta content=
+        "Heman Gandhi, Interactive Resume, programmer, Web developer, Full Stack Developer, Interactive CV, Resume, CV, Algorithms, Programming, Learning, mathematics, category theory" name="keywords">
+        <title>Choghadiya</title>
+
+        <style>
+.good-murat {
+    color: green;
+}
+
+.bad-murat {
+    color: red;
+}
+        </style>
+    </head>
+    <body>
+        <label for="initial-date">Date:</label>
+        <input id="initial-date" type="date"></input>
+        <table border="1" id="cities">
+            <tr>
+                <th>City</th>
+                <th>Sunrise</th>
+                <th>Sunset</th>
+                <th>Timezone</th>
+                <th>Choghadiya</th>
+            </tr>
+        </table>
+        <button id="add-city">Add city</button>
+        <script>
+const CHOGHADIYA_TABLE = [
+    ["Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh"],
+    ["Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Chal", "Laabh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh", "Amrut", "Chal"],
+    ["Rog", "Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Kaal", "Laabh", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal"],
+    ["Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Chal", "Laabh", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg"],
+    ["Shubh", "Rog", "Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh", "Amrut"],
+    ["Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh", "Amrut", "Chal", "Rog"],
+    ["Kaal", "Shubh", "Rog", "Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Laabh", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh"]
+];
+const GOOD_MURATS = ["Amrut", "Shubh", "Chal", "Laabh"];
+
+let city_count = 0;
+let city_times_map = new Object();
+let city_update_handlers = [];
+
+function cityNUpdater(n) {
+    return function () {
+        let sunrise_input = document.getElementById(`city-${n}-sunrise`);
+        let sunset_input = document.getElementById(`city-${n}-sunset`);
+        let date_input = document.getElementById("initial-date");
+        let choghadiya_ouput = document.getElementById(`city-${n}-choghadiya`);
+
+        if (!date_input.value) {
+            choghadiya_ouput.innerText = "Please enter the date (above).";
+            return;
+        }
+        if (!sunrise_input.value) {
+            choghadiya_ouput.innerText = "Please enter the sunrise time.";
+            return;
+        }
+        if (!sunset_input.value) {
+            choghadiya_ouput.innerText = "Please enter the sunset time.";
+            return;
+        }
+
+        let [sunrise_hour, sunrise_minute] = sunrise_input.value.split(":").map((t) => parseInt(t));
+        let [sunset_hour, sunset_minute] = sunset_input.value.split(":").map((t) => parseInt(t));
+        let [year, month, day] = date_input.value.split("-").map((t) => parseInt(t));
+        // The string month is 1-indexed, the parameter to the date function is 0-indexed.
+        month--;
+
+        // Use UTC to simplify timezone shenanigans.
+        // Use *1 to work with epoch millis so that we don't have to deal with "+" casting to strings.
+        let sunrise_date = (new Date(Date.UTC(year, month, day, sunrise_hour, sunrise_minute))) * 1;
+        let sunset_date = (new Date(Date.UTC(year, month, day, sunset_hour, sunset_minute))) * 1;
+        if (sunset_date < sunrise_date) {
+            choghadiya_ouput.innerText = "Sunrise must come before sunset!";
+            return;
+        }
+
+        let times = new Array(17);
+        for (let i = 0; i < 8; i++) {
+            times[i] = sunrise_date + (sunset_date - sunrise_date) / 8 * i;
+        }
+        let next_date_sunrise = sunrise_date + 24 * 60 * 60 * 1000;
+        for (let i = 0; i < 9; i++) {
+            times[i + 8] = sunset_date + (next_date_sunrise - sunset_date) / 8 * i;
+        }
+        city_times_map[n] = times;
+
+        let times_strings = times.map((t) => {
+            let d = new Date(t);
+            return `${d.getUTCHours()}:${d.getUTCMinutes().toString().padStart(2, "0")}`;
+        });
+
+        let city_table = document.createElement("table");
+        city_table.border = "1";
+        let times_row = document.createElement("tr");
+        for (let i = 0; i < 16; i++) {
+            let times_heading = document.createElement("th");
+            times_heading.innerText = `${times_strings[i]} - ${times_strings[i + 1]}`;
+            times_row.appendChild(times_heading);
+        }
+        city_table.appendChild(times_row);
+
+        let day_index = new Date(year, month, day).getDay();
+        let choghadiya_row = CHOGHADIYA_TABLE[day_index];
+        let murat_row = document.createElement("tr");
+        for (let i = 0; i < 16; i++) {
+            let murat_text = document.createElement("td");
+            murat_text.innerText = choghadiya_row[i];
+            murat_text.classList.add((GOOD_MURATS.indexOf(choghadiya_row[i]) >= 0) ? "good-murat" : "bad-murat");
+            murat_row.appendChild(murat_text);
+        }
+        city_table.appendChild(murat_row);
+
+        choghadiya_ouput.innerHTML = "";
+        choghadiya_ouput.appendChild(city_table);
+    };
+}
+
+function addCity() {
+    let table = document.getElementById("cities");
+    let row = document.createElement("tr");
+
+    let changeHandler = cityNUpdater(city_count);
+    city_update_handlers.push(changeHandler);
+
+    let city_name_column = document.createElement("td");
+    let city_name_input = document.createElement("input");
+    city_name_input.type = "text";
+    city_name_input.id = `city-${city_count}-name`;
+    city_name_column.appendChild(city_name_input);
+    row.appendChild(city_name_column);
+
+    let sunrise_column = document.createElement("td");
+    let sunrise_input = document.createElement("input");
+    sunrise_input.type = "time";
+    sunrise_input.id = `city-${city_count}-sunrise`;
+    sunrise_input.addEventListener("change", (e) => changeHandler());
+    sunrise_column.appendChild(sunrise_input);
+    row.appendChild(sunrise_column);
+
+    let sunset_column = document.createElement("td");
+    let sunset_input = document.createElement("input");
+    sunset_input.type = "time";
+    sunset_input.id = `city-${city_count}-sunset`;
+    sunset_input.addEventListener("change", (e) => changeHandler());
+    sunset_column.appendChild(sunset_input);
+    row.appendChild(sunset_column);
+
+    let timezone_column = document.createElement("td");
+    timezone_column.appendChild(document.createTextNode("UTC + "));
+    let timezone_input = document.createElement("input");
+    timezone_input.type = "number";
+    timezone_input.min = "-12";
+    timezone_input.max = "12";
+    timezone_input.step = "0.5";
+    timezone_input.id = `city-${city_count}-timezone`;
+    timezone_column.appendChild(timezone_input);
+    row.appendChild(timezone_column);
+
+    let choghadiya_column = document.createElement("td");
+    choghadiya_column.id = `city-${city_count}-choghadiya`;
+    choghadiya_column.innerText = "Enter the sunrise and sunset for this city to see its Choghadiya.";
+    row.appendChild(choghadiya_column);
+
+    table.appendChild(row);
+
+    city_count++;
+}
+
+addCity();
+
+document.getElementById("add-city").addEventListener("click", (e) => addCity());
+document.getElementById("initial-date").addEventListener("change", (e) => city_update_handlers.forEach((h) => h()));
+        </script>
+    </body>
+</html>
