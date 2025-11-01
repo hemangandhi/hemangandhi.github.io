@@ -18,6 +18,7 @@
         </style>
     </head>
     <body>
+        <h2>Choghadiya Calculator</h2>
         <label for="initial-date">Date:</label>
         <input id="initial-date" type="date"></input>
         <table border="1" id="cities">
@@ -36,6 +37,37 @@
                 <th>Overlapping good times</th>
             </tr>
         </table>
+        <div>
+            See <a href="#choghadiya-desc">below for a brief explanation of the system</a>. To use this page:
+            <ol>
+                <li>Enter a date above.</li>
+                <li>Enter a name for the first city.</li>
+                <li>Enter the sunrise time at the date you entered.</li>
+                <li>
+                    Enter the sunset time at the date you entered.
+                    <ol>
+                        <li>At this point, the "choghadiya" column for the city should have the murats and times for the given day in the city's local time. Good Murats are colored <span style="color:green">green</span> and bad ones are colored <span style="color:red">red</span>.</li>
+                    </ol>
+                </li>
+
+                <li>Enter the timezone for the city (on the provided date).</li>
+                <li>Add as many cities as you need and repeat steps 2 through 5 for each.</li>
+                <li>Refer to the "overlapping good times" below to see all the times that are auspicious in every city. Here too, each time is in the city's local time.</li>
+            </ol>
+        </div>
+        <div id="choghadiya-desc">
+            <h3>What is Choghadiya?</h3>
+            The Choghadiya system is a traditional Indian time-keeping system, where days start from sunrise to sunset and nights start
+            at sunset and end on the next sunrise.<br/>
+            Both day and night are divided into 8 "hours" that are called Choghadiya, and the hour and weekday determines a
+            "Murat", which can be considered good or bad. <a href="https://www.drikpanchang.com/tutorials/muhurat/daily/choghadiya-muhurat.html" target="_blank">Here's another site that has more details on the system.</a><br/>
+            This page helps coordinate religious ceremonies across timezones, but note that:
+            <ul>
+                <li>Sunrise and sunset times can vary within a timezone -- even within similar latitudes (compare Tokyo and Seoul, for example).</li>
+                <li>Since the "solar day" starts at sunrise, some suggested times are past midnight. The times from midnight to the next sunrise are considered as being in the previous day (by this calculator, no idea what Hinduism wants).</li>
+                <li>This calculator assumes that the next sunrise is "close enough" to the previous one, so doesn't account for its actual drift. (For Diwali calculations in the Northern hemisphere, this means that the night murats are slightly longer than they should be.)</li>
+            </ul>
+        </div>
         <script>
 const CHOGHADIYA_TABLE = [
     ["Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh"],
