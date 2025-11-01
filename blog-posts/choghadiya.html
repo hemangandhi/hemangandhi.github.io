@@ -30,6 +30,12 @@
             </tr>
         </table>
         <button id="add-city">Add city</button>
+        <table id="overlaps" border="1">
+            <tr>
+                <th>City</th>
+                <th>Overlapping good times</th>
+            </tr>
+        </table>
         <script>
 const CHOGHADIYA_TABLE = [
     ["Udveg", "Chal", "Laabh", "Amrut", "Kaal", "Shubh", "Rog", "Udveg", "Shubh", "Amrut", "Chal", "Rog", "Kaal", "Laabh", "Udveg", "Shubh"],
@@ -46,17 +52,167 @@ let city_count = 0;
 let city_times_map = new Object();
 let city_update_handlers = [];
 
-function cityNUpdater(n) {
+function getDateAndChoghadiyaRow() {
+    let date_value = document.getElementById("initial-date").value;
+    if (!date_value) return null;
+    let [year, month, day] = date_value.split("-").map((t) => parseInt(t));
+    // The string month is 1-indexed, the parameter to the date function is 0-indexed.
+    month--;
+    let day_index = new Date(year, month, day).getDay();
+    return [year, month, day, CHOGHADIYA_TABLE[day_index]];
+}
+
+function utcTimeToString(utc) {
+    let d = new Date(utc);
+    return `${d.getUTCHours()}:${d.getUTCMinutes().toString().padStart(2, "0")}`;
+}
+
+function makeIntervalHighlighter(interval_id, color) {
     return function () {
+        const intervals = document.getElementsByClassName(`overlap-interval-${interval_id}`);
+        for (let i = 0; i < intervals.length; i++) {
+            intervals[i].style.background = color;
+        }
+    };
+}
+
+function updateOverlaps() {
+    let good_times = [];
+    let choghadiya_data = getDateAndChoghadiyaRow();
+    if (!choghadiya_data) {
+        for (let i = 0; i < city_count; i++) {
+            document.getElementById(`overlap-${i}-data`).innerText = "Please input a date for the overlaps.";
+        }
+        return;
+    }
+    let choghadiya_row = choghadiya_data[3];
+    let good_interval_start = -1;
+    for (let i = 0; i < 16; i++) {
+        let is_good_murat = GOOD_MURATS.indexOf(choghadiya_row[i]) >= 0;
+        if (is_good_murat && good_interval_start < 0) {
+            good_interval_start = i;
+        } else if (!is_good_murat && good_interval_start >= 0) {
+            good_times.push([good_interval_start, i]);
+            good_interval_start = -1;
+        }
+    }
+    if (good_interval_start >= 0) {
+        good_times.push([good_interval_start, 16]);
+    }
+
+    let overlaps_inputs = new Object();
+    let city_offsets = new Object();
+    let last_start_time = -1;
+    let first_end_time = -1;
+    for (let i = 0; i < city_count; i++) {
+        let city_times = city_times_map[i];
+        if (!city_times) {
+            document.getElementById(`overlap-${i}-data`).innerText = "Please input data for this city!";
+            continue;
+        }
+        let timezone = document.getElementById(`city-${i}-timezone`).value;
+        if (!timezone) {
+            document.getElementById(`overlap-${i}-data`).innerText = "Please input the timezone for this city!";
+            continue;
+        }
+        let tz_offset = timezone * 60 * 60 * 1000;
+        city_offsets[i] = tz_offset;
+        overlaps_inputs[i] = good_times.map((gt) => [city_times[gt[0]] + tz_offset, city_times[gt[1]] + tz_offset]);
+        last_start_time = Math.max(last_start_time, overlaps_inputs[i][0][0]);
+        let end_time = overlaps_inputs[i][good_times.length - 1][1];
+        if (first_end_time < 0) {
+            first_end_time = end_time;
+        } else {
+            first_end_time = Math.min(first_end_time, end_time);
+        }
+    }
+    if (last_start_time < 0) {
+        // No valid inputs, just exit.
+        return;
+    }
+
+    let interval_indices = new Object();
+    for (const id in overlaps_inputs) {
+        let interval_index = -1;
+        for (const [interval_start, interval_end] of overlaps_inputs[id]) {
+            interval_index++;
+            if (last_start_time <= interval_end) {
+                break;
+            }
+            if (last_start_time <= interval_start) {
+                interval_index = -1;
+                break;
+            }
+        }
+
+        if (interval_index > -1) {
+            interval_indices[id] = interval_index;
+            continue;
+        }
+    }
+
+    let feasible_intervals = [];
+    for (let check_time = last_start_time; check_time < first_end_time;) {
+        let last_next_start = -1, first_next_start = first_end_time;
+        let interval_proposal = [check_time, first_end_time];
+        for (const id in interval_indices) {
+            let i = 0;
+            for(i = interval_indices[id]; i < overlaps_inputs[id].length && check_time > overlaps_inputs[id][i][1]; i++);
+            if (i >= overlaps_inputs[id].length || check_time < overlaps_inputs[id][i][0]) {
+                // Infeasible
+                interval_proposal = null;
+                if (i < overlaps_inputs[id].length) {
+                    last_next_start = Math.max(overlaps_inputs[id][i][0], last_next_start);
+                }
+            } else {
+                if (interval_proposal !== null) {
+                    interval_proposal[1] = Math.min(overlaps_inputs[id][i][1], interval_proposal[1]);
+                }
+                if (i + 1 < overlaps_inputs[id].length) {
+                    first_next_start = Math.min(overlaps_inputs[id][i + 1][0], first_next_start);
+                }
+            }
+            interval_indices[id] = i;
+
+        }
+
+        if (interval_proposal !== null) {
+            feasible_intervals.push(interval_proposal);
+            check_time = first_next_start;
+        } else if (last_next_start > -1) {
+            check_time = last_next_start;
+        } else {
+            break;
+        }
+    }
+
+    for (const id in overlaps_inputs) {
+        const table = document.createElement("table");
+        table.border = "1";
+        const heading_row = document.createElement("tr");
+        let interval_count = 0;
+        for (const [interval_start, interval_end] of feasible_intervals) {
+            const heading = document.createElement("th");
+            heading.innerText = `${utcTimeToString(interval_start - city_offsets[id])} - ${utcTimeToString(interval_end - city_offsets[id])}`;
+            heading.classList.add(`overlap-interval-${interval_count}`);
+            heading.addEventListener("mouseenter", makeIntervalHighlighter(interval_count, "green"));
+            heading.addEventListener("mouseleave", makeIntervalHighlighter(interval_count, "white"));
+            heading_row.appendChild(heading);
+            interval_count++;
+        }
+        table.appendChild(heading_row);
+        let overlapEntry = document.getElementById(`overlap-${id}-data`);
+        overlapEntry.innerHTML = "";
+        overlapEntry.appendChild(table);
+    }
+}
+
+function cityNUpdater(n) {
+    return function (also_update_overlaps) {
         let sunrise_input = document.getElementById(`city-${n}-sunrise`);
         let sunset_input = document.getElementById(`city-${n}-sunset`);
-        let date_input = document.getElementById("initial-date");
         let choghadiya_ouput = document.getElementById(`city-${n}-choghadiya`);
 
-        if (!date_input.value) {
-            choghadiya_ouput.innerText = "Please enter the date (above).";
-            return;
-        }
         if (!sunrise_input.value) {
             choghadiya_ouput.innerText = "Please enter the sunrise time.";
             return;
@@ -65,12 +221,16 @@ function cityNUpdater(n) {
             choghadiya_ouput.innerText = "Please enter the sunset time.";
             return;
         }
+        let choghadiya_data = getDateAndChoghadiyaRow();
+        if (!choghadiya_data) {
+            choghadiya_ouput.innerText = "Please enter the date (above).";
+            return;
+        }
+        let [year, month, day, choghadiya_row] = choghadiya_data;
+
 
         let [sunrise_hour, sunrise_minute] = sunrise_input.value.split(":").map((t) => parseInt(t));
         let [sunset_hour, sunset_minute] = sunset_input.value.split(":").map((t) => parseInt(t));
-        let [year, month, day] = date_input.value.split("-").map((t) => parseInt(t));
-        // The string month is 1-indexed, the parameter to the date function is 0-indexed.
-        month--;
 
         // Use UTC to simplify timezone shenanigans.
         // Use *1 to work with epoch millis so that we don't have to deal with "+" casting to strings.
@@ -91,10 +251,7 @@ function cityNUpdater(n) {
         }
         city_times_map[n] = times;
 
-        let times_strings = times.map((t) => {
-            let d = new Date(t);
-            return `${d.getUTCHours()}:${d.getUTCMinutes().toString().padStart(2, "0")}`;
-        });
+        let times_strings = times.map(utcTimeToString);
 
         let city_table = document.createElement("table");
         city_table.border = "1";
@@ -107,7 +264,6 @@ function cityNUpdater(n) {
         city_table.appendChild(times_row);
 
         let day_index = new Date(year, month, day).getDay();
-        let choghadiya_row = CHOGHADIYA_TABLE[day_index];
         let murat_row = document.createElement("tr");
         for (let i = 0; i < 16; i++) {
             let murat_text = document.createElement("td");
@@ -119,6 +275,16 @@ function cityNUpdater(n) {
 
         choghadiya_ouput.innerHTML = "";
         choghadiya_ouput.appendChild(city_table);
+
+        if (also_update_overlaps) {
+            updateOverlaps();
+        }
+    };
+}
+
+function cityNNameUpdater(n) {
+    return function (e) {
+        document.getElementById(`overlap-${n}-name`).innerText = e.target.value || `City ${n} (please name this city)`;
     };
 }
 
@@ -132,7 +298,9 @@ function addCity() {
     let city_name_column = document.createElement("td");
     let city_name_input = document.createElement("input");
     city_name_input.type = "text";
+    city_name_input.placeholder = "Enter name...";
     city_name_input.id = `city-${city_count}-name`;
+    city_name_input.addEventListener("change", cityNNameUpdater(city_count));
     city_name_column.appendChild(city_name_input);
     row.appendChild(city_name_column);
 
@@ -140,7 +308,7 @@ function addCity() {
     let sunrise_input = document.createElement("input");
     sunrise_input.type = "time";
     sunrise_input.id = `city-${city_count}-sunrise`;
-    sunrise_input.addEventListener("change", (e) => changeHandler());
+    sunrise_input.addEventListener("change", (e) => changeHandler(true));
     sunrise_column.appendChild(sunrise_input);
     row.appendChild(sunrise_column);
 
@@ -148,7 +316,7 @@ function addCity() {
     let sunset_input = document.createElement("input");
     sunset_input.type = "time";
     sunset_input.id = `city-${city_count}-sunset`;
-    sunset_input.addEventListener("change", (e) => changeHandler());
+    sunset_input.addEventListener("change", (e) => changeHandler(true));
     sunset_column.appendChild(sunset_input);
     row.appendChild(sunset_column);
 
@@ -160,6 +328,7 @@ function addCity() {
     timezone_input.max = "12";
     timezone_input.step = "0.5";
     timezone_input.id = `city-${city_count}-timezone`;
+    timezone_input.addEventListener("change", (e) => updateOverlaps());
     timezone_column.appendChild(timezone_input);
     row.appendChild(timezone_column);
 
@@ -170,13 +339,27 @@ function addCity() {
 
     table.appendChild(row);
 
+    let overlaps_table = document.getElementById("overlaps");
+    let new_overlap_row = document.createElement("tr");
+    let city_name_in_overlap = document.createElement("td");
+    city_name_in_overlap.id = `overlap-${city_count}-name`;
+    city_name_in_overlap.innerText = `City ${city_count} (please name this city)`;
+    new_overlap_row.appendChild(city_name_in_overlap);
+    let city_overlaps_data = document.createElement("td");
+    city_overlaps_data.id = `overlap-${city_count}-data`;
+    new_overlap_row.appendChild(city_overlaps_data);
+    overlaps_table.appendChild(new_overlap_row);
+
     city_count++;
 }
 
 addCity();
 
 document.getElementById("add-city").addEventListener("click", (e) => addCity());
-document.getElementById("initial-date").addEventListener("change", (e) => city_update_handlers.forEach((h) => h()));
+document.getElementById("initial-date").addEventListener("change", (e) => {
+    city_update_handlers.forEach((h) => h(false));
+    updateOverlaps();
+});
         </script>
     </body>
 </html>
