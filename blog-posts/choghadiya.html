@@ -76,16 +76,8 @@ function makeIntervalHighlighter(interval_id, color) {
     };
 }
 
-function updateOverlaps() {
+function computeContiguousGoodMurats(choghadiya_row) {
     let good_times = [];
-    let choghadiya_data = getDateAndChoghadiyaRow();
-    if (!choghadiya_data) {
-        for (let i = 0; i < city_count; i++) {
-            document.getElementById(`overlap-${i}-data`).innerText = "Please input a date for the overlaps.";
-        }
-        return;
-    }
-    let choghadiya_row = choghadiya_data[3];
     let good_interval_start = -1;
     for (let i = 0; i < 16; i++) {
         let is_good_murat = GOOD_MURATS.indexOf(choghadiya_row[i]) >= 0;
@@ -99,9 +91,12 @@ function updateOverlaps() {
     if (good_interval_start >= 0) {
         good_times.push([good_interval_start, 16]);
     }
+    return good_times;
+}
 
-    let overlaps_inputs = new Object();
+function getCityOffsetsAndOverlapInputs(good_times) {
     let city_offsets = new Object();
+    let overlaps_inputs = new Object();
     let last_start_time = -1;
     let first_end_time = -1;
     for (let i = 0; i < city_count; i++) {
@@ -126,11 +121,10 @@ function updateOverlaps() {
             first_end_time = Math.min(first_end_time, end_time);
         }
     }
-    if (last_start_time < 0) {
-        // No valid inputs, just exit.
-        return;
-    }
+    return [city_offsets, overlaps_inputs, last_start_time, first_end_time];
+}
 
+function computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end_time) {
     let interval_indices = new Object();
     for (const id in overlaps_inputs) {
         let interval_index = -1;
@@ -186,6 +180,28 @@ function updateOverlaps() {
         }
     }
 
+    return feasible_intervals;
+}
+
+function updateOverlaps() {
+    let choghadiya_data = getDateAndChoghadiyaRow();
+    if (!choghadiya_data) {
+        for (let i = 0; i < city_count; i++) {
+            document.getElementById(`overlap-${i}-data`).innerText = "Please input a date for the overlaps.";
+        }
+        return;
+    }
+
+    let choghadiya_row = choghadiya_data[3];
+    const good_times = computeContiguousGoodMurats(choghadiya_row);
+    const [city_offsets, overlaps_inputs, last_start_time, first_end_time] = getCityOffsetsAndOverlapInputs(good_times);
+    if (last_start_time < 0) {
+        // No valid inputs, just exit -- getCityOffsetsAndOverlapInputs complained as needed.
+        return;
+    }
+
+    const feasible_intervals = computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end_time);
+
     for (const id in overlaps_inputs) {
         const table = document.createElement("table");
         table.border = "1";
@@ -201,9 +217,9 @@ function updateOverlaps() {
             interval_count++;
         }
         table.appendChild(heading_row);
-        let overlapEntry = document.getElementById(`overlap-${id}-data`);
-        overlapEntry.innerHTML = "";
-        overlapEntry.appendChild(table);
+        let overlap_entry = document.getElementById(`overlap-${id}-data`);
+        overlap_entry.innerHTML = "";
+        overlap_entry.appendChild(table);
     }
 }
 
