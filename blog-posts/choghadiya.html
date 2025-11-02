@@ -163,7 +163,7 @@ function getCityOffsetsAndOverlapInputs(good_times) {
         }
         let tz_offset = timezone * 60 * 60 * 1000;
         city_offsets[i] = tz_offset;
-        overlaps_inputs[i] = good_times.map((gt) => [city_times[gt[0]] + tz_offset, city_times[gt[1]] + tz_offset]);
+        overlaps_inputs[i] = good_times.map((gt) => [city_times[gt[0]] - tz_offset, city_times[gt[1]] - tz_offset]);
         last_start_time = Math.max(last_start_time, overlaps_inputs[i][0][0]);
         let end_time = overlaps_inputs[i][good_times.length - 1][1];
         if (first_end_time < 0) {
@@ -176,6 +176,7 @@ function getCityOffsetsAndOverlapInputs(good_times) {
 }
 
 function computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end_time) {
+    console.log(overlaps_inputs);
     let interval_indices = new Object();
     for (const id in overlaps_inputs) {
         let interval_index = -1;
@@ -195,6 +196,7 @@ function computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end
             continue;
         }
     }
+    console.log(interval_indices);
 
     let feasible_intervals = [];
     for (let check_time = last_start_time; check_time < first_end_time;) {
@@ -220,6 +222,8 @@ function computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end
             interval_indices[id] = i;
 
         }
+        console.log(interval_indices);
+        console.log(interval_proposal);
 
         if (interval_proposal !== null) {
             feasible_intervals.push(interval_proposal);
@@ -229,6 +233,7 @@ function computeOverlappingIntervals(overlaps_inputs, last_start_time, first_end
         } else {
             break;
         }
+        console.log(check_time);
     }
 
     return feasible_intervals;
@@ -261,7 +266,7 @@ function updateOverlaps() {
         let interval_count = 0;
         for (const [interval_start, interval_end] of feasible_intervals) {
             const heading = document.createElement("th");
-            heading.innerText = `${utcTimeToString(interval_start - city_offsets[id])} - ${utcTimeToString(interval_end - city_offsets[id])}`;
+            heading.innerText = `${utcTimeToString(interval_start + city_offsets[id])} - ${utcTimeToString(interval_end + city_offsets[id])}`;
             heading.classList.add(`overlap-interval-${interval_count}`);
             heading.addEventListener("mouseenter", makeIntervalHighlighter(interval_count, "green"));
             heading.addEventListener("mouseleave", makeIntervalHighlighter(interval_count, "white"));
