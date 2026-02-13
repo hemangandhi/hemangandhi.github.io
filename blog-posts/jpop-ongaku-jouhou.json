@@ -7,7 +7,8 @@
         "赤い赤い小さな車が君を乗せて",
         "Darlin' 夢が叶ったの",
         "Darlin' 愛してる",
-        "夕方５時のチャイム鳴る"
+        "夕方５時のチャイム鳴る",
+        "→↓↑→→↓→→"
     ],
     "songs": [{
         "scripts": ["japanese", "romaji", "english"],
@@ -307,6 +308,74 @@
             "<a href=\"https://youtu.be/kxs9Su_mbpU?si=7ByqMskfHNRADRoy\">The original.</a>",
             "<a href=\"https://youtu.be/Opp9nqiN5m0?si=A-N71uh5YA5EPFNI\">The first take.</a>",
             "<a href=\"https://youtu.be/DPz-BPD4GdM?si=YNsz19ZxM6Yeu6JA\">An amazing intro to Aimer.</a>"
+        ]
+    },
+    {
+        "scripts": ["japanese", "romaji", "english"],
+        "name": {
+            "english": "Business buzz",
+            "romaji": "Bijinesu bata",
+            "japanese": "ビジネスバタ"
+        },
+        "preamble": "I had a friend who really likes this song. I always had a hunch this was somewhat dark, but now I <i>know</i> that it is.",
+        "lyrics": {
+            "japanese": [
+                "信頼　周回　信頼　重体<br>信頼　一回　信頼　三回",
+                "信頼　周回　信頼　重体<br>信頼　一回　信頼",
+                "バタバタパッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "(なんで！)パッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "バタバタパッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "(なんで！)パッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "過労過労過労過労過労<br>休暇休暇休暇休暇休暇<br>猫マナー猫マナー<br>猫マナー猫マナー<br>過労過労過労過労過労<br>休暇休暇休暇休暇休暇<br>猫マナー猫マナー<br>猫マナー猫マナー",
+                "信頼　周回　信頼　重体<br>信頼　一回　限界",
+                "信頼　周回　信頼　重体<br>信頼　一回　限界",
+                "バタバタパッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "(なんで！)パッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "繰り返したら<br>折れた<br>取り替えきかず<br>取れた<br>壊れた",
+                "バタバタパッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "(なんで！)パッタン　集中攻撃<br>深夜ラーメン　音楽ゲーム<br>バタバタパッタン　現在進行<br>問題解決　三角コーナー",
+                "過労過労過労過労過労<br>休暇休暇休暇休暇休暇<br>猫マナー猫マナー<br>猫マナー猫マナー<br>過労過労過労過労過労<br>休暇休暇休暇休暇休暇<br>猫マナー猫マナー<br>猫マナー猫マナー",
+                "終しまい"
+            ],
+            "romaji": [
+                "Shinrai shyuukai shinrai jyuutai<br>shinrai ikkai shinrai sankai",
+                "Shinrai shyuukai shinrai jyuutai<br>shinrai ikkai shinrai",
+                "Batabatabattan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Nande! Battan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Batabatabattan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Nande! Battan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "karou karou karou karou<br>kyuuka kyuuka kyuuka kyuuka<br>nekomanaa nekomanaa<br>nekomanaa nekomanaa<br>karou karou karou karou<br>kyuuka kyuuka kyuuka kyuuka<br>nekomanaa nekomanaa<br>nekomanaa nekomanaa",
+                "Shinrai shyuukai shinrai jyuutai<br>shinrai ikkai genkai",
+                "Shinrai shyuukai shinrai jyuutai<br>shinrai ikkai genkai",
+                "Batabatabattan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Nande! Battan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Furekaeshitara<br>oreta<br>torikaekikazu<br>toreta<br>kowareta",
+                "Batabatabattan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "Nande! Battan shyuuchyuu kougeki<br>shinyaraamen ongaku geemu<br>Batabatabattan genzaishinkou<br>mondaikaiketsu sankakukoonaa",
+                "karou karou karou karou<br>kyuuka kyuuka kyuuka kyuuka<br>nekomanaa nekomanaa<br>nekomanaa nekomanaa<br>karou karou karou karou<br>kyuuka kyuuka kyuuka kyuuka<br>nekomanaa nekomanaa<br>nekomanaa nekomanaa",
+                "oshimai"
+            ],
+            "english": [
+                "Trusted around, trusted heavy<br>trusted one time, trusted three times.",
+                "Trusted around, trusted heavy<br>trusted one time, trusted.",
+                "Batabatabattan focus attacked,<br>late-night ramen, rhythm game!<br>Batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Why! Battan focus attacked,<br>late-night ramen, rhythm game!<br>batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Batabatabattan focus attacked,<br>late-night ramen, rhythm game!<br>Batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Why! Battan focus attacked,<br>late-night ramen, rhythm game!<br>batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Hard work hard work hard work hard work,<br>break time break time break time break time,<br>act like a cat act like a cat,<br>act like a cat act like a cat,<br>hard work hard work hard work hard work,<br>break time break time break time break time,<br>act like a cat act like a cat,<br>act like a cat act like a cat!",
+                "Trusted around trusted heavy<br>trusted one time limit",
+                "Trusted around trusted heavy<br>trusted one time limit",
+                "Batabatabattan focus attacked,<br>late-night ramen, rhythm game!<br>Batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Why! Battan focus attacked,<br>late-night ramen, rhythm game!<br>batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Looking back I was:<br>broken down,<br>too far gone,<br>taken,<br>destroyed.",
+                "Batabatabattan focus attacked,<br>late-night ramen, rhythm game!<br>Batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Why! Battan focus attacked,<br>late-night ramen, rhythm game!<br>batabatabattan current progress,<br>problem solved, feeling cornered.",
+                "Hard work hard work hard work hard work,<br>break time break time break time break time,<br>act like a cat act like a cat,<br>act like a cat act like a cat,<br>hard work hard work hard work hard work,<br>break time break time break time break time,<br>act like a cat act like a cat,<br>act like a cat act like a cat!",
+                "The end."
+            ]
+        },
+        "links": [
+            "<a href=\"https://www.uta-net.com/song/383696/\">Lyrics.</a>"
         ]
     }]
 }
