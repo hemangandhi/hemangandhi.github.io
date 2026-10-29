@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th>City</th>
-                    <th>Overlapping good times</th>
+                    <th id="good-time-heading">Overlapping good times</th>
                 </tr>
             </thead>
             <tbody id="overlaps">
@@ -249,7 +249,9 @@ function updateOverlaps() {
         return;
     }
 
-    let choghadiya_row = choghadiya_data[3];
+    const [year, month, day, choghadiya_row] = choghadiya_data;
+    document.getElementById("good-time-heading").innerText = `Overlapping good times (${year}/${month + 1}/${day})`;
+
     const good_times = computeContiguousGoodMurats(choghadiya_row);
     const [city_offsets, overlaps_inputs, last_start_time, first_end_time] = getCityOffsetsAndOverlapInputs(good_times);
     if (last_start_time < 0) {
